@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Emergency Door Inspector</title>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
 <style>
 :root{
   --bg:#000;--bg-card:#131314;--card:#1F1F1F;--card-hi:#1a1a1b;
@@ -27,15 +27,12 @@ html{height:100%;height:-webkit-fill-available;overflow:hidden}
 body{height:100%;height:-webkit-fill-available;overflow:hidden;font-family:'Manrope',sans-serif;background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased}
 input,select,textarea,button{font-family:inherit;font-size:16px;-webkit-appearance:none;appearance:none}
 button{cursor:pointer;border:none;background:none;color:inherit}
-
 .page{display:none;position:fixed;inset:0;flex-direction:column;background:var(--bg);overflow:hidden}
 .page.active{display:flex}
 .page-scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;padding-bottom:calc(24px + var(--safe-bottom))}
 .page-scroll::-webkit-scrollbar{display:none}
-
-/* HEADER */
 .hdr{display:flex;align-items:center;gap:10px;padding:calc(12px + var(--safe-top)) 16px 12px;background:var(--bg-card);border-bottom:1px solid var(--border);flex-shrink:0;z-index:10}
-.hdr-back{width:44px;height:44px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
+.hdr-back{width:44px;height:44px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .hdr-back:active{background:rgba(255,255,255,.12)}
 .hdr-info{flex:1;min-width:0}
 .hdr-title{font-size:15px;font-weight:800;letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -44,10 +41,8 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .live-chip{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:var(--green);background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.18);padding:5px 10px;border-radius:20px}
 .live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(74,222,128,.4)}70%{opacity:.7;box-shadow:0 0 0 4px rgba(74,222,128,0)}}
-.btn-logout{height:34px;padding:0 12px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;color:var(--red);font-size:11px;font-weight:700;transition:background .15s}
+.btn-logout{height:34px;padding:0 12px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;color:var(--red);font-size:11px;font-weight:700}
 .btn-logout:active{background:rgba(239,68,68,.16)}
-
-/* LOGIN */
 #p-login{justify-content:flex-start;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .login-outer{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(40px + var(--safe-top)) 24px calc(40px + var(--safe-bottom))}
 .login-card{width:100%;max-width:400px}
@@ -60,7 +55,7 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .field input{width:100%;background:var(--bg-card);border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;font-size:16px;color:var(--fg);outline:none;transition:border-color .2s,box-shadow .2s}
 .field input:focus{border-color:rgba(33,104,253,.6);box-shadow:0 0 0 3px rgba(33,104,253,.1)}
 .field input::placeholder{color:#404040}
-.btn-primary{width:100%;padding:16px;background:var(--grad);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:800;margin-top:6px;letter-spacing:.2px;transition:opacity .15s,transform .1s;min-height:44px}
+.btn-primary{width:100%;padding:16px;background:var(--grad);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:800;margin-top:6px;transition:opacity .15s,transform .1s;min-height:44px}
 .btn-primary:active{opacity:.85;transform:scale(.98)}
 .btn-primary:disabled{opacity:.4;pointer-events:none}
 .err-msg{font-size:11px;color:var(--red);text-align:center;margin-top:10px;min-height:16px}
@@ -68,8 +63,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .conn-status.ok{background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.18);color:var(--green)}
 .conn-status.err{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.18);color:var(--red)}
 .conn-status.loading{background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--dim)}
-
-/* LOCK */
 .lock-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center}
 .lock-icon{width:72px;height:72px;border-radius:20px;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.18);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
 .lock-title{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px}
@@ -86,11 +79,9 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .admin-lbl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
 .admin-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
 .admin-avatar{width:34px;height:34px;border-radius:50%;background:var(--grad-d);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0}
-.admin-name{font-size:13px;font-weight:700;color:var(--fg)}
+.admin-name{font-size:13px;font-weight:700}
 .admin-role{font-size:11px;color:var(--dim)}
 .admin-ext{font-size:12px;font-weight:700;color:var(--blue-light);margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.05)}
-
-/* STAT BAR */
 .stat-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);flex-shrink:0}
 .stat-cell{background:var(--bg);padding:12px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:3px}
 .stat-num{font-size:clamp(20px,6vw,28px);font-weight:900;letter-spacing:-1px;line-height:1}
@@ -98,15 +89,10 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .stat-num.done{color:var(--green)}
 .stat-num.pend{color:var(--yellow)}
 .stat-lbl{font-size:9px;color:var(--dim);font-weight:700;letter-spacing:1.2px;text-transform:uppercase}
-
-/* CONTENT */
 .content{padding:16px;display:flex;flex-direction:column;gap:14px}
 .eyebrow{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
-.area-sel{width:100%;background:var(--bg-card);border:1.5px solid var(--border);border-radius:12px;padding:14px 44px 14px 16px;font-size:15px;font-weight:600;color:var(--fg);outline:none;transition:border-color .2s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23737373' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;cursor:pointer;min-height:44px}
-.area-sel:focus{border-color:rgba(33,104,253,.6)}
+.area-sel{width:100%;background:var(--bg-card);border:1.5px solid var(--border);border-radius:12px;padding:14px 44px 14px 16px;font-size:15px;font-weight:600;color:var(--fg);outline:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23737373' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;cursor:pointer;min-height:44px}
 .area-sel option{background:#1F1F1F}
-
-/* CHART */
 .chart-panel{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:18px;opacity:0;transform:translateY(8px);transition:opacity .35s,transform .35s;pointer-events:none}
 .chart-panel.vis{opacity:1;transform:none;pointer-events:auto}
 .chart-title{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin-bottom:16px}
@@ -123,23 +109,17 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .bar-pct{font-size:12px;font-weight:800}
 .bar-track{height:7px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}
 .bar-fill{height:100%;border-radius:4px;transition:width .7s cubic-bezier(.4,0,.2,1)}
-.btn-start{padding:16px;background:var(--grad);border:none;border-radius:13px;color:#fff;font-size:16px;font-weight:800;width:100%;letter-spacing:.2px;box-shadow:0 6px 24px rgba(33,104,253,.28);transition:opacity .15s,transform .1s;min-height:44px}
+.btn-start{padding:16px;background:var(--grad);border:none;border-radius:13px;color:#fff;font-size:16px;font-weight:800;width:100%;box-shadow:0 6px 24px rgba(33,104,253,.28);transition:opacity .15s,transform .1s;min-height:44px}
 .btn-start:active{opacity:.85;transform:scale(.98)}
-
-/* CTX STRIP */
 .ctx-strip{padding:10px 16px;background:rgba(33,104,253,.06);border-bottom:1px solid rgba(33,104,253,.14);display:flex;align-items:center;gap:6px;flex-shrink:0}
 .ctx-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue-light)}
 .ctx-val{font-size:13px;font-weight:700;color:var(--fg)}
-
-/* PROGRESS */
 .prog-wrap{flex-shrink:0;padding:10px 16px;background:var(--bg-card);border-bottom:1px solid var(--border)}
 .prog-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
 .prog-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim)}
 .prog-cnt{font-size:13px;font-weight:800;color:var(--teal)}
 .prog-track{height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
 .prog-fill{height:100%;background:var(--grad);border-radius:2px;transition:width .35s cubic-bezier(.4,0,.2,1)}
-
-/* QR ZONE */
 .qr-zone{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:16px}
 .zone-lbl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
 .btn-scan{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:15px;background:rgba(33,104,253,.1);border:1.5px solid rgba(33,104,253,.28);border-radius:11px;color:var(--blue-light);font-size:15px;font-weight:700;transition:background .15s;min-height:44px}
@@ -150,8 +130,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .door-meta{font-size:13px;color:var(--muted)}
 .door-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .door-tag{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:3px 9px;border-radius:20px;background:rgba(33,104,253,.08);border:1px solid rgba(33,104,253,.2);color:var(--blue-light)}
-
-/* CHECKLIST */
 .cl-section{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
 .cl-sec-head{padding:13px 15px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:9px;background:rgba(33,104,253,.04)}
 .cl-sec-icon{width:30px;height:30px;border-radius:8px;background:rgba(33,104,253,.12);border:1px solid rgba(33,104,253,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -167,8 +145,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .rb:active{transform:scale(.93)}
 .rb.ok.sel{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.35);color:var(--green)}
 .rb.bad.sel{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.35);color:var(--red)}
-
-/* DEFECT */
 .defect-zone{display:none;padding:0 15px 14px;flex-direction:column;gap:10px}
 .defect-zone.open{display:flex}
 .defect-head{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);display:flex;align-items:center;gap:6px}
@@ -177,12 +153,9 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .photo-del{position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.75);border:none;color:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .btn-add-photo{display:flex;align-items:center;gap:7px;padding:8px 14px;background:rgba(33,104,253,.1);border:1.5px dashed rgba(33,104,253,.3);border-radius:9px;color:var(--blue-light);font-size:13px;font-weight:700;min-height:44px}
-.btn-add-photo:active{background:rgba(33,104,253,.18)}
-.note-area{width:100%;background:rgba(0,0,0,.3);border:1.5px solid rgba(239,68,68,.2);border-radius:9px;padding:11px 13px;color:var(--fg);font-size:16px;resize:none;outline:none;min-height:70px;line-height:1.55;transition:border-color .2s}
+.note-area{width:100%;background:rgba(0,0,0,.3);border:1.5px solid rgba(239,68,68,.2);border-radius:9px;padding:11px 13px;color:var(--fg);font-size:16px;resize:none;outline:none;min-height:70px;line-height:1.55}
 .note-area:focus{border-color:rgba(239,68,68,.45)}
 .note-area::placeholder{color:#555}
-
-/* OVERALL */
 .overall-wrap{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:14px}
 .ov-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
 .ov-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
@@ -196,52 +169,47 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .ov-btn.ov-cond.sel .ov-lbl{color:var(--yellow)}
 .ov-btn.ov-fail.sel{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3)}
 .ov-btn.ov-fail.sel .ov-lbl{color:var(--red)}
-
-/* SUBMIT */
 .submit-area{flex-shrink:0;padding:14px 16px calc(14px + var(--safe-bottom));background:var(--bg-card);border-top:1px solid var(--border)}
 .submit-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--dim);margin-bottom:8px}
 .submit-meta strong{color:var(--fg)}
 .sbprog-track{height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;margin-bottom:12px}
 .sbprog-fill{height:100%;background:var(--grad);border-radius:2px;transition:width .35s}
-.btn-submit{width:100%;padding:16px;background:var(--grad);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:800;letter-spacing:.3px;transition:opacity .15s,transform .1s;min-height:44px}
+.btn-submit{width:100%;padding:16px;background:var(--grad);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:800;transition:opacity .15s,transform .1s;min-height:44px}
 .btn-submit:active{opacity:.85;transform:scale(.98)}
 .btn-submit:disabled{opacity:.35;pointer-events:none}
-.btn-edit{display:none;width:100%;margin-top:8px;padding:13px;background:rgba(33,104,253,.1);border:1.5px solid rgba(33,104,253,.25);border-radius:12px;color:var(--blue-light);font-size:15px;font-weight:700;transition:background .15s}
+.btn-edit{display:none;width:100%;margin-top:8px;padding:13px;background:rgba(33,104,253,.1);border:1.5px solid rgba(33,104,253,.25);border-radius:12px;color:var(--blue-light);font-size:15px;font-weight:700}
 .btn-edit.show{display:block}
-.btn-edit:active{background:rgba(33,104,253,.18)}
 .result-banner{display:none;margin-bottom:10px;padding:13px 15px;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.2);border-radius:11px;font-size:13px;font-weight:700;color:var(--green);text-align:center}
 .result-banner.show{display:block}
 
-/* QR MODAL — html5-qrcode */
+/* ── QR MODAL ── */
 .fullModal{display:none;position:fixed;inset:0;z-index:100;background:#000;flex-direction:column}
 .fullModal.open{display:flex}
 .modal-hdr{display:flex;align-items:center;justify-content:space-between;padding:calc(14px + var(--safe-top)) 16px 12px;background:rgba(0,0,0,.95);flex-shrink:0;border-bottom:1px solid var(--border)}
 .modal-title{font-size:15px;font-weight:800}
 .modal-close{height:36px;padding:0 14px;background:rgba(255,255,255,.1);border:1px solid var(--border);border-radius:9px;color:var(--muted);font-size:13px;font-weight:700}
-.qr-reader-wrap{flex:1;position:relative;overflow:hidden;background:#000;display:flex;flex-direction:column}
-#qr-reader{width:100%;flex:1}
-#qr-reader video{width:100%!important;height:100%!important;object-fit:cover!important}
-#qr-reader__scan_region{border:none!important;background:transparent!important}
-#qr-reader__scan_region img{display:none!important}
-#qr-reader__dashboard{display:none!important}
-.qr-overlay{position:absolute;inset:0;pointer-events:none;display:flex;align-items:center;justify-content:center}
-.qr-frame{width:min(220px,60vw);height:min(220px,60vw);position:relative}
-.qr-frame::before{content:'';position:absolute;inset:0;border:2px solid var(--teal);border-radius:16px;box-shadow:0 0 0 2000px rgba(0,0,0,.55)}
-.qr-corner{position:absolute;width:24px;height:24px;border-color:var(--teal);border-style:solid}
-.qr-corner.tl{top:-2px;left:-2px;border-width:3px 0 0 3px;border-radius:4px 0 0 0}
-.qr-corner.tr{top:-2px;right:-2px;border-width:3px 3px 0 0;border-radius:0 4px 0 0}
-.qr-corner.bl{bottom:-2px;left:-2px;border-width:0 0 3px 3px;border-radius:0 0 0 4px}
-.qr-corner.br{bottom:-2px;right:-2px;border-width:0 3px 3px 0;border-radius:0 0 4px 0}
-.qr-scanline{position:absolute;left:4px;right:4px;height:2px;background:linear-gradient(90deg,transparent,var(--teal),transparent);box-shadow:0 0 8px var(--teal);animation:scanmove 2s ease-in-out infinite}
-@keyframes scanmove{0%,100%{top:4px}50%{bottom:4px;top:auto}}
-.qr-hint{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:rgba(255,255,255,.8);background:rgba(0,0,0,.7);padding:6px 16px;border-radius:20px;white-space:nowrap}
-.qr-status{position:absolute;top:16px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:var(--teal);background:rgba(0,0,0,.7);padding:5px 14px;border-radius:20px;white-space:nowrap;transition:opacity .3s}
-
-/* MOCK BAR */
+.qr-vid-wrap{flex:1;position:relative;overflow:hidden;background:#000}
+#qrVideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+#qrCanvas{display:none}
+.qr-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.qr-frame{width:min(240px,65vw);height:min(240px,65vw);position:relative}
+.qr-frame::before{content:'';position:absolute;inset:0;border:2px solid var(--teal);border-radius:14px;box-shadow:0 0 0 2000px rgba(0,0,0,.6)}
+.qr-corner{position:absolute;width:22px;height:22px;border-color:var(--teal);border-style:solid}
+.qr-corner.tl{top:-1px;left:-1px;border-width:3px 0 0 3px;border-radius:4px 0 0 0}
+.qr-corner.tr{top:-1px;right:-1px;border-width:3px 3px 0 0;border-radius:0 4px 0 0}
+.qr-corner.bl{bottom:-1px;left:-1px;border-width:0 0 3px 3px;border-radius:0 0 0 4px}
+.qr-corner.br{bottom:-1px;right:-1px;border-width:0 3px 3px 0;border-radius:0 0 4px 0}
+.qr-scanline{position:absolute;left:6px;right:6px;height:2px;background:linear-gradient(90deg,transparent,var(--teal),transparent);box-shadow:0 0 10px var(--teal);animation:scan 2s ease-in-out infinite}
+@keyframes scan{0%,100%{top:6px}50%{top:calc(100% - 8px)}}
+.qr-hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:rgba(255,255,255,.8);background:rgba(0,0,0,.7);padding:6px 16px;border-radius:20px;white-space:nowrap}
+.qr-status-bar{position:absolute;top:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;color:var(--fg);background:rgba(0,0,0,.75);padding:6px 14px;border-radius:20px;white-space:nowrap;transition:opacity .4s}
+.qr-status-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:pulse 1.5s infinite;flex-shrink:0}
+.qr-found-flash{position:absolute;inset:0;background:rgba(74,222,128,.15);opacity:0;pointer-events:none;transition:opacity .15s}
+.qr-found-flash.flash{opacity:1}
 .mock-bar{flex-shrink:0;padding:12px 14px calc(12px + var(--safe-bottom));background:rgba(0,0,0,.95);border-top:1px solid var(--border)}
 .mock-hint{font-size:10px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
 .mock-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.mock-btn{padding:12px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:9px;color:var(--fg);font-size:13px;font-weight:700;transition:background .15s;text-align:center;min-height:44px}
+.mock-btn{padding:12px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:9px;color:var(--fg);font-size:13px;font-weight:700;text-align:center;min-height:44px}
 .mock-btn:active{background:var(--card-hi)}
 .mock-btn span{display:block;font-size:10px;color:var(--dim);font-weight:600;margin-top:2px}
 
@@ -258,43 +226,35 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .cam-corner.tr{top:16px;right:16px;border-width:2.5px 2.5px 0 0}
 .cam-corner.bl{bottom:100px;left:16px;border-width:0 0 2.5px 2.5px}
 .cam-corner.br{bottom:100px;right:16px;border-width:0 2.5px 2.5px 0}
-.cam-scanline{position:absolute;left:5%;right:5%;height:2px;background:linear-gradient(90deg,transparent,var(--teal),transparent);box-shadow:0 0 8px var(--teal);animation:scanmove 2.2s ease-in-out infinite}
+.cam-scanline{position:absolute;left:5%;right:5%;height:2px;background:linear-gradient(90deg,transparent,var(--teal),transparent);animation:scan 2.2s ease-in-out infinite}
 .cam-info{position:absolute;bottom:86px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;color:rgba(255,255,255,.65);background:rgba(0,0,0,.6);padding:5px 14px;border-radius:20px;white-space:nowrap;transition:opacity .5s}
 .cam-bar{display:flex;align-items:center;gap:10px;padding:calc(14px + var(--safe-bottom)) 20px 14px;background:rgba(0,0,0,.9);flex-shrink:0}
-.btn-capture{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:17px;background:var(--grad);border:none;border-radius:13px;color:#fff;font-size:15px;font-weight:800;transition:opacity .15s,transform .1s;min-height:44px}
+.btn-capture{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:17px;background:var(--grad);border:none;border-radius:13px;color:#fff;font-size:15px;font-weight:800;min-height:44px}
 .btn-capture:active{opacity:.85;transform:scale(.97)}
 .btn-flip{width:52px;height:52px;border-radius:12px;background:rgba(255,255,255,.1);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.btn-flip:active{background:rgba(255,255,255,.18)}
 #camCanvas{display:none}
-
-/* LOADING OVERLAY */
 .loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;backdrop-filter:blur(4px)}
 .loading-overlay.hide{display:none}
 .spinner{width:40px;height:40px;border:3px solid rgba(255,255,255,.1);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-text{font-size:13px;font-weight:700;color:var(--muted)}
-
-/* TOAST */
 .toast{position:fixed;bottom:calc(24px + var(--safe-bottom));left:50%;transform:translateX(-50%) translateY(12px);background:var(--bg-card);border:1px solid var(--border-hi);border-radius:12px;padding:10px 18px;font-size:13px;font-weight:700;color:var(--fg);display:flex;align-items:center;gap:8px;opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);pointer-events:none;z-index:9999;white-space:nowrap;max-width:90vw;box-shadow:0 8px 32px rgba(0,0,0,.6)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.ok{border-left:3px solid var(--green)}
 .toast.err{border-left:3px solid var(--red)}
 .toast.info{border-left:3px solid var(--blue-light)}
-
-/* SYNC INDICATOR */
 .sync-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:3px 8px;border-radius:20px;background:rgba(58,228,201,.07);border:1px solid rgba(58,228,201,.2);color:var(--teal)}
 .sync-dot{width:5px;height:5px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite}
 </style>
 </head>
 <body>
 
-<!-- LOADING OVERLAY -->
 <div class="loading-overlay" id="loadingOverlay">
   <div class="spinner"></div>
   <div class="loading-text" id="loadingText">กำลังเชื่อมต่อระบบ...</div>
 </div>
 
-<!-- CAMERA MODAL (ถ่ายภาพ defect) -->
+<!-- CAMERA MODAL -->
 <div class="camModal" id="camModal">
   <div class="cam-hdr">
     <span class="cam-title" id="camTitle">ถ่ายภาพ</span>
@@ -319,28 +279,31 @@ button{cursor:pointer;border:none;background:none;color:inherit}
   <canvas id="camCanvas"></canvas>
 </div>
 
-<!-- QR MODAL — html5-qrcode -->
+<!-- QR MODAL -->
 <div class="fullModal" id="qrModal">
   <div class="modal-hdr">
     <span class="modal-title">สแกน QR Code ประตู</span>
     <button class="modal-close" onclick="closeQR()">ยกเลิก</button>
   </div>
-  <div class="qr-reader-wrap">
-    <div id="qr-reader"></div>
+  <div class="qr-vid-wrap">
+    <video id="qrVideo" autoplay playsinline muted webkit-playsinline></video>
+    <canvas id="qrCanvas"></canvas>
     <div class="qr-overlay">
       <div class="qr-frame">
-        <div class="qr-corner tl"></div>
-        <div class="qr-corner tr"></div>
-        <div class="qr-corner bl"></div>
-        <div class="qr-corner br"></div>
+        <div class="qr-corner tl"></div><div class="qr-corner tr"></div>
+        <div class="qr-corner bl"></div><div class="qr-corner br"></div>
         <div class="qr-scanline"></div>
       </div>
     </div>
+    <div class="qr-status-bar" id="qrStatusBar">
+      <div class="qr-status-dot"></div>
+      <span id="qrStatusTxt">กำลังเปิดกล้อง...</span>
+    </div>
     <div class="qr-hint">จัดกล้องให้ QR Code อยู่ในกรอบ</div>
-    <div class="qr-status" id="qrStatus">กำลังเปิดกล้อง...</div>
+    <div class="qr-found-flash" id="qrFlash"></div>
   </div>
   <div class="mock-bar">
-    <div class="mock-hint">เลือกประตูด้วยตนเอง</div>
+    <div class="mock-hint">หรือเลือกประตูด้วยตนเอง</div>
     <div class="mock-grid" id="mockDoorGrid"></div>
   </div>
 </div>
@@ -369,30 +332,17 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 <!-- PAGE: LOCK -->
 <div id="p-lock" class="page">
   <div class="hdr">
-    <div class="hdr-info">
-      <div class="hdr-title">Emergency Door Inspector</div>
-      <div class="hdr-sub" id="lockUserLabel">—</div>
-    </div>
-    <div class="hdr-right">
-      <button class="btn-logout" onclick="doLogout()">ออก</button>
-    </div>
+    <div class="hdr-info"><div class="hdr-title">Emergency Door Inspector</div><div class="hdr-sub" id="lockUserLabel">—</div></div>
+    <div class="hdr-right"><button class="btn-logout" onclick="doLogout()">ออก</button></div>
   </div>
   <div class="lock-wrap">
-    <div class="lock-icon">
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-    </div>
+    <div class="lock-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
     <div class="lock-title">นอกเวลาตรวจสอบ</div>
     <div class="lock-sub">ฟอร์มจะเปิดใช้งานได้เฉพาะช่วงเวลากะที่กำหนด</div>
     <div class="shift-schedule" id="shiftSchedule"></div>
     <div class="admin-contact">
       <div class="admin-lbl">ติดต่อ Admin</div>
-      <div class="admin-row">
-        <div class="admin-avatar" id="adminAvatar">A</div>
-        <div>
-          <div class="admin-name" id="adminName">Admin</div>
-          <div class="admin-role" id="adminRole">Security Supervisor</div>
-        </div>
-      </div>
+      <div class="admin-row"><div class="admin-avatar" id="adminAvatar">A</div><div><div class="admin-name" id="adminName">Admin</div><div class="admin-role" id="adminRole">Security Supervisor</div></div></div>
       <div class="admin-ext" id="adminContact">—</div>
     </div>
   </div>
@@ -401,14 +351,8 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 <!-- PAGE: DASHBOARD -->
 <div id="p-dash" class="page">
   <div class="hdr">
-    <div class="hdr-info">
-      <div class="hdr-title">Inspector Dashboard</div>
-      <div class="hdr-sub" id="dashUserLabel">—</div>
-    </div>
-    <div class="hdr-right">
-      <div class="sync-badge"><div class="sync-dot"></div>Realtime</div>
-      <button class="btn-logout" onclick="doLogout()">ออก</button>
-    </div>
+    <div class="hdr-info"><div class="hdr-title">Inspector Dashboard</div><div class="hdr-sub" id="dashUserLabel">—</div></div>
+    <div class="hdr-right"><div class="sync-badge"><div class="sync-dot"></div>Realtime</div><button class="btn-logout" onclick="doLogout()">ออก</button></div>
   </div>
   <div class="stat-bar">
     <div class="stat-cell"><div class="stat-num tot" id="sTotal">0</div><div class="stat-lbl">ทั้งหมด</div></div>
@@ -417,18 +361,12 @@ button{cursor:pointer;border:none;background:none;color:inherit}
   </div>
   <div class="page-scroll">
     <div class="content">
-      <div>
-        <div class="eyebrow">เลือกพื้นที่ตรวจสอบ</div>
-        <select class="area-sel" id="areaSelect" onchange="onAreaChange()">
-          <option value="">— กรุณาเลือกพื้นที่ —</option>
-        </select>
+      <div><div class="eyebrow">เลือกพื้นที่ตรวจสอบ</div>
+        <select class="area-sel" id="areaSelect" onchange="onAreaChange()"><option value="">— กรุณาเลือกพื้นที่ —</option></select>
       </div>
       <div class="chart-panel" id="donutPanel">
         <div class="chart-title">สถานะพื้นที่ที่เลือก</div>
-        <div class="donut-wrap">
-          <svg id="donutSvg" width="110" height="110" viewBox="0 0 110 110" style="flex-shrink:0"></svg>
-          <div class="donut-legend" id="donutLegend"></div>
-        </div>
+        <div class="donut-wrap"><svg id="donutSvg" width="110" height="110" viewBox="0 0 110 110" style="flex-shrink:0"></svg><div class="donut-legend" id="donutLegend"></div></div>
       </div>
       <div class="chart-panel" id="barPanel">
         <div class="chart-title">สรุปความคืบหน้า</div>
@@ -445,25 +383,16 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 <!-- PAGE: INSPECTION FORM -->
 <div id="p-inspect" class="page">
   <div class="hdr">
-    <button class="hdr-back" onclick="goBack()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FAFAFA" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-    </button>
-    <div class="hdr-info">
-      <div class="hdr-title" id="p3Title">ตรวจสอบประตู</div>
-      <div class="hdr-sub" id="p3Sub">—</div>
-    </div>
+    <button class="hdr-back" onclick="goBack()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FAFAFA" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="hdr-info"><div class="hdr-title" id="p3Title">ตรวจสอบประตู</div><div class="hdr-sub" id="p3Sub">—</div></div>
     <div class="sync-badge"><div class="sync-dot"></div>Realtime</div>
   </div>
   <div class="ctx-strip">
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-    <span class="ctx-lbl">พื้นที่ :</span>
-    <span class="ctx-val" id="ctxArea">—</span>
+    <span class="ctx-lbl">พื้นที่ :</span><span class="ctx-val" id="ctxArea">—</span>
   </div>
   <div class="prog-wrap">
-    <div class="prog-meta">
-      <span class="prog-lbl">ความคืบหน้า</span>
-      <span class="prog-cnt" id="progCnt">0 / 0</span>
-    </div>
+    <div class="prog-meta"><span class="prog-lbl">ความคืบหน้า</span><span class="prog-cnt" id="progCnt">0 / 0</span></div>
     <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
   </div>
   <div class="page-scroll" id="p3Scroll">
@@ -484,18 +413,9 @@ button{cursor:pointer;border:none;background:none;color:inherit}
       <div class="overall-wrap" id="overallWrap" style="display:none">
         <div class="ov-title">ผลการตรวจโดยรวม</div>
         <div class="ov-btns">
-          <button class="ov-btn ov-ok" id="ov-ok" onclick="setOv('ok')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            <div class="ov-lbl">ผ่าน</div><div class="ov-sub">Pass</div>
-          </button>
-          <button class="ov-btn ov-cond" id="ov-cond" onclick="setOv('cond')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            <div class="ov-lbl">เงื่อนไข</div><div class="ov-sub">Conditional</div>
-          </button>
-          <button class="ov-btn ov-fail" id="ov-fail" onclick="setOv('fail')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            <div class="ov-lbl">ไม่ผ่าน</div><div class="ov-sub">Fail</div>
-          </button>
+          <button class="ov-btn ov-ok" id="ov-ok" onclick="setOv('ok')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><div class="ov-lbl">ผ่าน</div><div class="ov-sub">Pass</div></button>
+          <button class="ov-btn ov-cond" id="ov-cond" onclick="setOv('cond')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg><div class="ov-lbl">เงื่อนไข</div><div class="ov-sub">Conditional</div></button>
+          <button class="ov-btn ov-fail" id="ov-fail" onclick="setOv('fail')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><div class="ov-lbl">ไม่ผ่าน</div><div class="ov-sub">Fail</div></button>
         </div>
       </div>
     </div>
@@ -505,10 +425,7 @@ button{cursor:pointer;border:none;background:none;color:inherit}
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:4px"><polyline points="20 6 9 17 4 12"/></svg>
       บันทึกผลและส่งข้อมูล Realtime เรียบร้อยแล้ว
     </div>
-    <div class="submit-meta">
-      <span>ตอบแล้ว <strong id="sbDone">0</strong> ข้อ</span>
-      <span>ทั้งหมด <strong id="sbTotal">0</strong> ข้อ</span>
-    </div>
+    <div class="submit-meta"><span>ตอบแล้ว <strong id="sbDone">0</strong> ข้อ</span><span>ทั้งหมด <strong id="sbTotal">0</strong> ข้อ</span></div>
     <div class="sbprog-track"><div class="sbprog-fill" id="sbprogFill" style="width:0%"></div></div>
     <button class="btn-submit" id="btnSubmit" onclick="doSubmit()">ส่งผลการตรวจสอบ</button>
     <button class="btn-edit" id="btnEdit" onclick="doEdit()">แก้ไขผลการตรวจสอบ</button>
@@ -535,119 +452,83 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // ── STATE ──
-let currentUser = null;
-let allDoors = [];
-let checklists = [];
-let shifts = [];
-let selArea = '';
-let camStream = null, camFacing = 'environment';
-let camItemKey = null;
-let answers = {}, overall = '', submitted = false;
-let totalItems = 0;
-let submissionsUnsubscribe = null;
-let zoneStats = {};
-let html5QrScanner = null;
+let currentUser = null, allDoors = [], checklists = [], shifts = [], selArea = '';
+let camStream = null, qrStream = null, camFacing = 'environment', camItemKey = null;
+let answers = {}, overall = '', submitted = false, totalItems = 0;
+let submissionsUnsubscribe = null, zoneStats = {};
+let qrActive = false, qrAnimFrame = null;
 
-// ── HELPERS ──
+// ── TOAST ──
 let toastTimer;
 function toast(msg, type) {
-  if (!type) type = 'info';
   var el = document.getElementById('toast');
   el.textContent = msg;
-  el.className = 'toast show ' + type;
+  el.className = 'toast show ' + (type || 'info');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(function() { el.classList.remove('show'); }, 2800);
 }
-
-function showLoading(text) {
-  document.getElementById('loadingOverlay').classList.remove('hide');
-  if (text) document.getElementById('loadingText').textContent = text;
-}
-function hideLoading() {
-  document.getElementById('loadingOverlay').classList.add('hide');
-}
-
-function goPage(id) {
-  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
-  document.getElementById(id).classList.add('active');
-  if (id === 'p-inspect') document.getElementById('p3Scroll').scrollTop = 0;
-}
+function showLoading(text) { document.getElementById('loadingOverlay').classList.remove('hide'); if (text) document.getElementById('loadingText').textContent = text; }
+function hideLoading() { document.getElementById('loadingOverlay').classList.add('hide'); }
+function goPage(id) { document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); }); document.getElementById(id).classList.add('active'); if (id === 'p-inspect') document.getElementById('p3Scroll').scrollTop = 0; }
 
 // ── INIT ──
 async function init() {
   try {
-    const settingsDoc = await getDoc(doc(db, 'door_settings', 'config'));
+    const sd = await getDoc(doc(db, 'door_settings', 'config'));
     document.getElementById('connStatus').className = 'conn-status ok';
     document.getElementById('connStatus').innerHTML = '<div class="live-dot"></div>เชื่อมต่อระบบสำเร็จ';
     document.getElementById('loginBtn').disabled = false;
-    if (settingsDoc.exists()) {
-      const data = settingsDoc.data();
-      shifts = data.shifts || getDefaultShifts();
-      if (data.adminContact) {
-        document.getElementById('adminName').textContent = data.adminContact.name || 'Admin';
-        document.getElementById('adminRole').textContent = data.adminContact.role || 'Security Supervisor';
-        document.getElementById('adminContact').textContent = data.adminContact.contact || '—';
-        document.getElementById('adminAvatar').textContent = (data.adminContact.name || 'A').charAt(0).toUpperCase();
+    if (sd.exists()) {
+      const d = sd.data();
+      shifts = d.shifts || getDefaultShifts();
+      if (d.adminContact) {
+        document.getElementById('adminName').textContent = d.adminContact.name || 'Admin';
+        document.getElementById('adminRole').textContent = d.adminContact.role || 'Security Supervisor';
+        document.getElementById('adminContact').textContent = d.adminContact.contact || '—';
+        document.getElementById('adminAvatar').textContent = (d.adminContact.name || 'A').charAt(0).toUpperCase();
       }
-    } else {
-      shifts = getDefaultShifts();
-    }
-  } catch (e) {
+    } else { shifts = getDefaultShifts(); }
+  } catch(e) {
     document.getElementById('connStatus').className = 'conn-status err';
-    document.getElementById('connStatus').innerHTML = 'ไม่สามารถเชื่อมต่อได้ — ใช้ข้อมูล Local';
+    document.getElementById('connStatus').innerHTML = 'ไม่สามารถเชื่อมต่อได้';
     document.getElementById('loginBtn').disabled = false;
     shifts = getDefaultShifts();
   }
   hideLoading();
 }
-
-function getDefaultShifts() {
-  return [
-    { id: 'A', name: 'กะ A (เช้า)', startH: 6, endH: 14 },
-    { id: 'B', name: 'กะ B (บ่าย)', startH: 14, endH: 22 },
-    { id: 'C', name: 'กะ C (ดึก)', startH: 22, endH: 6 }
-  ];
-}
+function getDefaultShifts() { return [{id:'A',name:'กะ A (เช้า)',startH:6,endH:14},{id:'B',name:'กะ B (บ่าย)',startH:14,endH:22},{id:'C',name:'กะ C (ดึก)',startH:22,endH:6}]; }
 
 // ── LOGIN ──
 document.getElementById('usernameIn').addEventListener('keydown', function(e) { if (e.key === 'Enter') document.getElementById('passIn').focus(); });
 document.getElementById('passIn').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
 
 window.doLogin = async function() {
-  const username = document.getElementById('usernameIn').value.trim();
-  const pass = document.getElementById('passIn').value;
-  const errEl = document.getElementById('errMsg');
-  errEl.textContent = '';
-  if (!username || !pass) { errEl.textContent = 'กรุณากรอก Username และรหัสผ่าน'; return; }
+  const u = document.getElementById('usernameIn').value.trim();
+  const p = document.getElementById('passIn').value;
+  const err = document.getElementById('errMsg');
+  err.textContent = '';
+  if (!u || !p) { err.textContent = 'กรุณากรอก Username และรหัสผ่าน'; return; }
   const btn = document.getElementById('loginBtn');
-  btn.disabled = true;
-  btn.textContent = 'กำลังตรวจสอบ...';
+  btn.disabled = true; btn.textContent = 'กำลังตรวจสอบ...';
   showLoading('กำลังตรวจสอบข้อมูล...');
   try {
-    const usersRef = collection(db, 'door_users');
-    const q = query(usersRef, where('username', '==', username));
-    const snap = await getDocs(q);
-    if (snap.empty) { errEl.textContent = 'ไม่พบ Username นี้ในระบบ'; btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ'; hideLoading(); return; }
-    const userDoc = snap.docs[0];
-    const userData = userDoc.data();
-    if (!userData.active) { errEl.textContent = 'บัญชีนี้ถูกระงับการใช้งาน'; btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ'; hideLoading(); return; }
-    if (userData.password !== pass) { errEl.textContent = 'รหัสผ่านไม่ถูกต้อง'; btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ'; hideLoading(); return; }
-    currentUser = { id: userDoc.id, ...userData };
+    const snap = await getDocs(query(collection(db, 'door_users'), where('username', '==', u)));
+    if (snap.empty) { err.textContent = 'ไม่พบ Username นี้ในระบบ'; btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ'; hideLoading(); return; }
+    const ud = snap.docs[0].data();
+    if (!ud.active) { err.textContent = 'บัญชีนี้ถูกระงับการใช้งาน'; btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ'; hideLoading(); return; }
+    if (ud.password !== p) { err.textContent = 'รหัสผ่านไม่ถูกต้อง'; btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ'; hideLoading(); return; }
+    currentUser = { id: snap.docs[0].id, ...ud };
     btn.textContent = 'เข้าสู่ระบบ';
     await loadAllData();
     checkShiftAndRoute();
     toast('ยินดีต้อนรับ ' + currentUser.displayName, 'ok');
-  } catch (e) {
-    errEl.textContent = 'เข้าสู่ระบบไม่สำเร็จ: ' + e.message;
-  }
-  btn.disabled = false;
-  hideLoading();
+  } catch(e) { err.textContent = 'เข้าสู่ระบบไม่สำเร็จ: ' + e.message; }
+  btn.disabled = false; hideLoading();
 };
 
 window.doLogout = function() {
   if (submissionsUnsubscribe) { submissionsUnsubscribe(); submissionsUnsubscribe = null; }
-  closeQR();
-  currentUser = null; selArea = '';
+  stopQR(); currentUser = null; selArea = '';
   document.getElementById('usernameIn').value = '';
   document.getElementById('passIn').value = '';
   document.getElementById('errMsg').textContent = '';
@@ -658,70 +539,30 @@ window.doLogout = function() {
 async function loadAllData() {
   showLoading('กำลังโหลดข้อมูลประตู...');
   try {
-    const doorsSnap = await getDocs(collection(db, 'door_doors'));
-    allDoors = [];
-    doorsSnap.forEach(function(d) { allDoors.push({ id: d.id, ...d.data() }); });
-    if (currentUser.zones && currentUser.zones.length > 0) {
-      allDoors = allDoors.filter(function(d) { return currentUser.zones.includes(d.zone); });
-    }
+    const ds = await getDocs(collection(db, 'door_doors'));
+    allDoors = []; ds.forEach(function(d) { allDoors.push({ id: d.id, ...d.data() }); });
+    if (currentUser.zones && currentUser.zones.length > 0) allDoors = allDoors.filter(function(d) { return currentUser.zones.includes(d.zone); });
     showLoading('กำลังโหลด Checklist...');
-    const clSnap = await getDocs(collection(db, 'door_checklists'));
-    checklists = [];
-    clSnap.forEach(function(d) { checklists.push({ id: d.id, ...d.data() }); });
-    checklists.sort(function(a, b) { return (a.order || 0) - (b.order || 0); });
+    const cs = await getDocs(collection(db, 'door_checklists'));
+    checklists = []; cs.forEach(function(d) { checklists.push({ id: d.id, ...d.data() }); });
+    checklists.sort(function(a,b) { return (a.order||0)-(b.order||0); });
     if (checklists.length === 0) checklists = getDefaultChecklists();
-    buildAreaSelect();
-    listenToSubmissions();
-  } catch (e) {
-    allDoors = getFallbackDoors();
-    checklists = getDefaultChecklists();
-    buildAreaSelect();
-  }
+    buildAreaSelect(); listenToSubmissions();
+  } catch(e) { allDoors = getFallbackDoors(); checklists = getDefaultChecklists(); buildAreaSelect(); }
   hideLoading();
 }
+function getDefaultChecklists() { return [{id:'ext',name:'สภาพภายนอก',icon:'shield',order:1,items:['บานประตูไม่มีรอยบุบหรือเสียหาย','วงกบประตูและซีลยางสภาพสมบูรณ์','ป้ายทางออกฉุกเฉินชัดเจนและมองเห็นได้','พื้นที่หน้าประตูไม่มีสิ่งกีดขวาง']},{id:'hw',name:'Hardware & กลไก',icon:'tool',order:2,items:['บานพับประตูสภาพดี ไม่หลวม ไม่ขึ้นสนิม','มือจับและกลอนประตูทำงานได้ปกติ','อุปกรณ์ Panic Bar ทำงานได้','Door Closer ปิดประตูอัตโนมัติได้','ประตูเปิด-ปิดได้สะดวก ไม่ติดขัด']},{id:'alarm',name:'Alarm & ระบบสัญญาณ',icon:'bell',order:3,items:['สัญญาณเตือนภัยบริเวณประตูทำงาน','แสงฉุกเฉิน (Emergency Light) ทำงาน','ป้าย Exit ติดไฟสว่างสมบูรณ์']}]; }
+function getFallbackDoors() { return [{code:'EX-A01',name:'Fire Exit Door A-01',zone:'Zone A',type:'Fire Exit Door',location:'อาคาร A ชั้น 1'},{code:'EX-A02',name:'Fire Exit Door A-02',zone:'Zone A',type:'Fire Exit Door',location:'อาคาร A ชั้น 2'},{code:'EX-B01',name:'Fire Exit Door B-01',zone:'Zone B',type:'Emergency Exit',location:'อาคาร B ชั้น 1'}]; }
 
-function getDefaultChecklists() {
-  return [
-    { id: 'ext', name: 'สภาพภายนอก', icon: 'shield', order: 1, items: ['บานประตูไม่มีรอยบุบหรือเสียหาย', 'วงกบประตูและซีลยางสภาพสมบูรณ์', 'ป้ายทางออกฉุกเฉินชัดเจนและมองเห็นได้', 'พื้นที่หน้าประตูไม่มีสิ่งกีดขวาง'] },
-    { id: 'hw', name: 'Hardware & กลไก', icon: 'tool', order: 2, items: ['บานพับประตูสภาพดี ไม่หลวม ไม่ขึ้นสนิม', 'มือจับและกลอนประตูทำงานได้ปกติ', 'อุปกรณ์ Panic Bar ทำงานได้', 'Door Closer ปิดประตูอัตโนมัติได้', 'ประตูเปิด-ปิดได้สะดวก ไม่ติดขัด'] },
-    { id: 'alarm', name: 'Alarm & ระบบสัญญาณ', icon: 'bell', order: 3, items: ['สัญญาณเตือนภัยบริเวณประตูทำงาน', 'แสงฉุกเฉิน (Emergency Light) ทำงาน', 'ป้าย Exit ติดไฟสว่างสมบูรณ์'] }
-  ];
-}
-
-function getFallbackDoors() {
-  return [
-    {code:'EX-A01', name:'Fire Exit Door A-01', zone:'Zone A', type:'Fire Exit Door', location:'อาคาร A ชั้น 1'},
-    {code:'EX-A02', name:'Fire Exit Door A-02', zone:'Zone A', type:'Fire Exit Door', location:'อาคาร A ชั้น 2'},
-    {code:'EX-B01', name:'Fire Exit Door B-01', zone:'Zone B', type:'Emergency Exit', location:'อาคาร B ชั้น 1'}
-  ];
-}
-
-// ── REALTIME SUBMISSIONS ──
 function listenToSubmissions() {
   if (submissionsUnsubscribe) submissionsUnsubscribe();
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const today = new Date(); today.setHours(0,0,0,0);
   submissionsUnsubscribe = onSnapshot(collection(db, 'door_submissions'), function(snap) {
-    const todaySubs = [];
-    snap.forEach(function(d) {
-      const data = d.data();
-      const ts = data.timestamp ? (data.timestamp.toDate ? data.timestamp.toDate() : new Date(data.timestamp)) : null;
-      if (ts && ts >= today) todaySubs.push(data);
-    });
+    const subs = []; snap.forEach(function(d) { const data = d.data(); const ts = data.timestamp ? (data.timestamp.toDate ? data.timestamp.toDate() : new Date(data.timestamp)) : null; if (ts && ts >= today) subs.push(data); });
     zoneStats = {};
-    allDoors.forEach(function(door) {
-      if (!zoneStats[door.zone]) zoneStats[door.zone] = { total: 0, done: 0, pass: 0, fail: 0 };
-      zoneStats[door.zone].total++;
-    });
-    todaySubs.forEach(function(sub) {
-      if (zoneStats[sub.zone]) {
-        zoneStats[sub.zone].done++;
-        if (sub.overall === 'ok') zoneStats[sub.zone].pass++;
-        if (sub.overall === 'fail') zoneStats[sub.zone].fail++;
-      }
-    });
-    updateDashboardStats();
-    if (selArea) { drawDonut(selArea); drawBars(); }
+    allDoors.forEach(function(door) { if (!zoneStats[door.zone]) zoneStats[door.zone] = {total:0,done:0,pass:0,fail:0}; zoneStats[door.zone].total++; });
+    subs.forEach(function(s) { if (zoneStats[s.zone]) { zoneStats[s.zone].done++; if (s.overall==='ok') zoneStats[s.zone].pass++; if (s.overall==='fail') zoneStats[s.zone].fail++; } });
+    updateDashboardStats(); if (selArea) { drawDonut(selArea); drawBars(); }
   });
 }
 
@@ -729,402 +570,214 @@ function buildAreaSelect() {
   const zones = [...new Set(allDoors.map(function(d) { return d.zone; }))].sort();
   const sel = document.getElementById('areaSelect');
   sel.innerHTML = '<option value="">— กรุณาเลือกพื้นที่ —</option>';
-  zones.forEach(function(z) {
-    const opt = document.createElement('option');
-    opt.value = z; opt.textContent = z;
-    sel.appendChild(opt);
-  });
+  zones.forEach(function(z) { const o = document.createElement('option'); o.value = z; o.textContent = z; sel.appendChild(o); });
 }
+function updateDashboardStats() { var t=0,d=0; Object.keys(zoneStats).forEach(function(z){t+=zoneStats[z].total;d+=zoneStats[z].done;}); document.getElementById('sTotal').textContent=t; document.getElementById('sDone').textContent=d; document.getElementById('sPend').textContent=Math.max(0,t-d); }
 
-function updateDashboardStats() {
-  var zones = Object.keys(zoneStats);
-  var total = 0, done = 0;
-  zones.forEach(function(z) { total += zoneStats[z].total; done += zoneStats[z].done; });
-  document.getElementById('sTotal').textContent = total;
-  document.getElementById('sDone').textContent = done;
-  document.getElementById('sPend').textContent = Math.max(0, total - done);
-}
-
-// ── SHIFT CHECK ──
-function getCurrentShift() {
-  var h = new Date().getHours();
-  for (var i = 0; i < shifts.length; i++) {
-    var sh = shifts[i];
-    if (sh.startH < sh.endH) { if (h >= sh.startH && h < sh.endH) return sh; }
-    else { if (h >= sh.startH || h < sh.endH) return sh; }
-  }
-  return null;
-}
+function getCurrentShift() { var h=new Date().getHours(); for(var i=0;i<shifts.length;i++){var s=shifts[i];if(s.startH<s.endH){if(h>=s.startH&&h<s.endH)return s;}else{if(h>=s.startH||h<s.endH)return s;}}return null; }
 
 function checkShiftAndRoute() {
-  var DEMO = true;
-  var sh = getCurrentShift();
-  document.getElementById('dashUserLabel').textContent = currentUser.displayName;
-  document.getElementById('lockUserLabel').textContent = currentUser.displayName;
-  var html = '';
-  shifts.forEach(function(sh2) {
-    var isActive = sh && sh2.id === sh.id;
-    var endH = sh2.endH < 10 ? '0' + sh2.endH : sh2.endH;
-    var startH = sh2.startH < 10 ? '0' + sh2.startH : sh2.startH;
-    html += '<div class="shift-row' + (isActive ? ' active-shift' : '') + '"><div><div class="sh-name">' + sh2.name + '</div><div class="sh-time">' + startH + ':00 – ' + endH + ':00</div></div><span class="sh-badge ' + (isActive ? 'live' : 'off') + '">' + (isActive ? 'Active' : 'Closed') + '</span></div>';
-  });
-  document.getElementById('shiftSchedule').innerHTML = html;
-  if (DEMO || sh) goPage('p-dash'); else goPage('p-lock');
+  var DEMO=true; var sh=getCurrentShift();
+  document.getElementById('dashUserLabel').textContent=currentUser.displayName;
+  document.getElementById('lockUserLabel').textContent=currentUser.displayName;
+  var html=''; shifts.forEach(function(s2){var a=sh&&s2.id===sh.id;var e=s2.endH<10?'0'+s2.endH:s2.endH;var st=s2.startH<10?'0'+s2.startH:s2.startH;html+='<div class="shift-row'+(a?' active-shift':'')+'"><div><div class="sh-name">'+s2.name+'</div><div class="sh-time">'+st+':00 – '+e+':00</div></div><span class="sh-badge '+(a?'live':'off')+'">'+(a?'Active':'Closed')+'</span></div>';});
+  document.getElementById('shiftSchedule').innerHTML=html;
+  if(DEMO||sh) goPage('p-dash'); else goPage('p-lock');
 }
 
-// ── CHARTS ──
-window.onAreaChange = function() {
-  selArea = document.getElementById('areaSelect').value;
-  if (!selArea) { document.getElementById('donutPanel').classList.remove('vis'); document.getElementById('barPanel').classList.remove('vis'); return; }
-  drawDonut(selArea); drawBars();
-  requestAnimationFrame(function() { document.getElementById('donutPanel').classList.add('vis'); document.getElementById('barPanel').classList.add('vis'); });
-};
+window.onAreaChange = function() { selArea=document.getElementById('areaSelect').value; if(!selArea){document.getElementById('donutPanel').classList.remove('vis');document.getElementById('barPanel').classList.remove('vis');return;} drawDonut(selArea);drawBars();requestAnimationFrame(function(){document.getElementById('donutPanel').classList.add('vis');document.getElementById('barPanel').classList.add('vis');}); };
 
-function drawDonut(zoneId) {
-  var s = zoneStats[zoneId] || { total: allDoors.filter(function(d) { return d.zone === zoneId; }).length, done: 0, pass: 0, fail: 0 };
-  var total = s.total || 1;
-  var cx = 55, cy = 55, r = 38, sw = 15;
-  var circ = 2 * Math.PI * r;
-  var pDone = s.done / total;
-  var pPend = (total - s.done) / total;
-  var arcDone = Math.max(0, (pDone - 0.03)) * circ;
-  var arcPend = Math.max(0, (pPend - 0.03)) * circ;
-  var offPend = -(pDone * circ);
-  document.getElementById('donutSvg').innerHTML =
-    '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="' + sw + '"/>' +
-    '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#4ADE80" stroke-width="' + sw + '" stroke-dasharray="' + arcDone + ' ' + circ + '" stroke-linecap="round" transform="rotate(-90 ' + cx + ' ' + cy + ')"/>' +
-    '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#FBBF24" stroke-width="' + sw + '" stroke-dasharray="' + arcPend + ' ' + circ + '" stroke-dashoffset="' + offPend + '" stroke-linecap="round" transform="rotate(-90 ' + cx + ' ' + cy + ')"/>' +
-    '<text x="' + cx + '" y="' + (cy - 3) + '" text-anchor="middle" fill="#FAFAFA" font-size="18" font-weight="900" font-family="Manrope,Arial,sans-serif">' + s.done + '</text>' +
-    '<text x="' + cx + '" y="' + (cy + 14) + '" text-anchor="middle" fill="#737373" font-size="9" font-weight="700" font-family="Manrope,Arial,sans-serif">/' + total + '</text>';
-  document.getElementById('donutLegend').innerHTML =
-    '<div class="leg-item"><div class="leg-dot" style="background:#4ADE80"></div><span class="leg-name">ตรวจแล้ว</span><span class="leg-val">' + s.done + '</span></div>' +
-    '<div class="leg-item"><div class="leg-dot" style="background:#FBBF24"></div><span class="leg-name">ค้างตรวจ</span><span class="leg-val">' + Math.max(0, total - s.done) + '</span></div>' +
-    '<div class="leg-item"><div class="leg-dot" style="background:#EF4444"></div><span class="leg-name">ไม่ผ่าน</span><span class="leg-val">' + (s.fail || 0) + '</span></div>';
-}
+function drawDonut(z) { var s=zoneStats[z]||{total:allDoors.filter(function(d){return d.zone===z;}).length,done:0,pass:0,fail:0};var total=s.total||1;var cx=55,cy=55,r=38,sw=15;var circ=2*Math.PI*r;var arcD=Math.max(0,(s.done/total-0.03))*circ;var arcP=Math.max(0,((total-s.done)/total-0.03))*circ;var offP=-(s.done/total*circ);document.getElementById('donutSvg').innerHTML='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="'+sw+'"/><circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="#4ADE80" stroke-width="'+sw+'" stroke-dasharray="'+arcD+' '+circ+'" stroke-linecap="round" transform="rotate(-90 '+cx+' '+cy+')"/><circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="#FBBF24" stroke-width="'+sw+'" stroke-dasharray="'+arcP+' '+circ+'" stroke-dashoffset="'+offP+'" stroke-linecap="round" transform="rotate(-90 '+cx+' '+cy+')"/><text x="'+cx+'" y="'+(cy-3)+'" text-anchor="middle" fill="#FAFAFA" font-size="18" font-weight="900" font-family="Manrope,Arial,sans-serif">'+s.done+'</text><text x="'+cx+'" y="'+(cy+14)+'" text-anchor="middle" fill="#737373" font-size="9" font-weight="700" font-family="Manrope,Arial,sans-serif">/'+total+'</text>';document.getElementById('donutLegend').innerHTML='<div class="leg-item"><div class="leg-dot" style="background:#4ADE80"></div><span class="leg-name">ตรวจแล้ว</span><span class="leg-val">'+s.done+'</span></div><div class="leg-item"><div class="leg-dot" style="background:#FBBF24"></div><span class="leg-name">ค้างตรวจ</span><span class="leg-val">'+Math.max(0,total-s.done)+'</span></div><div class="leg-item"><div class="leg-dot" style="background:#EF4444"></div><span class="leg-name">ไม่ผ่าน</span><span class="leg-val">'+(s.fail||0)+'</span></div>'; }
 
-function drawBars() {
-  var zones = Object.keys(zoneStats);
-  if (zones.length === 0) zones = [...new Set(allDoors.map(function(d) { return d.zone; }))];
-  var maxT = Math.max.apply(null, zones.map(function(z) { return (zoneStats[z] ? zoneStats[z].total : allDoors.filter(function(d) { return d.zone === z; }).length) || 1; }));
-  document.getElementById('barList').innerHTML = zones.map(function(z) {
-    var s = zoneStats[z] || { total: allDoors.filter(function(d) { return d.zone === z; }).length, done: 0 };
-    var pct = s.total > 0 ? Math.round(s.done / s.total * 100) : 0;
-    var fill = Math.round((s.total / maxT) * 100);
-    var active = z === selArea;
-    var col = active ? '#3AE4C9' : '#2168FD';
-    var op = active ? '1' : '0.5';
-    return '<div class="bar-item" style="opacity:' + op + '"><div class="bar-meta"><span class="bar-name" style="' + (active ? 'color:#FAFAFA;font-weight:700' : '') + '">' + z + '</span><span class="bar-pct" style="color:' + col + '">' + pct + '%</span></div><div class="bar-track"><div class="bar-fill" style="width:' + fill + '%;background:' + col + '"></div></div></div>';
-  }).join('');
-}
+function drawBars() { var zones=Object.keys(zoneStats);if(zones.length===0)zones=[...new Set(allDoors.map(function(d){return d.zone;}))];var maxT=Math.max.apply(null,zones.map(function(z){return(zoneStats[z]?zoneStats[z].total:allDoors.filter(function(d){return d.zone===z;}).length)||1;}));document.getElementById('barList').innerHTML=zones.map(function(z){var s=zoneStats[z]||{total:allDoors.filter(function(d){return d.zone===z;}).length,done:0};var pct=s.total>0?Math.round(s.done/s.total*100):0;var fill=Math.round((s.total/maxT)*100);var act=z===selArea;var col=act?'#3AE4C9':'#2168FD';return'<div class="bar-item" style="opacity:'+(act?'1':'0.5')+'"><div class="bar-meta"><span class="bar-name" style="'+(act?'color:#FAFAFA;font-weight:700':'')+'">'+z+'</span><span class="bar-pct" style="color:'+col+'">'+pct+'%</span></div><div class="bar-track"><div class="bar-fill" style="width:'+fill+'%;background:'+col+'"></div></div></div>';}).join(''); }
 
-// ── GO INSPECT ──
 window.goInspect = function() {
-  if (!selArea) { toast('กรุณาเลือกพื้นที่ก่อน', 'err'); return; }
+  if(!selArea){toast('กรุณาเลือกพื้นที่ก่อน','err');return;}
   resetP3();
-  document.getElementById('p3Title').textContent = 'ตรวจสอบประตู';
-  document.getElementById('p3Sub').textContent = selArea;
-  document.getElementById('ctxArea').textContent = selArea;
+  document.getElementById('p3Title').textContent='ตรวจสอบประตู';
+  document.getElementById('p3Sub').textContent=selArea;
+  document.getElementById('ctxArea').textContent=selArea;
   goPage('p-inspect');
-  const zoneDoors = allDoors.filter(function(d) { return d.zone === selArea; });
-  const grid = document.getElementById('mockDoorGrid');
-  if (grid) {
-    grid.innerHTML = zoneDoors.slice(0, 4).map(function(d) {
-      return '<button class="mock-btn" onclick="mockScan(\'' + d.code + '\',\'' + (d.location || d.zone) + '\',\'' + (d.type || 'Fire Exit Door') + '\')">' + d.code + '<span>' + (d.zone || '') + '</span></button>';
-    }).join('');
-  }
+  const zd=allDoors.filter(function(d){return d.zone===selArea;});
+  const grid=document.getElementById('mockDoorGrid');
+  if(grid) grid.innerHTML=zd.slice(0,4).map(function(d){return'<button class="mock-btn" onclick="mockScan(\''+d.code+'\',\''+(d.location||d.zone)+'\',\''+(d.type||'Fire Exit Door')+'\')">'+d.code+'<span>'+(d.zone||'')+'</span></button>';}).join('');
 };
+window.goBack = function() { stopQR(); stopCam(); goPage('p-dash'); };
 
-window.goBack = function() { stopCam(); closeQR(); goPage('p-dash'); };
-
-// ── QR SCANNER — html5-qrcode ──
+// ── QR SCANNER — jsQR + canvas loop ──
 window.openQR = function() {
   document.getElementById('qrModal').classList.add('open');
-  document.getElementById('qrStatus').textContent = 'กำลังเปิดกล้อง...';
-  document.getElementById('qrStatus').style.opacity = '1';
-
-  // Clean up previous instance
-  if (html5QrScanner) {
-    html5QrScanner.stop().catch(function() {}).finally(function() {
-      html5QrScanner.clear();
-      html5QrScanner = null;
-      startHtml5QrScanner();
-    });
-  } else {
-    startHtml5QrScanner();
-  }
+  setQRStatus('กำลังเปิดกล้อง...', true);
+  startQRStream();
 };
 
-function startHtml5QrScanner() {
-  var readerEl = document.getElementById('qr-reader');
-  readerEl.innerHTML = '';
-
-  html5QrScanner = new Html5Qrcode('qr-reader');
-
-  var config = {
-    fps: 10,
-    qrbox: function(w, h) {
-      var minDim = Math.min(w, h);
-      var size = Math.floor(minDim * 0.65);
-      return { width: size, height: size };
-    },
-    aspectRatio: window.innerHeight / window.innerWidth,
-    supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA]
-  };
-
-  html5QrScanner.start(
-    { facingMode: 'environment' },
-    config,
-    function(decodedText) {
-      // SUCCESS — QR decoded
-      handleQRResult(decodedText);
-    },
-    function() {
-      // Scan in progress — ignore per-frame errors
+function startQRStream() {
+  stopQR();
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    setQRStatus('Browser ไม่รองรับกล้อง', false);
+    toast('Browser ไม่รองรับการสแกน QR', 'err');
+    return;
+  }
+  // iOS Safari requires exact constraints
+  var constraints = {
+    video: {
+      facingMode: { ideal: 'environment' },
+      width: { ideal: 1280, max: 1920 },
+      height: { ideal: 720, max: 1080 }
     }
-  ).then(function() {
-    document.getElementById('qrStatus').textContent = 'พร้อมสแกน';
-    setTimeout(function() {
-      document.getElementById('qrStatus').style.opacity = '0';
-    }, 2000);
-  }).catch(function(err) {
-    document.getElementById('qrStatus').textContent = 'ไม่สามารถเปิดกล้องได้';
-    console.warn('QR camera error:', err);
-    // Show permission hint
-    toast('กรุณาอนุญาตการใช้กล้อง หรือเลือกประตูด้านล่าง', 'err');
-  });
+  };
+  navigator.mediaDevices.getUserMedia(constraints)
+    .then(function(stream) {
+      qrStream = stream;
+      var vid = document.getElementById('qrVideo');
+      vid.srcObject = stream;
+      vid.setAttribute('playsinline', true);
+      vid.setAttribute('webkit-playsinline', true);
+      vid.play().then(function() {
+        setQRStatus('พร้อมสแกน — จ่ออยู่กับ QR Code', true);
+        qrActive = true;
+        requestAnimationFrame(qrScanLoop);
+      }).catch(function(e) {
+        setQRStatus('เปิดกล้องไม่ได้: ' + e.message, false);
+      });
+    })
+    .catch(function(err) {
+      setQRStatus('ไม่ได้รับอนุญาตใช้กล้อง', false);
+      toast('กรุณาอนุญาตการใช้กล้อง หรือเลือกประตูด้านล่าง', 'err');
+    });
+}
+
+function qrScanLoop() {
+  if (!qrActive) return;
+  var vid = document.getElementById('qrVideo');
+  if (vid.readyState === vid.HAVE_ENOUGH_DATA) {
+    var cvs = document.getElementById('qrCanvas');
+    var ctx = cvs.getContext('2d');
+    cvs.width = vid.videoWidth;
+    cvs.height = vid.videoHeight;
+    ctx.drawImage(vid, 0, 0, cvs.width, cvs.height);
+    var imageData = ctx.getImageData(0, 0, cvs.width, cvs.height);
+    // jsQR is loaded globally from CDN script tag
+    if (typeof jsQR !== 'undefined') {
+      var code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'dontInvert' });
+      if (code && code.data) {
+        qrActive = false;
+        // Flash effect
+        var flash = document.getElementById('qrFlash');
+        flash.classList.add('flash');
+        setTimeout(function() { flash.classList.remove('flash'); }, 300);
+        setQRStatus('พบ QR Code!', true);
+        setTimeout(function() { handleQRResult(code.data); }, 300);
+        return;
+      }
+    }
+  }
+  qrAnimFrame = requestAnimationFrame(qrScanLoop);
 }
 
 function handleQRResult(text) {
-  // Stop scanner after successful scan
-  if (html5QrScanner) {
-    html5QrScanner.stop().catch(function() {});
-  }
-
-  // Try to parse as URL with ?door= or ?code= param
-  var code = text;
+  var code = text.trim();
   try {
     var url = new URL(text);
-    code = url.searchParams.get('door') || url.searchParams.get('code') || url.searchParams.get('id') || text;
-  } catch (e) {
-    // Not a URL — use raw text as door code
-    code = text.trim();
-  }
-
-  closeQR();
+    code = url.searchParams.get('door') || url.searchParams.get('code') || url.searchParams.get('id') || text.trim();
+  } catch(e) { /* raw text = door code */ }
+  stopQR();
+  document.getElementById('qrModal').classList.remove('open');
   window.mockScan(code, '', '');
   toast('สแกนสำเร็จ: ' + code, 'ok');
 }
 
-function closeQR() {
-  if (html5QrScanner) {
-    html5QrScanner.stop().catch(function() {}).finally(function() {
-      html5QrScanner.clear();
-      html5QrScanner = null;
-    });
-  }
-  document.getElementById('qrModal').classList.remove('open');
+function stopQR() {
+  qrActive = false;
+  if (qrAnimFrame) { cancelAnimationFrame(qrAnimFrame); qrAnimFrame = null; }
+  if (qrStream) { qrStream.getTracks().forEach(function(t) { t.stop(); }); qrStream = null; }
+  var vid = document.getElementById('qrVideo');
+  if (vid) { vid.srcObject = null; }
 }
+
+function closeQR() { stopQR(); document.getElementById('qrModal').classList.remove('open'); }
 window.closeQR = closeQR;
+
+function setQRStatus(text, active) {
+  document.getElementById('qrStatusTxt').textContent = text;
+  var dot = document.querySelector('.qr-status-dot');
+  if (dot) dot.style.background = active ? 'var(--teal)' : 'var(--red)';
+}
 
 window.mockScan = function(code, loc, type) {
   closeQR();
-  const door = allDoors.find(function(d) { return d.code === code; }) || { code: code, name: 'ประตู ' + code, zone: selArea, type: type || 'Fire Exit Door', location: loc || selArea };
-  document.getElementById('doorName').textContent = door.name || 'ประตู ' + code;
-  document.getElementById('doorMeta').textContent = (door.location || loc || selArea) + ' · ' + (door.type || type || 'Fire Exit Door');
-  document.getElementById('doorTags').innerHTML = ['ประตูฉุกเฉิน', 'Panic Bar', 'Siren', 'Exit Sign'].map(function(t) { return '<span class="door-tag">' + t + '</span>'; }).join('');
+  const door = allDoors.find(function(d){return d.code===code;})||{code:code,name:'ประตู '+code,zone:selArea,type:type||'Fire Exit Door',location:loc||selArea};
+  document.getElementById('doorName').textContent=door.name||'ประตู '+code;
+  document.getElementById('doorMeta').textContent=(door.location||loc||selArea)+' · '+(door.type||type||'Fire Exit Door');
+  document.getElementById('doorTags').innerHTML=['ประตูฉุกเฉิน','Panic Bar','Siren','Exit Sign'].map(function(t){return'<span class="door-tag">'+t+'</span>';}).join('');
   document.getElementById('doorCard').classList.add('show');
-  document.getElementById('doorCard').dataset.doorCode = code;
+  document.getElementById('doorCard').dataset.doorCode=code;
   buildChecklist();
-  document.getElementById('overallWrap').style.display = 'block';
-  if (!loc) toast('พบประตู ' + code, 'ok');
+  document.getElementById('overallWrap').style.display='block';
+  if(!loc) toast('พบประตู '+code,'ok');
 };
 
-// ── BUILD CHECKLIST ──
+// ── CHECKLIST ──
 function buildChecklist() {
-  answers = {}; overall = ''; submitted = false; totalItems = 0;
-  checklists.forEach(function(sec) { if (sec.items) sec.items.forEach(function() { totalItems++; }); });
-  document.getElementById('sbTotal').textContent = totalItems;
-  document.getElementById('sbDone').textContent = '0';
-  document.getElementById('progCnt').textContent = '0 / ' + totalItems;
-  document.getElementById('progFill').style.width = '0%';
-  document.getElementById('sbprogFill').style.width = '0%';
-  document.getElementById('btnSubmit').disabled = false;
+  answers={}; overall=''; submitted=false; totalItems=0;
+  checklists.forEach(function(s){if(s.items)s.items.forEach(function(){totalItems++;});});
+  document.getElementById('sbTotal').textContent=totalItems;
+  document.getElementById('sbDone').textContent='0';
+  document.getElementById('progCnt').textContent='0 / '+totalItems;
+  document.getElementById('progFill').style.width='0%';
+  document.getElementById('sbprogFill').style.width='0%';
+  document.getElementById('btnSubmit').disabled=false;
   document.getElementById('btnEdit').classList.remove('show');
   document.getElementById('resultBanner').classList.remove('show');
-  ['ov-ok', 'ov-cond', 'ov-fail'].forEach(function(id) { document.getElementById(id).classList.remove('sel'); });
-
-  const ICONS = {
-    shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
-    tool: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
-    bell: '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>'
-  };
-
-  var wrap = document.getElementById('clWrap');
-  wrap.innerHTML = checklists.map(function(sec) {
-    var items = sec.items || [];
-    var itemsHtml = items.map(function(q, i) {
-      var key = sec.id + '_' + i;
-      return '<div class="cl-item" id="ci-' + key + '"><div class="cl-item-top"><span class="cl-item-q">' + q + '</span><div class="radio-grp"><button class="rb ok" data-key="' + key + '" onclick="pick(this,\'ok\')">ปกติ</button><button class="rb bad" data-key="' + key + '" onclick="pick(this,\'bad\')">ชำรุด</button></div></div><div class="defect-zone" id="dz-' + key + '"><div class="defect-head"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>กรุณาถ่ายภาพประกอบ</div><div class="photo-row" id="pr-' + key + '"></div><button class="btn-add-photo" onclick="openCam(\'' + key + '\')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>ถ่ายภาพ</button><textarea class="note-area" id="note-' + key + '" placeholder="อธิบายปัญหาที่พบ..." rows="2" oninput="answers[\'' + key + '\'].note=this.value"></textarea></div></div>';
-    }).join('');
-    return '<div class="cl-section" style="margin-bottom:12px"><div class="cl-sec-head"><div class="cl-sec-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + (ICONS[sec.icon] || ICONS.shield) + '</svg></div><span class="cl-sec-name">' + sec.name + '</span><span class="cl-sec-cnt">' + items.length + ' ข้อ</span></div>' + itemsHtml + '</div>';
-  }).join('');
+  ['ov-ok','ov-cond','ov-fail'].forEach(function(id){document.getElementById(id).classList.remove('sel');});
+  const ICONS={shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',tool:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',bell:'<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>'};
+  document.getElementById('clWrap').innerHTML=checklists.map(function(sec){var items=sec.items||[];return'<div class="cl-section" style="margin-bottom:12px"><div class="cl-sec-head"><div class="cl-sec-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+(ICONS[sec.icon]||ICONS.shield)+'</svg></div><span class="cl-sec-name">'+sec.name+'</span><span class="cl-sec-cnt">'+items.length+' ข้อ</span></div>'+items.map(function(q,i){var key=sec.id+'_'+i;return'<div class="cl-item" id="ci-'+key+'"><div class="cl-item-top"><span class="cl-item-q">'+q+'</span><div class="radio-grp"><button class="rb ok" data-key="'+key+'" onclick="pick(this,\'ok\')">ปกติ</button><button class="rb bad" data-key="'+key+'" onclick="pick(this,\'bad\')">ชำรุด</button></div></div><div class="defect-zone" id="dz-'+key+'"><div class="defect-head"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>กรุณาถ่ายภาพประกอบ</div><div class="photo-row" id="pr-'+key+'"></div><button class="btn-add-photo" onclick="openCam(\''+key+'\')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>ถ่ายภาพ</button><textarea class="note-area" id="note-'+key+'" placeholder="อธิบายปัญหาที่พบ..." rows="2" oninput="answers[\''+key+'\'].note=this.value"></textarea></div></div>';}).join('')+'</div>';}).join('');
 }
 
 window.pick = function(btn, val) {
-  if (submitted) return;
-  var key = btn.dataset.key;
-  btn.closest('.radio-grp').querySelectorAll('.rb').forEach(function(b) { b.classList.remove('sel'); });
+  if(submitted)return; var key=btn.dataset.key;
+  btn.closest('.radio-grp').querySelectorAll('.rb').forEach(function(b){b.classList.remove('sel');});
   btn.classList.add('sel');
-  if (!answers[key]) answers[key] = { val: null, note: '', photos: [] };
-  answers[key].val = val;
-  document.getElementById('ci-' + key).classList.add('answered');
-  var dz = document.getElementById('dz-' + key);
-  if (val === 'bad') dz.classList.add('open'); else dz.classList.remove('open');
+  if(!answers[key])answers[key]={val:null,note:'',photos:[]};
+  answers[key].val=val;
+  document.getElementById('ci-'+key).classList.add('answered');
+  document.getElementById('dz-'+key).classList[val==='bad'?'add':'remove']('open');
   updateProg();
 };
-
-function updateProg() {
-  var done = Object.values(answers).filter(function(a) { return a && a.val; }).length;
-  var pct = totalItems > 0 ? Math.round(done / totalItems * 100) : 0;
-  document.getElementById('sbDone').textContent = done;
-  document.getElementById('progCnt').textContent = done + ' / ' + totalItems;
-  document.getElementById('progFill').style.width = pct + '%';
-  document.getElementById('sbprogFill').style.width = pct + '%';
-}
-
-window.setOv = function(val) {
-  overall = val;
-  ['ok', 'cond', 'fail'].forEach(function(v) { document.getElementById('ov-' + v).classList.toggle('sel', v === val); });
-};
+function updateProg() { var done=Object.values(answers).filter(function(a){return a&&a.val;}).length;var pct=totalItems>0?Math.round(done/totalItems*100):0;document.getElementById('sbDone').textContent=done;document.getElementById('progCnt').textContent=done+' / '+totalItems;document.getElementById('progFill').style.width=pct+'%';document.getElementById('sbprogFill').style.width=pct+'%'; }
+window.setOv = function(val) { overall=val;['ok','cond','fail'].forEach(function(v){document.getElementById('ov-'+v).classList.toggle('sel',v===val);}); };
 
 // ── SUBMIT ──
 window.doSubmit = async function() {
-  if (!overall) { toast('กรุณาเลือกผลการตรวจโดยรวมก่อน', 'err'); return; }
-  submitted = true;
-  var btn = document.getElementById('btnSubmit');
-  btn.disabled = true;
-  btn.textContent = 'กำลังบันทึก...';
-  var doorCode = document.getElementById('doorCard').dataset.doorCode || '—';
-  var doorName = document.getElementById('doorName').textContent;
-  var sh = getCurrentShift();
-  var answersSummary = {};
-  Object.keys(answers).forEach(function(k) {
-    answersSummary[k] = { val: answers[k].val, note: answers[k].note || '', hasPhoto: answers[k].photos && answers[k].photos.length > 0 };
-  });
-  var submission = {
-    doorCode: doorCode, doorName: doorName, zone: selArea,
-    inspectorId: currentUser.id, inspectorName: currentUser.displayName,
-    shift: sh ? sh.name : 'ไม่ระบุ', overall: overall,
-    answers: answersSummary, totalItems: totalItems,
-    answeredItems: Object.values(answers).filter(function(a) { return a && a.val; }).length,
-    timestamp: serverTimestamp(), date: new Date().toLocaleDateString('th-TH')
-  };
+  if(!overall){toast('กรุณาเลือกผลการตรวจโดยรวมก่อน','err');return;}
+  submitted=true; var btn=document.getElementById('btnSubmit'); btn.disabled=true; btn.textContent='กำลังบันทึก...';
+  var doorCode=document.getElementById('doorCard').dataset.doorCode||'—';
+  var sh=getCurrentShift();
+  var as={};Object.keys(answers).forEach(function(k){as[k]={val:answers[k].val,note:answers[k].note||'',hasPhoto:answers[k].photos&&answers[k].photos.length>0};});
   try {
-    await addDoc(collection(db, 'door_submissions'), submission);
+    await addDoc(collection(db,'door_submissions'),{doorCode:doorCode,doorName:document.getElementById('doorName').textContent,zone:selArea,inspectorId:currentUser.id,inspectorName:currentUser.displayName,shift:sh?sh.name:'ไม่ระบุ',overall:overall,answers:as,totalItems:totalItems,answeredItems:Object.values(answers).filter(function(a){return a&&a.val;}).length,timestamp:serverTimestamp(),date:new Date().toLocaleDateString('th-TH')});
     document.getElementById('btnEdit').classList.add('show');
     document.getElementById('resultBanner').classList.add('show');
-    btn.textContent = 'ส่งผลการตรวจสอบ';
-    document.querySelectorAll('.rb,.btn-add-photo,.note-area').forEach(function(el) { el.style.pointerEvents = 'none'; el.style.opacity = '0.45'; });
-    toast('บันทึกและส่งข้อมูล Realtime เรียบร้อย', 'ok');
-    document.getElementById('p3Scroll').scrollTo({ top: 0, behavior: 'smooth' });
-  } catch (e) {
-    submitted = false; btn.disabled = false; btn.textContent = 'ส่งผลการตรวจสอบ';
-    toast('บันทึกไม่สำเร็จ: ' + e.message, 'err');
-  }
+    btn.textContent='ส่งผลการตรวจสอบ';
+    document.querySelectorAll('.rb,.btn-add-photo,.note-area').forEach(function(el){el.style.pointerEvents='none';el.style.opacity='0.45';});
+    toast('บันทึกและส่งข้อมูล Realtime เรียบร้อย','ok');
+    document.getElementById('p3Scroll').scrollTo({top:0,behavior:'smooth'});
+  } catch(e) { submitted=false;btn.disabled=false;btn.textContent='ส่งผลการตรวจสอบ';toast('บันทึกไม่สำเร็จ: '+e.message,'err'); }
 };
+window.doEdit = function() { submitted=false;document.getElementById('btnSubmit').disabled=false;document.getElementById('btnSubmit').textContent='ส่งผลการตรวจสอบ';document.getElementById('btnEdit').classList.remove('show');document.getElementById('resultBanner').classList.remove('show');document.querySelectorAll('.rb,.btn-add-photo,.note-area').forEach(function(el){el.style.pointerEvents='';el.style.opacity='';});toast('โหมดแก้ไข — แก้และส่งใหม่ได้เลย','info'); };
+function resetP3() { answers={};overall='';submitted=false;totalItems=0;document.getElementById('clWrap').innerHTML='';document.getElementById('doorCard').classList.remove('show');document.getElementById('overallWrap').style.display='none';document.getElementById('resultBanner').classList.remove('show');document.getElementById('btnEdit').classList.remove('show');document.getElementById('btnSubmit').disabled=false;document.getElementById('btnSubmit').textContent='ส่งผลการตรวจสอบ';document.getElementById('progFill').style.width='0%';document.getElementById('sbprogFill').style.width='0%';document.getElementById('sbDone').textContent='0';document.getElementById('sbTotal').textContent='0';document.getElementById('progCnt').textContent='0 / 0'; }
 
-window.doEdit = function() {
-  submitted = false;
-  document.getElementById('btnSubmit').disabled = false;
-  document.getElementById('btnSubmit').textContent = 'ส่งผลการตรวจสอบ';
-  document.getElementById('btnEdit').classList.remove('show');
-  document.getElementById('resultBanner').classList.remove('show');
-  document.querySelectorAll('.rb,.btn-add-photo,.note-area').forEach(function(el) { el.style.pointerEvents = ''; el.style.opacity = ''; });
-  toast('โหมดแก้ไข — แก้และส่งใหม่ได้เลย', 'info');
-};
-
-function resetP3() {
-  answers = {}; overall = ''; submitted = false; totalItems = 0;
-  document.getElementById('clWrap').innerHTML = '';
-  document.getElementById('doorCard').classList.remove('show');
-  document.getElementById('overallWrap').style.display = 'none';
-  document.getElementById('resultBanner').classList.remove('show');
-  document.getElementById('btnEdit').classList.remove('show');
-  document.getElementById('btnSubmit').disabled = false;
-  document.getElementById('btnSubmit').textContent = 'ส่งผลการตรวจสอบ';
-  document.getElementById('progFill').style.width = '0%';
-  document.getElementById('sbprogFill').style.width = '0%';
-  document.getElementById('sbDone').textContent = '0';
-  document.getElementById('sbTotal').textContent = '0';
-  document.getElementById('progCnt').textContent = '0 / 0';
-}
-
-// ── CAMERA (ถ่ายภาพ defect) ──
-window.openCam = function(key) {
-  camItemKey = key;
-  document.getElementById('camTitle').textContent = 'ถ่ายภาพหลักฐาน';
-  document.getElementById('camModal').classList.add('open');
-  document.getElementById('camInfo').style.opacity = '1';
-  document.getElementById('camInfo').textContent = 'กำลังโหลดกล้อง...';
-  startCamStream(camFacing);
-};
-
-function startCamStream(facing) {
-  stopCam();
-  navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: facing }, width: { ideal: 1920 }, height: { ideal: 1080 } } })
-    .then(function(s) {
-      camStream = s;
-      var v = document.getElementById('camVideo');
-      v.srcObject = s; v.play();
-      v.onloadedmetadata = function() {
-        var info = document.getElementById('camInfo');
-        info.textContent = v.videoWidth + 'x' + v.videoHeight;
-        setTimeout(function() { info.style.opacity = '0'; }, 2000);
-      };
-    })
-    .catch(function() { document.getElementById('camInfo').textContent = 'ไม่สามารถเปิดกล้อง'; });
-}
-
-function stopCam() {
-  if (camStream) { camStream.getTracks().forEach(function(t) { t.stop(); }); camStream = null; }
-}
-
-function closeCam() { stopCam(); document.getElementById('camModal').classList.remove('open'); camItemKey = null; }
+// ── CAMERA ──
+window.openCam = function(key) { camItemKey=key;document.getElementById('camTitle').textContent='ถ่ายภาพหลักฐาน';document.getElementById('camModal').classList.add('open');document.getElementById('camInfo').style.opacity='1';document.getElementById('camInfo').textContent='กำลังโหลดกล้อง...';startCamStream(camFacing); };
+function startCamStream(facing) { stopCam();navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:facing},width:{ideal:1920},height:{ideal:1080}}}).then(function(s){camStream=s;var v=document.getElementById('camVideo');v.srcObject=s;v.play();v.onloadedmetadata=function(){var info=document.getElementById('camInfo');info.textContent=v.videoWidth+'x'+v.videoHeight;setTimeout(function(){info.style.opacity='0';},2000);};}).catch(function(){document.getElementById('camInfo').textContent='ไม่สามารถเปิดกล้อง';}); }
+function stopCam() { if(camStream){camStream.getTracks().forEach(function(t){t.stop();});camStream=null;} }
+function closeCam() { stopCam();document.getElementById('camModal').classList.remove('open');camItemKey=null; }
 window.closeCam = closeCam;
+window.flipCam = function() { camFacing=camFacing==='environment'?'user':'environment';startCamStream(camFacing); };
+window.capturePhoto = function() { var v=document.getElementById('camVideo');if(!v.srcObject||v.readyState<2){toast('กล้องยังไม่พร้อม','err');return;}var cvs=document.getElementById('camCanvas');cvs.width=v.videoWidth||1280;cvs.height=v.videoHeight||720;cvs.getContext('2d').drawImage(v,0,0);var url=cvs.toDataURL('image/jpeg',0.85);addThumb(camItemKey,url);closeCam();toast('บันทึกภาพแล้ว','ok'); };
+function addThumb(key,src) { if(!answers[key])answers[key]={val:'bad',note:'',photos:[]};answers[key].photos.push(src);var row=document.getElementById('pr-'+key);if(!row)return;var id='th-'+key+'-'+Date.now();var div=document.createElement('div');div.className='photo-thumb';div.id=id;div.innerHTML='<img src="'+src+'" alt="ภาพ"><button class="photo-del" onclick="delThumb(\''+id+'\',\''+key+'\')">×</button>';row.appendChild(div); }
+window.delThumb = function(id,key) { var el=document.getElementById(id);if(el)el.remove();if(answers[key]&&answers[key].photos)answers[key].photos=answers[key].photos.slice(0,-1); };
 
-window.flipCam = function() { camFacing = camFacing === 'environment' ? 'user' : 'environment'; startCamStream(camFacing); };
-
-window.capturePhoto = function() {
-  var v = document.getElementById('camVideo');
-  if (!v.srcObject || v.readyState < 2) { toast('กล้องยังไม่พร้อม', 'err'); return; }
-  var cvs = document.getElementById('camCanvas');
-  cvs.width = v.videoWidth || 1280; cvs.height = v.videoHeight || 720;
-  cvs.getContext('2d').drawImage(v, 0, 0);
-  var url = cvs.toDataURL('image/jpeg', 0.85);
-  addThumb(camItemKey, url);
-  closeCam();
-  toast('บันทึกภาพแล้ว', 'ok');
-};
-
-function addThumb(key, src) {
-  if (!answers[key]) answers[key] = { val: 'bad', note: '', photos: [] };
-  answers[key].photos.push(src);
-  var row = document.getElementById('pr-' + key);
-  if (!row) return;
-  var id = 'th-' + key + '-' + Date.now();
-  var div = document.createElement('div');
-  div.className = 'photo-thumb'; div.id = id;
-  div.innerHTML = '<img src="' + src + '" alt="ภาพ"><button class="photo-del" onclick="delThumb(\'' + id + '\',\'' + key + '\')">×</button>';
-  row.appendChild(div);
-}
-
-window.delThumb = function(id, key) {
-  var el = document.getElementById(id);
-  if (el) el.remove();
-  if (answers[key] && answers[key].photos) answers[key].photos = answers[key].photos.slice(0, -1);
-};
-
-// ── START ──
 init();
 </script>
 </body>
