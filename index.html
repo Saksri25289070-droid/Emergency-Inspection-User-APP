@@ -8,6 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Emergency Door Inspector</title>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 <style>
 :root{
   --bg:#000;--bg-card:#131314;--card:#1F1F1F;--card-hi:#1a1a1b;
@@ -211,18 +212,33 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .result-banner{display:none;margin-bottom:10px;padding:13px 15px;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.2);border-radius:11px;font-size:13px;font-weight:700;color:var(--green);text-align:center}
 .result-banner.show{display:block}
 
-/* QR MODAL */
+/* QR MODAL — html5-qrcode */
 .fullModal{display:none;position:fixed;inset:0;z-index:100;background:#000;flex-direction:column}
 .fullModal.open{display:flex}
-.modal-hdr{display:flex;align-items:center;justify-content:space-between;padding:calc(14px + var(--safe-top)) 16px 12px;background:rgba(0,0,0,.9);flex-shrink:0}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;padding:calc(14px + var(--safe-top)) 16px 12px;background:rgba(0,0,0,.95);flex-shrink:0;border-bottom:1px solid var(--border)}
 .modal-title{font-size:15px;font-weight:800}
 .modal-close{height:36px;padding:0 14px;background:rgba(255,255,255,.1);border:1px solid var(--border);border-radius:9px;color:var(--muted);font-size:13px;font-weight:700}
-.qr-vid-wrap{flex:1;position:relative;overflow:hidden}
-#qrVideo{width:100%;height:100%;object-fit:cover;display:block}
-.qr-frame-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
-.qr-frame-box{width:min(220px,60vw);height:min(220px,60vw);border:2px solid var(--teal);border-radius:16px;box-shadow:0 0 0 2000px rgba(0,0,0,.55)}
-.qr-scan-hint{position:absolute;bottom:100px;left:50%;transform:translateX(-50%);font-size:11px;color:rgba(255,255,255,.75);background:rgba(0,0,0,.65);padding:6px 16px;border-radius:20px;white-space:nowrap}
-.mock-bar{position:absolute;bottom:0;left:0;right:0;padding:calc(12px + var(--safe-bottom)) 14px 12px;background:rgba(0,0,0,.88)}
+.qr-reader-wrap{flex:1;position:relative;overflow:hidden;background:#000;display:flex;flex-direction:column}
+#qr-reader{width:100%;flex:1}
+#qr-reader video{width:100%!important;height:100%!important;object-fit:cover!important}
+#qr-reader__scan_region{border:none!important;background:transparent!important}
+#qr-reader__scan_region img{display:none!important}
+#qr-reader__dashboard{display:none!important}
+.qr-overlay{position:absolute;inset:0;pointer-events:none;display:flex;align-items:center;justify-content:center}
+.qr-frame{width:min(220px,60vw);height:min(220px,60vw);position:relative}
+.qr-frame::before{content:'';position:absolute;inset:0;border:2px solid var(--teal);border-radius:16px;box-shadow:0 0 0 2000px rgba(0,0,0,.55)}
+.qr-corner{position:absolute;width:24px;height:24px;border-color:var(--teal);border-style:solid}
+.qr-corner.tl{top:-2px;left:-2px;border-width:3px 0 0 3px;border-radius:4px 0 0 0}
+.qr-corner.tr{top:-2px;right:-2px;border-width:3px 3px 0 0;border-radius:0 4px 0 0}
+.qr-corner.bl{bottom:-2px;left:-2px;border-width:0 0 3px 3px;border-radius:0 0 0 4px}
+.qr-corner.br{bottom:-2px;right:-2px;border-width:0 3px 3px 0;border-radius:0 0 4px 0}
+.qr-scanline{position:absolute;left:4px;right:4px;height:2px;background:linear-gradient(90deg,transparent,var(--teal),transparent);box-shadow:0 0 8px var(--teal);animation:scanmove 2s ease-in-out infinite}
+@keyframes scanmove{0%,100%{top:4px}50%{bottom:4px;top:auto}}
+.qr-hint{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:rgba(255,255,255,.8);background:rgba(0,0,0,.7);padding:6px 16px;border-radius:20px;white-space:nowrap}
+.qr-status{position:absolute;top:16px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:var(--teal);background:rgba(0,0,0,.7);padding:5px 14px;border-radius:20px;white-space:nowrap;transition:opacity .3s}
+
+/* MOCK BAR */
+.mock-bar{flex-shrink:0;padding:12px 14px calc(12px + var(--safe-bottom));background:rgba(0,0,0,.95);border-top:1px solid var(--border)}
 .mock-hint{font-size:10px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
 .mock-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 .mock-btn{padding:12px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:9px;color:var(--fg);font-size:13px;font-weight:700;transition:background .15s;text-align:center;min-height:44px}
@@ -243,7 +259,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .cam-corner.bl{bottom:100px;left:16px;border-width:0 0 2.5px 2.5px}
 .cam-corner.br{bottom:100px;right:16px;border-width:0 2.5px 2.5px 0}
 .cam-scanline{position:absolute;left:5%;right:5%;height:2px;background:linear-gradient(90deg,transparent,var(--teal),transparent);box-shadow:0 0 8px var(--teal);animation:scanmove 2.2s ease-in-out infinite}
-@keyframes scanmove{0%,100%{top:18%}50%{top:78%}}
 .cam-info{position:absolute;bottom:86px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;color:rgba(255,255,255,.65);background:rgba(0,0,0,.6);padding:5px 14px;border-radius:20px;white-space:nowrap;transition:opacity .5s}
 .cam-bar{display:flex;align-items:center;gap:10px;padding:calc(14px + var(--safe-bottom)) 20px 14px;background:rgba(0,0,0,.9);flex-shrink:0}
 .btn-capture{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:17px;background:var(--grad);border:none;border-radius:13px;color:#fff;font-size:15px;font-weight:800;transition:opacity .15s,transform .1s;min-height:44px}
@@ -260,7 +275,7 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .loading-text{font-size:13px;font-weight:700;color:var(--muted)}
 
 /* TOAST */
-.toast{position:fixed;bottom:calc(24px + var(--safe-bottom));left:50%;transform:translateX(-50%) translateY(12px);background:var(--bg-card);border:1px solid var(--border-hi);border-radius:12px;padding:10px 18px;font-size:13px;font-weight:700;color:var(--fg);display:flex;align-items:center;gap:8px;opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);pointer-events:none;z-index:999;white-space:nowrap;max-width:90vw;box-shadow:0 8px 32px rgba(0,0,0,.6)}
+.toast{position:fixed;bottom:calc(24px + var(--safe-bottom));left:50%;transform:translateX(-50%) translateY(12px);background:var(--bg-card);border:1px solid var(--border-hi);border-radius:12px;padding:10px 18px;font-size:13px;font-weight:700;color:var(--fg);display:flex;align-items:center;gap:8px;opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);pointer-events:none;z-index:9999;white-space:nowrap;max-width:90vw;box-shadow:0 8px 32px rgba(0,0,0,.6)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.ok{border-left:3px solid var(--green)}
 .toast.err{border-left:3px solid var(--red)}
@@ -279,7 +294,7 @@ button{cursor:pointer;border:none;background:none;color:inherit}
   <div class="loading-text" id="loadingText">กำลังเชื่อมต่อระบบ...</div>
 </div>
 
-<!-- CAMERA MODAL -->
+<!-- CAMERA MODAL (ถ่ายภาพ defect) -->
 <div class="camModal" id="camModal">
   <div class="cam-hdr">
     <span class="cam-title" id="camTitle">ถ่ายภาพ</span>
@@ -304,20 +319,29 @@ button{cursor:pointer;border:none;background:none;color:inherit}
   <canvas id="camCanvas"></canvas>
 </div>
 
-<!-- QR MODAL -->
+<!-- QR MODAL — html5-qrcode -->
 <div class="fullModal" id="qrModal">
   <div class="modal-hdr">
     <span class="modal-title">สแกน QR Code ประตู</span>
     <button class="modal-close" onclick="closeQR()">ยกเลิก</button>
   </div>
-  <div class="qr-vid-wrap">
-    <video id="qrVideo" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover"></video>
-    <div class="qr-frame-overlay"><div class="qr-frame-box"></div></div>
-    <div class="qr-scan-hint">จัดกล้องให้ QR Code อยู่ในกรอบ</div>
-    <div class="mock-bar">
-      <div class="mock-hint">เลือกประตูด้วยตนเอง (Demo)</div>
-      <div class="mock-grid" id="mockDoorGrid"></div>
+  <div class="qr-reader-wrap">
+    <div id="qr-reader"></div>
+    <div class="qr-overlay">
+      <div class="qr-frame">
+        <div class="qr-corner tl"></div>
+        <div class="qr-corner tr"></div>
+        <div class="qr-corner bl"></div>
+        <div class="qr-corner br"></div>
+        <div class="qr-scanline"></div>
+      </div>
     </div>
+    <div class="qr-hint">จัดกล้องให้ QR Code อยู่ในกรอบ</div>
+    <div class="qr-status" id="qrStatus">กำลังเปิดกล้อง...</div>
+  </div>
+  <div class="mock-bar">
+    <div class="mock-hint">เลือกประตูด้วยตนเอง</div>
+    <div class="mock-grid" id="mockDoorGrid"></div>
   </div>
 </div>
 
@@ -493,12 +517,10 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 
 <div class="toast" id="toast"></div>
 
-<!-- FIREBASE SDK -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getFirestore, collection, doc, getDoc, getDocs, addDoc, onSnapshot, query, where, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-// ── FIREBASE CONFIG ──
 const firebaseConfig = {
   apiKey: "AIzaSyAoOTx0rrzqZ-V2t9QE6FhQQl5dcL81GZc",
   authDomain: "smart-logistics-system-v1.firebaseapp.com",
@@ -518,12 +540,13 @@ let allDoors = [];
 let checklists = [];
 let shifts = [];
 let selArea = '';
-let camStream = null, qrStream = null, camFacing = 'environment';
+let camStream = null, camFacing = 'environment';
 let camItemKey = null;
 let answers = {}, overall = '', submitted = false;
 let totalItems = 0;
 let submissionsUnsubscribe = null;
 let zoneStats = {};
+let html5QrScanner = null;
 
 // ── HELPERS ──
 let toastTimer;
@@ -550,32 +573,26 @@ function goPage(id) {
   if (id === 'p-inspect') document.getElementById('p3Scroll').scrollTop = 0;
 }
 
-// ── INIT: CONNECT FIREBASE ──
+// ── INIT ──
 async function init() {
   try {
-    // Test connection by reading settings
     const settingsDoc = await getDoc(doc(db, 'door_settings', 'config'));
     document.getElementById('connStatus').className = 'conn-status ok';
     document.getElementById('connStatus').innerHTML = '<div class="live-dot"></div>เชื่อมต่อระบบสำเร็จ';
     document.getElementById('loginBtn').disabled = false;
-
-    // Load shifts from Firestore (fallback to defaults)
     if (settingsDoc.exists()) {
       const data = settingsDoc.data();
       shifts = data.shifts || getDefaultShifts();
-      // Admin contact
       if (data.adminContact) {
         document.getElementById('adminName').textContent = data.adminContact.name || 'Admin';
         document.getElementById('adminRole').textContent = data.adminContact.role || 'Security Supervisor';
         document.getElementById('adminContact').textContent = data.adminContact.contact || '—';
-        const av = (data.adminContact.name || 'A').charAt(0).toUpperCase();
-        document.getElementById('adminAvatar').textContent = av;
+        document.getElementById('adminAvatar').textContent = (data.adminContact.name || 'A').charAt(0).toUpperCase();
       }
     } else {
       shifts = getDefaultShifts();
     }
   } catch (e) {
-    // Fallback: allow login with local data if Firebase unreachable
     document.getElementById('connStatus').className = 'conn-status err';
     document.getElementById('connStatus').innerHTML = 'ไม่สามารถเชื่อมต่อได้ — ใช้ข้อมูล Local';
     document.getElementById('loginBtn').disabled = false;
@@ -602,64 +619,34 @@ window.doLogin = async function() {
   const errEl = document.getElementById('errMsg');
   errEl.textContent = '';
   if (!username || !pass) { errEl.textContent = 'กรุณากรอก Username และรหัสผ่าน'; return; }
-
   const btn = document.getElementById('loginBtn');
   btn.disabled = true;
   btn.textContent = 'กำลังตรวจสอบ...';
   showLoading('กำลังตรวจสอบข้อมูล...');
-
   try {
-    // Query Firestore for user
     const usersRef = collection(db, 'door_users');
     const q = query(usersRef, where('username', '==', username));
     const snap = await getDocs(q);
-
-    if (snap.empty) {
-      errEl.textContent = 'ไม่พบ Username นี้ในระบบ';
-      btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ';
-      hideLoading(); return;
-    }
-
+    if (snap.empty) { errEl.textContent = 'ไม่พบ Username นี้ในระบบ'; btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ'; hideLoading(); return; }
     const userDoc = snap.docs[0];
     const userData = userDoc.data();
-
-    if (!userData.active) {
-      errEl.textContent = 'บัญชีนี้ถูกระงับการใช้งาน';
-      btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ';
-      hideLoading(); return;
-    }
-
-    if (userData.password !== pass) {
-      errEl.textContent = 'รหัสผ่านไม่ถูกต้อง';
-      btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ';
-      hideLoading(); return;
-    }
-
+    if (!userData.active) { errEl.textContent = 'บัญชีนี้ถูกระงับการใช้งาน'; btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ'; hideLoading(); return; }
+    if (userData.password !== pass) { errEl.textContent = 'รหัสผ่านไม่ถูกต้อง'; btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ'; hideLoading(); return; }
     currentUser = { id: userDoc.id, ...userData };
     btn.textContent = 'เข้าสู่ระบบ';
-
-    // Load data then route
     await loadAllData();
     checkShiftAndRoute();
     toast('ยินดีต้อนรับ ' + currentUser.displayName, 'ok');
-
   } catch (e) {
-    // Fallback to demo login if Firebase fails
-    if (username === 'inspector1' && pass === 'pass1234') {
-      currentUser = { id: 'demo1', username: 'inspector1', displayName: 'Inspector (Demo)', zones: [], role: 'inspector', active: true };
-      await loadAllData();
-      checkShiftAndRoute();
-    } else {
-      errEl.textContent = 'เข้าสู่ระบบไม่สำเร็จ: ' + e.message;
-    }
+    errEl.textContent = 'เข้าสู่ระบบไม่สำเร็จ: ' + e.message;
   }
-
   btn.disabled = false;
   hideLoading();
 };
 
 window.doLogout = function() {
   if (submissionsUnsubscribe) { submissionsUnsubscribe(); submissionsUnsubscribe = null; }
+  closeQR();
   currentUser = null; selArea = '';
   document.getElementById('usernameIn').value = '';
   document.getElementById('passIn').value = '';
@@ -667,42 +654,25 @@ window.doLogout = function() {
   goPage('p-login');
 };
 
-// ── LOAD ALL DATA FROM FIRESTORE ──
+// ── LOAD DATA ──
 async function loadAllData() {
   showLoading('กำลังโหลดข้อมูลประตู...');
   try {
-    // Load doors — filter by user's zones if specified
-    const doorsRef = collection(db, 'door_doors');
-    const doorsSnap = await getDocs(doorsRef);
+    const doorsSnap = await getDocs(collection(db, 'door_doors'));
     allDoors = [];
     doorsSnap.forEach(function(d) { allDoors.push({ id: d.id, ...d.data() }); });
-
-    // If user has assigned zones, filter
     if (currentUser.zones && currentUser.zones.length > 0) {
       allDoors = allDoors.filter(function(d) { return currentUser.zones.includes(d.zone); });
     }
-
-    // Load checklists
     showLoading('กำลังโหลด Checklist...');
-    const clRef = collection(db, 'door_checklists');
-    const clSnap = await getDocs(clRef);
+    const clSnap = await getDocs(collection(db, 'door_checklists'));
     checklists = [];
     clSnap.forEach(function(d) { checklists.push({ id: d.id, ...d.data() }); });
     checklists.sort(function(a, b) { return (a.order || 0) - (b.order || 0); });
-
-    // Fallback checklists if none in Firestore
-    if (checklists.length === 0) {
-      checklists = getDefaultChecklists();
-    }
-
-    // Load zones dynamically from doors
+    if (checklists.length === 0) checklists = getDefaultChecklists();
     buildAreaSelect();
-
-    // Subscribe to submissions realtime
     listenToSubmissions();
-
   } catch (e) {
-    // Use fallback data
     allDoors = getFallbackDoors();
     checklists = getDefaultChecklists();
     buildAreaSelect();
@@ -720,37 +690,29 @@ function getDefaultChecklists() {
 
 function getFallbackDoors() {
   return [
-    {code:'EX-A01', name:'Fire Exit Door A-01', zone:'Zone A', type:'Fire Exit Door', location:'อาคาร A ชั้น 1', status:'ปกติ'},
-    {code:'EX-A02', name:'Fire Exit Door A-02', zone:'Zone A', type:'Fire Exit Door', location:'อาคาร A ชั้น 2', status:'ปกติ'},
-    {code:'EX-B01', name:'Fire Exit Door B-01', zone:'Zone B', type:'Emergency Exit', location:'อาคาร B ชั้น 1', status:'ปกติ'},
+    {code:'EX-A01', name:'Fire Exit Door A-01', zone:'Zone A', type:'Fire Exit Door', location:'อาคาร A ชั้น 1'},
+    {code:'EX-A02', name:'Fire Exit Door A-02', zone:'Zone A', type:'Fire Exit Door', location:'อาคาร A ชั้น 2'},
+    {code:'EX-B01', name:'Fire Exit Door B-01', zone:'Zone B', type:'Emergency Exit', location:'อาคาร B ชั้น 1'}
   ];
 }
 
-// ── REALTIME SUBMISSIONS LISTENER ──
+// ── REALTIME SUBMISSIONS ──
 function listenToSubmissions() {
   if (submissionsUnsubscribe) submissionsUnsubscribe();
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-
-  const subRef = collection(db, 'door_submissions');
-  submissionsUnsubscribe = onSnapshot(subRef, function(snap) {
-    // Build zone stats from today's submissions
+  submissionsUnsubscribe = onSnapshot(collection(db, 'door_submissions'), function(snap) {
     const todaySubs = [];
     snap.forEach(function(d) {
       const data = d.data();
-      const ts = data.timestamp ? data.timestamp.toDate ? data.timestamp.toDate() : new Date(data.timestamp) : null;
+      const ts = data.timestamp ? (data.timestamp.toDate ? data.timestamp.toDate() : new Date(data.timestamp)) : null;
       if (ts && ts >= today) todaySubs.push(data);
     });
-
-    // Build stats per zone
     zoneStats = {};
     allDoors.forEach(function(door) {
-      if (!zoneStats[door.zone]) {
-        zoneStats[door.zone] = { total: 0, done: 0, pass: 0, fail: 0 };
-      }
+      if (!zoneStats[door.zone]) zoneStats[door.zone] = { total: 0, done: 0, pass: 0, fail: 0 };
       zoneStats[door.zone].total++;
     });
-
     todaySubs.forEach(function(sub) {
       if (zoneStats[sub.zone]) {
         zoneStats[sub.zone].done++;
@@ -758,19 +720,11 @@ function listenToSubmissions() {
         if (sub.overall === 'fail') zoneStats[sub.zone].fail++;
       }
     });
-
-    // Update dashboard stats
     updateDashboardStats();
-    if (selArea) {
-      drawDonut(selArea);
-      drawBars();
-    }
-  }, function(err) {
-    // Silent fail for realtime — data shows last known
+    if (selArea) { drawDonut(selArea); drawBars(); }
   });
 }
 
-// ── AREA SELECT ──
 function buildAreaSelect() {
   const zones = [...new Set(allDoors.map(function(d) { return d.zone; }))].sort();
   const sel = document.getElementById('areaSelect');
@@ -780,15 +734,6 @@ function buildAreaSelect() {
     opt.value = z; opt.textContent = z;
     sel.appendChild(opt);
   });
-
-  // Build mock door grid for QR modal
-  const grid = document.getElementById('mockDoorGrid');
-  if (grid) {
-    const sample = allDoors.slice(0, 4);
-    grid.innerHTML = sample.map(function(d) {
-      return '<button class="mock-btn" onclick="mockScan(\'' + d.code + '\',\'' + (d.location || d.zone) + '\',\'' + d.type + '\')">' + d.code + '<span>' + (d.zone || '') + '</span></button>';
-    }).join('');
-  }
 }
 
 function updateDashboardStats() {
@@ -805,56 +750,34 @@ function getCurrentShift() {
   var h = new Date().getHours();
   for (var i = 0; i < shifts.length; i++) {
     var sh = shifts[i];
-    if (sh.startH < sh.endH) {
-      if (h >= sh.startH && h < sh.endH) return sh;
-    } else {
-      if (h >= sh.startH || h < sh.endH) return sh;
-    }
+    if (sh.startH < sh.endH) { if (h >= sh.startH && h < sh.endH) return sh; }
+    else { if (h >= sh.startH || h < sh.endH) return sh; }
   }
   return null;
 }
 
 function checkShiftAndRoute() {
-  // DEMO MODE: set to true to always allow
   var DEMO = true;
   var sh = getCurrentShift();
   document.getElementById('dashUserLabel').textContent = currentUser.displayName;
   document.getElementById('lockUserLabel').textContent = currentUser.displayName;
-
-  // Build shift schedule display
   var html = '';
   shifts.forEach(function(sh2) {
     var isActive = sh && sh2.id === sh.id;
     var endH = sh2.endH < 10 ? '0' + sh2.endH : sh2.endH;
     var startH = sh2.startH < 10 ? '0' + sh2.startH : sh2.startH;
-    html += '<div class="shift-row' + (isActive ? ' active-shift' : '') + '">';
-    html += '<div><div class="sh-name">' + sh2.name + '</div><div class="sh-time">' + startH + ':00 – ' + endH + ':00</div></div>';
-    html += '<span class="sh-badge ' + (isActive ? 'live' : 'off') + '">' + (isActive ? 'Active' : 'Closed') + '</span>';
-    html += '</div>';
+    html += '<div class="shift-row' + (isActive ? ' active-shift' : '') + '"><div><div class="sh-name">' + sh2.name + '</div><div class="sh-time">' + startH + ':00 – ' + endH + ':00</div></div><span class="sh-badge ' + (isActive ? 'live' : 'off') + '">' + (isActive ? 'Active' : 'Closed') + '</span></div>';
   });
   document.getElementById('shiftSchedule').innerHTML = html;
-
-  if (DEMO || sh) {
-    goPage('p-dash');
-  } else {
-    goPage('p-lock');
-  }
+  if (DEMO || sh) goPage('p-dash'); else goPage('p-lock');
 }
 
-// ── AREA / CHARTS ──
+// ── CHARTS ──
 window.onAreaChange = function() {
   selArea = document.getElementById('areaSelect').value;
-  if (!selArea) {
-    document.getElementById('donutPanel').classList.remove('vis');
-    document.getElementById('barPanel').classList.remove('vis');
-    return;
-  }
-  drawDonut(selArea);
-  drawBars();
-  requestAnimationFrame(function() {
-    document.getElementById('donutPanel').classList.add('vis');
-    document.getElementById('barPanel').classList.add('vis');
-  });
+  if (!selArea) { document.getElementById('donutPanel').classList.remove('vis'); document.getElementById('barPanel').classList.remove('vis'); return; }
+  drawDonut(selArea); drawBars();
+  requestAnimationFrame(function() { document.getElementById('donutPanel').classList.add('vis'); document.getElementById('barPanel').classList.add('vis'); });
 };
 
 function drawDonut(zoneId) {
@@ -881,12 +804,8 @@ function drawDonut(zoneId) {
 
 function drawBars() {
   var zones = Object.keys(zoneStats);
-  if (zones.length === 0) {
-    zones = [...new Set(allDoors.map(function(d) { return d.zone; }))];
-  }
-  var maxT = Math.max.apply(null, zones.map(function(z) {
-    return (zoneStats[z] ? zoneStats[z].total : allDoors.filter(function(d) { return d.zone === z; }).length) || 1;
-  }));
+  if (zones.length === 0) zones = [...new Set(allDoors.map(function(d) { return d.zone; }))];
+  var maxT = Math.max.apply(null, zones.map(function(z) { return (zoneStats[z] ? zoneStats[z].total : allDoors.filter(function(d) { return d.zone === z; }).length) || 1; }));
   document.getElementById('barList').innerHTML = zones.map(function(z) {
     var s = zoneStats[z] || { total: allDoors.filter(function(d) { return d.zone === z; }).length, done: 0 };
     var pct = s.total > 0 ? Math.round(s.done / s.total * 100) : 0;
@@ -894,10 +813,7 @@ function drawBars() {
     var active = z === selArea;
     var col = active ? '#3AE4C9' : '#2168FD';
     var op = active ? '1' : '0.5';
-    return '<div class="bar-item" style="opacity:' + op + '">' +
-      '<div class="bar-meta"><span class="bar-name" style="' + (active ? 'color:#FAFAFA;font-weight:700' : '') + '">' + z + '</span><span class="bar-pct" style="color:' + col + '">' + pct + '%</span></div>' +
-      '<div class="bar-track"><div class="bar-fill" style="width:' + fill + '%;background:' + col + '"></div></div>' +
-    '</div>';
+    return '<div class="bar-item" style="opacity:' + op + '"><div class="bar-meta"><span class="bar-name" style="' + (active ? 'color:#FAFAFA;font-weight:700' : '') + '">' + z + '</span><span class="bar-pct" style="color:' + col + '">' + pct + '%</span></div><div class="bar-track"><div class="bar-fill" style="width:' + fill + '%;background:' + col + '"></div></div></div>';
   }).join('');
 }
 
@@ -909,7 +825,6 @@ window.goInspect = function() {
   document.getElementById('p3Sub').textContent = selArea;
   document.getElementById('ctxArea').textContent = selArea;
   goPage('p-inspect');
-  // Update mock grid with zone doors
   const zoneDoors = allDoors.filter(function(d) { return d.zone === selArea; });
   const grid = document.getElementById('mockDoorGrid');
   if (grid) {
@@ -921,52 +836,113 @@ window.goInspect = function() {
 
 window.goBack = function() { stopCam(); closeQR(); goPage('p-dash'); };
 
-// ── QR SCAN ──
+// ── QR SCANNER — html5-qrcode ──
 window.openQR = function() {
   document.getElementById('qrModal').classList.add('open');
-  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
-  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-    .then(function(s) { qrStream = s; document.getElementById('qrVideo').srcObject = s; document.getElementById('qrVideo').play(); })
-    .catch(function() {});
+  document.getElementById('qrStatus').textContent = 'กำลังเปิดกล้อง...';
+  document.getElementById('qrStatus').style.opacity = '1';
+
+  // Clean up previous instance
+  if (html5QrScanner) {
+    html5QrScanner.stop().catch(function() {}).finally(function() {
+      html5QrScanner.clear();
+      html5QrScanner = null;
+      startHtml5QrScanner();
+    });
+  } else {
+    startHtml5QrScanner();
+  }
 };
 
+function startHtml5QrScanner() {
+  var readerEl = document.getElementById('qr-reader');
+  readerEl.innerHTML = '';
+
+  html5QrScanner = new Html5Qrcode('qr-reader');
+
+  var config = {
+    fps: 10,
+    qrbox: function(w, h) {
+      var minDim = Math.min(w, h);
+      var size = Math.floor(minDim * 0.65);
+      return { width: size, height: size };
+    },
+    aspectRatio: window.innerHeight / window.innerWidth,
+    supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA]
+  };
+
+  html5QrScanner.start(
+    { facingMode: 'environment' },
+    config,
+    function(decodedText) {
+      // SUCCESS — QR decoded
+      handleQRResult(decodedText);
+    },
+    function() {
+      // Scan in progress — ignore per-frame errors
+    }
+  ).then(function() {
+    document.getElementById('qrStatus').textContent = 'พร้อมสแกน';
+    setTimeout(function() {
+      document.getElementById('qrStatus').style.opacity = '0';
+    }, 2000);
+  }).catch(function(err) {
+    document.getElementById('qrStatus').textContent = 'ไม่สามารถเปิดกล้องได้';
+    console.warn('QR camera error:', err);
+    // Show permission hint
+    toast('กรุณาอนุญาตการใช้กล้อง หรือเลือกประตูด้านล่าง', 'err');
+  });
+}
+
+function handleQRResult(text) {
+  // Stop scanner after successful scan
+  if (html5QrScanner) {
+    html5QrScanner.stop().catch(function() {});
+  }
+
+  // Try to parse as URL with ?door= or ?code= param
+  var code = text;
+  try {
+    var url = new URL(text);
+    code = url.searchParams.get('door') || url.searchParams.get('code') || url.searchParams.get('id') || text;
+  } catch (e) {
+    // Not a URL — use raw text as door code
+    code = text.trim();
+  }
+
+  closeQR();
+  window.mockScan(code, '', '');
+  toast('สแกนสำเร็จ: ' + code, 'ok');
+}
+
 function closeQR() {
-  if (qrStream) { qrStream.getTracks().forEach(function(t) { t.stop(); }); qrStream = null; }
+  if (html5QrScanner) {
+    html5QrScanner.stop().catch(function() {}).finally(function() {
+      html5QrScanner.clear();
+      html5QrScanner = null;
+    });
+  }
   document.getElementById('qrModal').classList.remove('open');
 }
 window.closeQR = closeQR;
 
 window.mockScan = function(code, loc, type) {
   closeQR();
-  const door = allDoors.find(function(d) { return d.code === code; }) || { code: code, name: 'ประตู ' + code, zone: selArea, type: type, location: loc };
+  const door = allDoors.find(function(d) { return d.code === code; }) || { code: code, name: 'ประตู ' + code, zone: selArea, type: type || 'Fire Exit Door', location: loc || selArea };
   document.getElementById('doorName').textContent = door.name || 'ประตู ' + code;
-  document.getElementById('doorMeta').textContent = loc + ' · ' + type;
+  document.getElementById('doorMeta').textContent = (door.location || loc || selArea) + ' · ' + (door.type || type || 'Fire Exit Door');
   document.getElementById('doorTags').innerHTML = ['ประตูฉุกเฉิน', 'Panic Bar', 'Siren', 'Exit Sign'].map(function(t) { return '<span class="door-tag">' + t + '</span>'; }).join('');
   document.getElementById('doorCard').classList.add('show');
   document.getElementById('doorCard').dataset.doorCode = code;
   buildChecklist();
   document.getElementById('overallWrap').style.display = 'block';
-  toast('พบประตู ' + code, 'ok');
+  if (!loc) toast('พบประตู ' + code, 'ok');
 };
 
-// Also handle QR URL scan: parse ?door=CODE from URL
-function handleQRUrl(url) {
-  try {
-    var parsed = new URL(url);
-    var code = parsed.searchParams.get('door') || parsed.searchParams.get('id') || parsed.searchParams.get('code');
-    if (code) {
-      window.mockScan(code, '', 'Fire Exit Door');
-    }
-  } catch (e) {}
-}
-
-// ── BUILD CHECKLIST (from Firestore data) ──
+// ── BUILD CHECKLIST ──
 function buildChecklist() {
-  answers = {}; overall = ''; submitted = false;
-  totalItems = 0;
-  checklists.forEach(function(sec) {
-    if (sec.items) sec.items.forEach(function() { totalItems++; });
-  });
+  answers = {}; overall = ''; submitted = false; totalItems = 0;
+  checklists.forEach(function(sec) { if (sec.items) sec.items.forEach(function() { totalItems++; }); });
   document.getElementById('sbTotal').textContent = totalItems;
   document.getElementById('sbDone').textContent = '0';
   document.getElementById('progCnt').textContent = '0 / ' + totalItems;
@@ -988,40 +964,12 @@ function buildChecklist() {
     var items = sec.items || [];
     var itemsHtml = items.map(function(q, i) {
       var key = sec.id + '_' + i;
-      return '<div class="cl-item" id="ci-' + key + '">' +
-        '<div class="cl-item-top">' +
-          '<span class="cl-item-q">' + q + '</span>' +
-          '<div class="radio-grp">' +
-            '<button class="rb ok" data-key="' + key + '" onclick="pick(this,\'ok\')">ปกติ</button>' +
-            '<button class="rb bad" data-key="' + key + '" onclick="pick(this,\'bad\')">ชำรุด</button>' +
-          '</div>' +
-        '</div>' +
-        '<div class="defect-zone" id="dz-' + key + '">' +
-          '<div class="defect-head">' +
-            '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>' +
-            'กรุณาถ่ายภาพประกอบ' +
-          '</div>' +
-          '<div class="photo-row" id="pr-' + key + '"></div>' +
-          '<button class="btn-add-photo" onclick="openCam(\'' + key + '\')">' +
-            '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>' +
-            'ถ่ายภาพ' +
-          '</button>' +
-          '<textarea class="note-area" id="note-' + key + '" placeholder="อธิบายปัญหาที่พบ..." rows="2" oninput="answers[\'' + key + '\'].note=this.value"></textarea>' +
-        '</div>' +
-      '</div>';
+      return '<div class="cl-item" id="ci-' + key + '"><div class="cl-item-top"><span class="cl-item-q">' + q + '</span><div class="radio-grp"><button class="rb ok" data-key="' + key + '" onclick="pick(this,\'ok\')">ปกติ</button><button class="rb bad" data-key="' + key + '" onclick="pick(this,\'bad\')">ชำรุด</button></div></div><div class="defect-zone" id="dz-' + key + '"><div class="defect-head"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>กรุณาถ่ายภาพประกอบ</div><div class="photo-row" id="pr-' + key + '"></div><button class="btn-add-photo" onclick="openCam(\'' + key + '\')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>ถ่ายภาพ</button><textarea class="note-area" id="note-' + key + '" placeholder="อธิบายปัญหาที่พบ..." rows="2" oninput="answers[\'' + key + '\'].note=this.value"></textarea></div></div>';
     }).join('');
-    return '<div class="cl-section" style="margin-bottom:12px">' +
-      '<div class="cl-sec-head">' +
-        '<div class="cl-sec-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + (ICONS[sec.icon] || ICONS.shield) + '</svg></div>' +
-        '<span class="cl-sec-name">' + sec.name + '</span>' +
-        '<span class="cl-sec-cnt">' + items.length + ' ข้อ</span>' +
-      '</div>' +
-      itemsHtml +
-    '</div>';
+    return '<div class="cl-section" style="margin-bottom:12px"><div class="cl-sec-head"><div class="cl-sec-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + (ICONS[sec.icon] || ICONS.shield) + '</svg></div><span class="cl-sec-name">' + sec.name + '</span><span class="cl-sec-cnt">' + items.length + ' ข้อ</span></div>' + itemsHtml + '</div>';
   }).join('');
 }
 
-// ── PICK ──
 window.pick = function(btn, val) {
   if (submitted) return;
   var key = btn.dataset.key;
@@ -1031,7 +979,7 @@ window.pick = function(btn, val) {
   answers[key].val = val;
   document.getElementById('ci-' + key).classList.add('answered');
   var dz = document.getElementById('dz-' + key);
-  if (val === 'bad') { dz.classList.add('open'); } else { dz.classList.remove('open'); }
+  if (val === 'bad') dz.classList.add('open'); else dz.classList.remove('open');
   updateProg();
 };
 
@@ -1044,62 +992,43 @@ function updateProg() {
   document.getElementById('sbprogFill').style.width = pct + '%';
 }
 
-// ── OVERALL ──
 window.setOv = function(val) {
   overall = val;
-  ['ok', 'cond', 'fail'].forEach(function(v) {
-    document.getElementById('ov-' + v).classList.toggle('sel', v === val);
-  });
+  ['ok', 'cond', 'fail'].forEach(function(v) { document.getElementById('ov-' + v).classList.toggle('sel', v === val); });
 };
 
-// ── SUBMIT → FIRESTORE ──
+// ── SUBMIT ──
 window.doSubmit = async function() {
   if (!overall) { toast('กรุณาเลือกผลการตรวจโดยรวมก่อน', 'err'); return; }
-
   submitted = true;
   var btn = document.getElementById('btnSubmit');
   btn.disabled = true;
   btn.textContent = 'กำลังบันทึก...';
-
   var doorCode = document.getElementById('doorCard').dataset.doorCode || '—';
   var doorName = document.getElementById('doorName').textContent;
   var sh = getCurrentShift();
-
-  // Build answers summary (no photos in Firestore — too large)
   var answersSummary = {};
   Object.keys(answers).forEach(function(k) {
     answersSummary[k] = { val: answers[k].val, note: answers[k].note || '', hasPhoto: answers[k].photos && answers[k].photos.length > 0 };
   });
-
   var submission = {
-    doorCode: doorCode,
-    doorName: doorName,
-    zone: selArea,
-    inspectorId: currentUser.id,
-    inspectorName: currentUser.displayName,
-    shift: sh ? sh.name : 'ไม่ระบุ',
-    overall: overall,
-    answers: answersSummary,
-    totalItems: totalItems,
+    doorCode: doorCode, doorName: doorName, zone: selArea,
+    inspectorId: currentUser.id, inspectorName: currentUser.displayName,
+    shift: sh ? sh.name : 'ไม่ระบุ', overall: overall,
+    answers: answersSummary, totalItems: totalItems,
     answeredItems: Object.values(answers).filter(function(a) { return a && a.val; }).length,
-    timestamp: serverTimestamp(),
-    date: new Date().toLocaleDateString('th-TH')
+    timestamp: serverTimestamp(), date: new Date().toLocaleDateString('th-TH')
   };
-
   try {
     await addDoc(collection(db, 'door_submissions'), submission);
     document.getElementById('btnEdit').classList.add('show');
     document.getElementById('resultBanner').classList.add('show');
     btn.textContent = 'ส่งผลการตรวจสอบ';
-    document.querySelectorAll('.rb,.btn-add-photo,.note-area').forEach(function(el) {
-      el.style.pointerEvents = 'none'; el.style.opacity = '0.45';
-    });
+    document.querySelectorAll('.rb,.btn-add-photo,.note-area').forEach(function(el) { el.style.pointerEvents = 'none'; el.style.opacity = '0.45'; });
     toast('บันทึกและส่งข้อมูล Realtime เรียบร้อย', 'ok');
     document.getElementById('p3Scroll').scrollTo({ top: 0, behavior: 'smooth' });
   } catch (e) {
-    submitted = false;
-    btn.disabled = false;
-    btn.textContent = 'ส่งผลการตรวจสอบ';
+    submitted = false; btn.disabled = false; btn.textContent = 'ส่งผลการตรวจสอบ';
     toast('บันทึกไม่สำเร็จ: ' + e.message, 'err');
   }
 };
@@ -1110,9 +1039,7 @@ window.doEdit = function() {
   document.getElementById('btnSubmit').textContent = 'ส่งผลการตรวจสอบ';
   document.getElementById('btnEdit').classList.remove('show');
   document.getElementById('resultBanner').classList.remove('show');
-  document.querySelectorAll('.rb,.btn-add-photo,.note-area').forEach(function(el) {
-    el.style.pointerEvents = ''; el.style.opacity = '';
-  });
+  document.querySelectorAll('.rb,.btn-add-photo,.note-area').forEach(function(el) { el.style.pointerEvents = ''; el.style.opacity = ''; });
   toast('โหมดแก้ไข — แก้และส่งใหม่ได้เลย', 'info');
 };
 
@@ -1132,10 +1059,10 @@ function resetP3() {
   document.getElementById('progCnt').textContent = '0 / 0';
 }
 
-// ── CAMERA ──
+// ── CAMERA (ถ่ายภาพ defect) ──
 window.openCam = function(key) {
   camItemKey = key;
-  document.getElementById('camTitle').textContent = 'ถ่ายภาพ — ' + key;
+  document.getElementById('camTitle').textContent = 'ถ่ายภาพหลักฐาน';
   document.getElementById('camModal').classList.add('open');
   document.getElementById('camInfo').style.opacity = '1';
   document.getElementById('camInfo').textContent = 'กำลังโหลดกล้อง...';
@@ -1155,33 +1082,23 @@ function startCamStream(facing) {
         setTimeout(function() { info.style.opacity = '0'; }, 2000);
       };
     })
-    .catch(function(err) {
-      document.getElementById('camInfo').textContent = 'ไม่สามารถเปิดกล้อง';
-    });
+    .catch(function() { document.getElementById('camInfo').textContent = 'ไม่สามารถเปิดกล้อง'; });
 }
 
 function stopCam() {
   if (camStream) { camStream.getTracks().forEach(function(t) { t.stop(); }); camStream = null; }
 }
 
-function closeCam() {
-  stopCam();
-  document.getElementById('camModal').classList.remove('open');
-  camItemKey = null;
-}
+function closeCam() { stopCam(); document.getElementById('camModal').classList.remove('open'); camItemKey = null; }
 window.closeCam = closeCam;
 
-window.flipCam = function() {
-  camFacing = camFacing === 'environment' ? 'user' : 'environment';
-  startCamStream(camFacing);
-};
+window.flipCam = function() { camFacing = camFacing === 'environment' ? 'user' : 'environment'; startCamStream(camFacing); };
 
 window.capturePhoto = function() {
   var v = document.getElementById('camVideo');
   if (!v.srcObject || v.readyState < 2) { toast('กล้องยังไม่พร้อม', 'err'); return; }
   var cvs = document.getElementById('camCanvas');
-  cvs.width = v.videoWidth || 1280;
-  cvs.height = v.videoHeight || 720;
+  cvs.width = v.videoWidth || 1280; cvs.height = v.videoHeight || 720;
   cvs.getContext('2d').drawImage(v, 0, 0);
   var url = cvs.toDataURL('image/jpeg', 0.85);
   addThumb(camItemKey, url);
@@ -1204,9 +1121,7 @@ function addThumb(key, src) {
 window.delThumb = function(id, key) {
   var el = document.getElementById(id);
   if (el) el.remove();
-  if (answers[key] && answers[key].photos) {
-    answers[key].photos = answers[key].photos.slice(0, -1);
-  }
+  if (answers[key] && answers[key].photos) answers[key].photos = answers[key].photos.slice(0, -1);
 };
 
 // ── START ──
