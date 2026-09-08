@@ -2,1035 +2,951 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>WD Security — Emergency Door Inspection</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Emergency Door Inspector</title>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <style>
 :root{
-  --bg:#0A0F1A;--card:#111827;--card2:#1F2937;
-  --border:#1F2937;--border-hi:#374151;
-  --fg:#F9FAFB;--muted:#9CA3AF;--dim:#6B7280;
-  --blue:#2266FF;--blue-light:#93C5FD;
-  --teal:#00E5D1;--green:#4ADE80;--red:#EF4444;
-  --orange:#F59E0B;--purple:#7C3AED;
+  --bg:#000;--bg-card:#131314;--card:#1F1F1F;--card-hi:#1a1a1b;
+  --border:#2a2a2a;--border-hi:#3A3A3A;
+  --fg:#FAFAFA;--muted:#AFB5BE;--dim:#737373;
+  --green:#4ADE80;--blue:#2168FD;--blue-light:#93C5FD;
+  --teal:#3AE4C9;--red:#EF4444;--yellow:#FBBF24;
   --grad:linear-gradient(90deg,#2168FD 0%,#1E71FA 22%,#37B1D3 55%,#39D6CB 78%,#3AE4C9 100%);
   --grad-d:linear-gradient(135deg,#2168FD 0%,#37B1D3 50%,#3AE4C9 100%);
-  --shadow:0 4px 24px rgba(0,0,0,.5);
-  --radius:14px;
+  --grad-v:linear-gradient(180deg,#2168FD 0%,#3AE4C9 100%);
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{scroll-behavior:smooth;height:100%}
-body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased;min-height:100%}
-::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:#374151;border-radius:2px}
-input,select,textarea,button{font-family:inherit}
-button{cursor:pointer}
+html,body{height:100%;height:-webkit-fill-available;overflow:hidden}
+body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased}
+input,select,textarea,button{font-family:inherit;font-size:16px;-webkit-appearance:none}
+button{cursor:pointer;border:none;background:none;color:inherit}
 
-/* SPINNER */
-.spin{width:26px;height:26px;border:2.5px solid rgba(255,255,255,.1);border-top-color:#2266FF;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
-@keyframes spin{to{transform:rotate(360deg)}}
+/* PAGES */
+.page{display:none;position:fixed;inset:0;flex-direction:column;background:var(--bg);overflow:hidden}
+.page.active{display:flex}
+.pscroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain}
+.pscroll::-webkit-scrollbar{display:none}
 
 /* LOADING */
-#loadingOverlay{position:fixed;inset:0;background:var(--bg);z-index:9000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
-#loadingOverlay.hide{display:none}
-.load-logo{width:52px;height:52px;border-radius:16px;background:var(--grad-d);display:flex;align-items:center;justify-content:center}
-.load-text{font-size:13px;font-weight:700;color:var(--muted)}
-
-/* LOGIN */
-#loginPage{position:fixed;inset:0;background:linear-gradient(135deg,#060B14 0%,#0D1B35 50%,#091428 100%);display:flex;align-items:center;justify-content:center;padding:20px;z-index:800;overflow-y:auto}
-#loginPage.hide{display:none}
-.login-box{background:rgba(17,24,39,.96);border:1px solid var(--border-hi);border-radius:20px;padding:36px 28px;width:100%;max-width:380px;box-shadow:var(--shadow)}
-.login-logo{width:52px;height:52px;border-radius:14px;background:var(--grad-d);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
-.login-h1{font-size:22px;font-weight:900;text-align:center;letter-spacing:-.5px;margin-bottom:4px}
-.login-sub{font-size:12px;color:var(--muted);text-align:center;margin-bottom:24px;line-height:1.6}
-.lf{margin-bottom:14px}
-.lf label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:6px}
-.lf input{width:100%;padding:12px 14px;border:1.5px solid var(--border-hi);border-radius:10px;font-size:14px;color:var(--fg);background:rgba(255,255,255,.04);outline:none;transition:border-color .2s,box-shadow .2s}
-.lf input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(34,102,255,.15)}
-.btn-login{width:100%;padding:14px;background:var(--grad-d);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:800;margin-top:6px;transition:opacity .15s,transform .1s;letter-spacing:.3px}
-.btn-login:active{opacity:.85;transform:scale(.98)}
-.btn-login:disabled{opacity:.4;cursor:not-allowed}
-.login-err{font-size:11px;color:var(--red);text-align:center;margin-top:8px;min-height:16px;font-weight:600}
-
-/* TOPBAR */
-.topbar{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(10,15,26,.96);border-bottom:1px solid var(--border);backdrop-filter:blur(12px)}
-.topbar-grad{height:3px;background:var(--grad)}
-.topbar-inner{display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:52px}
-.topbar-brand{display:flex;align-items:center;gap:9px}
-.topbar-logo{width:30px;height:30px;border-radius:8px;background:var(--grad-d);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.topbar-title{font-size:14px;font-weight:800;letter-spacing:-.3px}
-.topbar-sub{font-size:9px;font-weight:700;color:var(--dim);letter-spacing:.5px;text-transform:uppercase}
-.topbar-right{display:flex;align-items:center;gap:8px}
-.tb-btn{width:36px;height:36px;border-radius:9px;border:1px solid var(--border-hi);background:rgba(255,255,255,.04);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:all .15s}
-.tb-btn:hover{background:rgba(34,102,255,.1);border-color:rgba(34,102,255,.3);color:var(--blue-light)}
-.tb-avatar{width:32px;height:32px;border-radius:8px;background:var(--grad-d);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff}
-.shift-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:var(--green);background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.18);padding:4px 10px;border-radius:20px}
-.sb-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(74,222,128,.4)}70%{opacity:.7;box-shadow:0 0 0 4px rgba(74,222,128,0)}}
-
-/* MAIN */
-.main{padding-top:55px;padding-bottom:60px;min-height:100vh}
-.container{max-width:640px;margin:0 auto;padding:20px 16px}
-
-/* STEP INDICATOR */
-.steps{display:flex;align-items:center;gap:0;margin-bottom:20px}
-.step{display:flex;align-items:center;gap:7px;flex:1}
-.step-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;transition:all .2s}
-.step-num.done{background:var(--green);color:#000}
-.step-num.active{background:var(--grad-d);color:#fff}
-.step-num.idle{background:rgba(255,255,255,.06);color:var(--dim);border:1.5px solid var(--border-hi)}
-.step-label{font-size:11px;font-weight:700;transition:color .2s}
-.step-label.active{color:var(--fg)}
-.step-label.done{color:var(--green)}
-.step-label.idle{color:var(--dim)}
-.step-line{flex:1;height:2px;background:var(--border-hi);margin:0 8px;border-radius:2px;transition:background .3s}
-.step-line.done{background:var(--green)}
-
-/* CARD */
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:14px;position:relative;overflow:hidden}
-.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
-.card-title{font-size:13px;font-weight:800;color:var(--fg);margin-bottom:14px;display:flex;align-items:center;gap:8px}
-
-/* ZONE SELECT */
-.zone-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
-.zone-btn{background:rgba(255,255,255,.03);border:1.5px solid var(--border-hi);border-radius:12px;padding:14px 12px;text-align:left;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
-.zone-btn:hover{background:rgba(34,102,255,.08);border-color:rgba(34,102,255,.3)}
-.zone-btn.selected{background:rgba(34,102,255,.12);border-color:rgba(34,102,255,.5)}
-.zone-btn::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--grad-v);opacity:0;transition:opacity .2s}
-.zone-btn.selected::before{opacity:1}
-.zone-name{font-size:13px;font-weight:800;color:var(--fg);margin-bottom:3px}
-.zone-count{font-size:11px;color:var(--muted)}
-.zone-progress{margin-top:7px;height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
-.zone-progress-fill{height:100%;background:var(--grad);border-radius:2px;transition:width .4s}
-.zone-done-badge{position:absolute;top:8px;right:8px;width:16px;height:16px;border-radius:50%;background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.3);display:flex;align-items:center;justify-content:center}
-
-/* DOOR SELECT */
-.door-search-row{display:flex;gap:8px;margin-bottom:10px}
-.door-input{flex:1;padding:12px 14px;border:1.5px solid var(--border-hi);border-radius:10px;font-size:14px;font-weight:600;color:var(--fg);background:rgba(255,255,255,.04);outline:none;transition:all .2s}
-.door-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(34,102,255,.1)}
-.btn-scan{padding:12px 16px;background:var(--grad-d);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;gap:6px;flex-shrink:0;transition:opacity .15s,transform .1s;white-space:nowrap}
-.btn-scan:active{opacity:.8;transform:scale(.97)}
-
-/* DOOR LIST */
-.door-list{display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto}
-.door-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;border:1.5px solid var(--border-hi);background:rgba(255,255,255,.02);cursor:pointer;transition:all .15s;position:relative}
-.door-row:hover{background:rgba(34,102,255,.08);border-color:rgba(34,102,255,.3)}
-.door-row.selected{background:rgba(34,102,255,.12);border-color:rgba(34,102,255,.5)}
-.door-row.inspected{cursor:default;opacity:.7}
-.door-row.inspected:hover{background:rgba(255,255,255,.02);border-color:var(--border-hi)}
-.door-row-code{font-size:12px;font-weight:800;color:var(--blue-light);background:rgba(34,102,255,.1);border:1px solid rgba(34,102,255,.2);border-radius:5px;padding:2px 8px;flex-shrink:0;min-width:64px;text-align:center}
-.door-row-info{flex:1;min-width:0}
-.door-row-name{font-size:13px;font-weight:700;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.door-row-meta{font-size:10px;color:var(--dim);margin-top:1px}
-.door-status-badge{flex-shrink:0;font-size:9px;font-weight:800;padding:3px 8px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase}
-.dsb-ok{background:rgba(74,222,128,.1);color:#4ADE80;border:1px solid rgba(74,222,128,.2)}
-.dsb-fail{background:rgba(239,68,68,.1);color:#FCA5A5;border:1px solid rgba(239,68,68,.2)}
-.dsb-cond{background:rgba(245,158,11,.1);color:#FCD34D;border:1px solid rgba(245,158,11,.2)}
-.dsb-none{background:rgba(255,255,255,.04);color:var(--dim);border:1px solid var(--border-hi)}
-
-/* SELECTED DOOR INFO */
-.door-info-card{background:rgba(34,102,255,.05);border:1px solid rgba(34,102,255,.18);border-radius:10px;padding:14px 16px;margin-bottom:14px;display:none}
-.door-info-card.show{display:block}
-.door-code-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(34,102,255,.12);border:1px solid rgba(34,102,255,.25);border-radius:6px;padding:3px 10px;font-size:12px;font-weight:800;color:var(--blue-light);margin-bottom:7px}
-.door-name{font-size:16px;font-weight:800;margin-bottom:4px}
-.door-meta-row{font-size:12px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-
-/* CHECKLIST */
-.cl-section{margin-bottom:18px}
-.cl-sec-title{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue-light);padding:8px 12px;background:rgba(34,102,255,.06);border-radius:8px;border:1px solid rgba(34,102,255,.12);margin-bottom:8px}
-.cl-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;border:1px solid transparent;margin-bottom:4px;transition:all .15s;background:rgba(255,255,255,.02)}
-.cl-item:hover{background:rgba(255,255,255,.04);border-color:var(--border)}
-.cl-item-text{flex:1;font-size:14px;font-weight:500;line-height:1.4}
-.cl-opts{display:flex;gap:6px;flex-shrink:0}
-.cl-opt{padding:6px 12px;border-radius:7px;border:1.5px solid var(--border-hi);background:transparent;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
-.cl-opt.ok{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.35);color:var(--green)}
-.cl-opt.fail{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:#FCA5A5}
-.cl-opt.na{background:rgba(107,114,128,.1);border-color:rgba(107,114,128,.3);color:var(--dim)}
-.remark-wrap{margin-top:6px;display:none}
-.remark-wrap.show{display:block}
-.remark-input{width:100%;padding:10px 12px;border:1.5px solid var(--border-hi);border-radius:9px;background:rgba(255,255,255,.04);font-size:13px;color:var(--fg);outline:none;resize:vertical;min-height:68px;transition:border-color .2s;font-family:'Manrope',sans-serif}
-.remark-input:focus{border-color:var(--blue)}
-
-/* PROGRESS */
-.progress-wrap{margin-bottom:14px}
-.progress-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
-.progress-track{height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
-.progress-fill{height:100%;background:var(--grad);border-radius:3px;transition:width .4s ease}
-.progress-pct{font-size:12px;font-weight:800;color:var(--blue-light)}
-
-/* RESULT CHIPS */
-.result-preview{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
-.res-chip{flex:1;min-width:72px;text-align:center;padding:12px 8px;border-radius:10px;border:1px solid var(--border-hi)}
-.res-num{font-size:22px;font-weight:900;letter-spacing:-1px}
-.res-lbl{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
-
-/* SUBMIT */
-.btn-submit{width:100%;padding:16px;background:var(--grad-d);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:800;letter-spacing:.3px;transition:opacity .15s,transform .1s;display:flex;align-items:center;justify-content:center;gap:10px}
-.btn-submit:disabled{opacity:.35;cursor:not-allowed}
-.btn-submit:not(:disabled):active{opacity:.85;transform:scale(.98)}
-
-/* BACK BUTTON */
-.btn-back{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9px;border:1px solid var(--border-hi);background:rgba(255,255,255,.04);font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;margin-bottom:14px;transition:all .15s}
-.btn-back:hover{background:rgba(255,255,255,.08);color:var(--fg)}
-
-/* SUCCESS */
-#successScreen{display:none;position:fixed;inset:0;z-index:700;background:rgba(10,15,26,.97);align-items:center;justify-content:center;padding:20px;flex-direction:column;gap:20px;text-align:center}
-#successScreen.show{display:flex}
-.success-icon{width:72px;height:72px;border-radius:50%;background:rgba(74,222,128,.12);border:2px solid rgba(74,222,128,.35);display:flex;align-items:center;justify-content:center;animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
-@keyframes popIn{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
-.success-title{font-size:24px;font-weight:900;letter-spacing:-.5px}
-.success-sub{font-size:14px;color:var(--muted);line-height:1.6;max-width:300px}
-.btn-next{padding:14px 32px;background:var(--grad-d);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:800}
-
-/* QR MODAL */
-#qrScannerModal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.92);align-items:center;justify-content:center;padding:16px}
-#qrScannerModal.open{display:flex}
-.qr-modal-box{width:100%;max-width:480px;background:var(--card);border:1px solid var(--border-hi);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
-.qr-modal-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)}
-.qr-modal-hdr h3{font-size:16px;font-weight:800}
-.btn-close-qr{width:32px;height:32px;border-radius:8px;border:1px solid var(--border-hi);background:rgba(239,68,68,.08);color:#FCA5A5;display:flex;align-items:center;justify-content:center;cursor:pointer}
-#qrVideo{width:100%;display:block;background:#000;max-height:320px;object-fit:cover}
-#qrCanvas{display:none;position:absolute}
-.qr-scan-overlay{position:relative}
-.qr-viewfinder{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:190px;height:190px;pointer-events:none}
-.qr-corner{position:absolute;width:26px;height:26px}
-.qr-corner.tl{top:0;left:0;border-top:3px solid var(--teal);border-left:3px solid var(--teal)}
-.qr-corner.tr{top:0;right:0;border-top:3px solid var(--teal);border-right:3px solid var(--teal)}
-.qr-corner.bl{bottom:0;left:0;border-bottom:3px solid var(--teal);border-left:3px solid var(--teal)}
-.qr-corner.br{bottom:0;right:0;border-bottom:3px solid var(--teal);border-right:3px solid var(--teal)}
-.qr-scan-line{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--teal),transparent);animation:scanLine 2s ease-in-out infinite}
-@keyframes scanLine{0%,100%{top:10px;opacity:.8}50%{top:calc(100% - 10px);opacity:1}}
-.qr-status-bar{padding:14px 20px;border-top:1px solid var(--border)}
-.qr-status-text{font-size:13px;font-weight:600;color:var(--muted);text-align:center}
-
-/* ALERT MODAL */
-#alertModal{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:20px}
-#alertModal.open{display:flex}
-.alert-box{background:var(--card);border:1px solid var(--border-hi);border-radius:20px;padding:32px 28px;width:100%;max-width:360px;text-align:center;box-shadow:var(--shadow);animation:popIn .3s cubic-bezier(.34,1.56,.64,1)}
-.alert-icon{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
-.alert-icon.warn{background:rgba(245,158,11,.12);border:2px solid rgba(245,158,11,.3)}
-.alert-icon.err{background:rgba(239,68,68,.12);border:2px solid rgba(239,68,68,.3)}
-.alert-title{font-size:18px;font-weight:900;margin-bottom:8px;letter-spacing:-.3px}
-.alert-msg{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:20px}
-.alert-detail{background:rgba(255,255,255,.04);border:1px solid var(--border-hi);border-radius:10px;padding:12px 14px;margin-bottom:20px;text-align:left;font-size:12px;color:var(--muted);line-height:1.6}
-.btn-alert-ok{width:100%;padding:13px;background:var(--grad-d);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:800;cursor:pointer;transition:opacity .15s}
-.btn-alert-ok:active{opacity:.85}
-.btn-alert-cancel{width:100%;padding:13px;background:rgba(255,255,255,.06);border:1px solid var(--border-hi);border-radius:10px;color:var(--muted);font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;transition:all .15s}
-.btn-alert-cancel:hover{background:rgba(255,255,255,.1);color:var(--fg)}
+.loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;backdrop-filter:blur(6px)}
+.loading-overlay.hide{display:none}
+.spinner{width:38px;height:38px;border:3px solid rgba(255,255,255,.08);border-top-color:var(--teal);border-radius:50%;animation:spin .75s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.load-txt{font-size:13px;font-weight:700;color:var(--muted)}
 
 /* TOAST */
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);z-index:9998;background:#1F2937;color:var(--fg);padding:11px 20px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:var(--shadow);transition:all .3s cubic-bezier(.4,0,.2,1);white-space:nowrap;max-width:320px;text-align:center;opacity:0;pointer-events:none}
-.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-.toast.ok{border-left:4px solid var(--green)}
-.toast.err{border-left:4px solid var(--red)}
-.toast.info{border-left:4px solid var(--blue)}
+.toast{position:fixed;bottom:calc(24px + var(--safe-bottom));left:50%;transform:translateX(-50%) translateY(12px);background:var(--bg-card);border:1px solid var(--border-hi);border-radius:12px;padding:10px 18px;font-size:13px;font-weight:700;color:var(--fg);display:flex;align-items:center;gap:8px;opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);pointer-events:none;z-index:9998;white-space:nowrap;max-width:88vw;box-shadow:0 8px 32px rgba(0,0,0,.7)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{border-left:3px solid var(--green)}
+.toast.err{border-left:3px solid var(--red)}
+.toast.info{border-left:3px solid var(--blue-light)}
 
-/* LOCK */
-#lockScreen{display:none;position:fixed;inset:0;z-index:850;background:linear-gradient(135deg,#060B14,#0D1B35);align-items:center;justify-content:center;padding:20px;flex-direction:column;gap:20px;text-align:center}
-#lockScreen.show{display:flex}
-.lock-icon{width:64px;height:64px;border-radius:50%;background:rgba(245,158,11,.1);border:2px solid rgba(245,158,11,.25);display:flex;align-items:center;justify-content:center}
-.lock-title{font-size:22px;font-weight:900;letter-spacing:-.5px}
-.lock-msg{font-size:14px;color:var(--muted);line-height:1.7;max-width:300px}
-.lock-shifts{display:flex;flex-direction:column;gap:8px;width:100%;max-width:280px}
-.lock-shift-row{background:rgba(255,255,255,.03);border:1px solid var(--border-hi);border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
-.lock-contact{background:rgba(34,102,255,.06);border:1px solid rgba(34,102,255,.15);border-radius:10px;padding:14px 18px;font-size:13px;color:var(--muted);line-height:1.6;max-width:300px}
+/* TOPBAR */
+.topbar{display:flex;align-items:center;gap:10px;padding:calc(12px + var(--safe-top)) 16px 12px;background:var(--bg-card);border-bottom:1px solid var(--border);flex-shrink:0;position:relative}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--grad)}
+.tb-logo{width:32px;height:32px;border-radius:9px;background:var(--grad-d);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tb-info{flex:1;min-width:0}
+.tb-title{font-size:14px;font-weight:800;letter-spacing:-.2px}
+.tb-sub{font-size:10px;color:var(--dim);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-right{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.live-chip{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:var(--green);background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.18);padding:4px 10px;border-radius:20px}
+.ld{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(74,222,128,.4)}70%{opacity:.7;box-shadow:0 0 0 4px rgba(74,222,128,0)}}
+.tb-logout{height:32px;padding:0 12px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.18);border-radius:8px;color:var(--red);font-size:11px;font-weight:700}
+.tb-avatar{width:32px;height:32px;border-radius:8px;background:var(--grad-d);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0}
 
-/* BADGE */
-.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase}
-.bb{background:rgba(34,102,255,.1);color:var(--blue-light);border:1px solid rgba(34,102,255,.2)}
+/* STEP BAR */
+.stepbar{display:flex;align-items:center;padding:12px 16px;background:var(--bg-card);border-bottom:1px solid var(--border);flex-shrink:0;gap:0}
+.step-item{display:flex;align-items:center;gap:6px;flex:1}
+.step-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;transition:all .25s}
+.step-num.idle{background:rgba(255,255,255,.06);color:var(--dim);border:1.5px solid var(--border-hi)}
+.step-num.active{background:var(--grad-d);color:#fff}
+.step-num.done{background:var(--green);color:#000}
+.step-label{font-size:11px;font-weight:700;transition:color .25s}
+.step-label.idle{color:var(--dim)}
+.step-label.active{color:var(--fg)}
+.step-label.done{color:var(--green)}
+.step-line{flex:1;height:2px;background:var(--border-hi);margin:0 6px;border-radius:2px;transition:background .3s}
+.step-line.done{background:var(--green)}
 
-/* EMPTY */
-.empty-state{text-align:center;padding:40px 20px;color:var(--dim)}
+/* LOGIN PAGE */
+#p-login{justify-content:flex-start;overflow-y:auto}
+.login-outer{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(48px + var(--safe-top)) 24px calc(40px + var(--safe-bottom))}
+.login-card{width:100%;max-width:400px}
+.logo-mark{width:60px;height:60px;background:var(--grad);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;box-shadow:0 8px 32px rgba(33,104,253,.4)}
+.login-h1{font-size:clamp(22px,5vw,28px);font-weight:900;text-align:center;letter-spacing:-.5px;margin-bottom:6px}
+.gt{background:var(--grad-d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.login-sub{font-size:13px;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:28px}
+.conn-pill{display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;font-weight:700;margin-bottom:20px;padding:8px 16px;border-radius:9px}
+.conn-pill.ok{background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.18);color:var(--green)}
+.conn-pill.err{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.18);color:var(--red)}
+.conn-pill.loading{background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--dim)}
+.field{margin-bottom:14px}
+.field label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:7px}
+.field input{width:100%;background:var(--bg-card);border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;font-size:16px;color:var(--fg);outline:none;transition:border-color .2s,box-shadow .2s}
+.field input:focus{border-color:rgba(33,104,253,.6);box-shadow:0 0 0 3px rgba(33,104,253,.1)}
+.field input::placeholder{color:#3a3a3a}
+.btn-login{width:100%;padding:16px;background:var(--grad);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:800;margin-top:6px;transition:opacity .15s,transform .1s;min-height:44px}
+.btn-login:active{opacity:.85;transform:scale(.98)}
+.btn-login:disabled{opacity:.35;pointer-events:none}
+.err-msg{font-size:11px;color:var(--red);text-align:center;margin-top:10px;min-height:16px;font-weight:600}
 
-/* SUMMARY STATS */
-.zone-stats{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
-.zone-stat{flex:1;min-width:80px;background:rgba(255,255,255,.03);border:1px solid var(--border-hi);border-radius:10px;padding:10px;text-align:center}
-.zone-stat-num{font-size:20px;font-weight:900;letter-spacing:-1px}
-.zone-stat-lbl{font-size:9px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+/* LOCK PAGE */
+.lock-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;gap:16px}
+.lock-icon{width:72px;height:72px;border-radius:20px;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.18);display:flex;align-items:center;justify-content:center}
+.lock-title{font-size:22px;font-weight:800;letter-spacing:-.5px}
+.lock-sub{font-size:14px;color:var(--muted);line-height:1.6;max-width:300px}
+.shift-sched{display:flex;flex-direction:column;gap:8px;width:100%;max-width:300px}
+.sh-row{display:flex;align-items:center;justify-content:space-between;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px 16px}
+.sh-row.active{background:rgba(74,222,128,.05);border-color:rgba(74,222,128,.2)}
+.sh-name{font-size:13px;font-weight:700}
+.sh-time{font-size:11px;color:var(--dim);margin-top:2px}
+.sh-badge{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:4px}
+.sh-live{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.2);color:var(--green)}
+.sh-off{background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--dim)}
+.admin-box{width:100%;max-width:300px;background:rgba(33,104,253,.06);border:1px solid rgba(33,104,253,.18);border-radius:12px;padding:16px 18px;text-align:left}
+.admin-lbl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+.admin-row{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.admin-av{width:34px;height:34px;border-radius:50%;background:var(--grad-d);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0}
+.admin-name{font-size:13px;font-weight:700}
+.admin-role-t{font-size:11px;color:var(--dim)}
+.admin-ext{font-size:12px;font-weight:700;color:var(--blue-light);margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.05)}
 
-@media(max-width:480px){
-  .cl-item{flex-direction:column;align-items:flex-start;gap:10px}
-  .cl-opts{width:100%}
-  .cl-opt{flex:1;text-align:center}
-  .zone-grid{grid-template-columns:repeat(2,1fr)}
-}
+/* ZONE SELECT */
+.page-pad{padding:16px;display:flex;flex-direction:column;gap:12px}
+.sec-eyebrow{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dim);display:flex;align-items:center;gap:7px;margin-bottom:2px}
+.zone-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.zone-card{background:var(--bg-card);border:1.5px solid var(--border);border-radius:14px;padding:16px 14px;cursor:pointer;transition:all .18s;position:relative;overflow:hidden;text-align:left;min-height:80px}
+.zone-card:active{transform:scale(.97)}
+.zone-card:hover{background:var(--card-hi);border-color:var(--border-hi)}
+.zone-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--grad-v);opacity:0;transition:opacity .2s}
+.zone-card:hover::before{opacity:.8}
+.zone-card.all-done::before{opacity:1}
+.zc-name{font-size:14px;font-weight:800;letter-spacing:-.2px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.zc-count{font-size:11px;color:var(--muted)}
+.zc-bar{margin-top:10px;height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+.zc-fill{height:100%;background:var(--grad);border-radius:2px;transition:width .5s}
+.zc-done-badge{position:absolute;top:10px;right:10px;width:18px;height:18px;border-radius:50%;background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.3);display:flex;align-items:center;justify-content:center}
+
+/* DOOR LIST */
+.hdr-back{width:44px;height:44px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hdr-back:active{background:rgba(255,255,255,.1)}
+.zone-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);flex-shrink:0}
+.zone-stat-cell{background:var(--bg);padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.zs-num{font-size:clamp(18px,5vw,24px);font-weight:900;letter-spacing:-1px;line-height:1}
+.zs-lbl{font-size:9px;color:var(--dim);font-weight:700;letter-spacing:1.2px;text-transform:uppercase}
+.scan-banner{margin:16px 16px 0;background:linear-gradient(135deg,rgba(33,104,253,.1),rgba(58,228,201,.05));border:1px solid rgba(33,104,253,.22);border-radius:13px;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.scan-icon{width:40px;height:40px;border-radius:10px;background:rgba(33,104,253,.15);border:1px solid rgba(33,104,253,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.scan-info{flex:1}
+.scan-title{font-size:13px;font-weight:800;margin-bottom:2px}
+.scan-sub{font-size:11px;color:var(--muted);line-height:1.4}
+.btn-scan-big{flex-shrink:0;padding:10px 16px;background:var(--grad-d);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.btn-scan-big:active{opacity:.85}
+.door-list{display:flex;flex-direction:column;gap:6px;padding:12px 16px}
+.door-row{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:11px;border:1.5px solid var(--border);background:rgba(255,255,255,.02);position:relative;overflow:hidden}
+.door-row.inspected{background:rgba(74,222,128,.03);border-color:rgba(74,222,128,.15)}
+.door-row.locked{opacity:.55;cursor:default}
+.door-row-left{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.dr-code{font-size:11px;font-weight:800;color:var(--blue-light);background:rgba(33,104,253,.1);border:1px solid rgba(33,104,253,.18);border-radius:4px;padding:1px 7px;display:inline-block;margin-bottom:3px;width:fit-content}
+.dr-name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dr-meta{font-size:10px;color:var(--dim);margin-top:1px}
+.dr-status{flex-shrink:0;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:3px 9px;border-radius:20px}
+.drs-ok{background:rgba(74,222,128,.1);color:var(--green);border:1px solid rgba(74,222,128,.2)}
+.drs-fail{background:rgba(239,68,68,.1);color:#FCA5A5;border:1px solid rgba(239,68,68,.2)}
+.drs-cond{background:rgba(251,191,36,.08);color:var(--yellow);border:1px solid rgba(251,191,36,.2)}
+.drs-none{background:rgba(255,255,255,.04);color:var(--dim);border:1px solid var(--border)}
+.lock-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.0)}
+
+/* QR MODAL */
+.qr-modal{display:none;position:fixed;inset:0;z-index:500;background:#000;flex-direction:column}
+.qr-modal.open{display:flex}
+.qr-mhdr{display:flex;align-items:center;justify-content:space-between;padding:calc(14px + var(--safe-top)) 16px 12px;background:rgba(0,0,0,.95);flex-shrink:0;border-bottom:1px solid var(--border)}
+.qr-mtitle{font-size:15px;font-weight:800}
+.qr-mclose{height:36px;padding:0 14px;background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:9px;color:var(--muted);font-size:13px;font-weight:700}
+.qr-vidwrap{flex:1;position:relative;overflow:hidden;background:#000}
+#qrVideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+#qrCanvas{display:none}
+.qr-overlay-ui{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.qr-frame{width:min(240px,65vw);height:min(240px,65vw);position:relative}
+.qr-frame::before{content:'';position:absolute;inset:0;border:2px solid var(--teal);border-radius:14px;box-shadow:0 0 0 2000px rgba(0,0,0,.62)}
+.qr-corner{position:absolute;width:22px;height:22px;border-color:var(--teal);border-style:solid}
+.qr-corner.tl{top:-1px;left:-1px;border-width:3px 0 0 3px;border-radius:4px 0 0 0}
+.qr-corner.tr{top:-1px;right:-1px;border-width:3px 3px 0 0;border-radius:0 4px 0 0}
+.qr-corner.bl{bottom:-1px;left:-1px;border-width:0 0 3px 3px;border-radius:0 0 0 4px}
+.qr-corner.br{bottom:-1px;right:-1px;border-width:0 3px 3px 0;border-radius:0 0 4px 0}
+.qr-scanline{position:absolute;left:6px;right:6px;height:2px;background:linear-gradient(90deg,transparent,var(--teal),transparent);box-shadow:0 0 8px var(--teal);animation:qrscan 2s ease-in-out infinite}
+@keyframes qrscan{0%,100%{top:6px}50%{top:calc(100% - 8px)}}
+.qr-hint-txt{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:rgba(255,255,255,.8);background:rgba(0,0,0,.7);padding:6px 16px;border-radius:20px;white-space:nowrap}
+.qr-status-pill{position:absolute;top:14px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;color:var(--fg);background:rgba(0,0,0,.78);padding:6px 14px;border-radius:20px;white-space:nowrap}
+.qr-sdot{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:pulse 1.5s infinite}
+.qr-flash{position:absolute;inset:0;background:rgba(74,222,128,.22);opacity:0;pointer-events:none;transition:opacity .15s}
+.qr-flash.on{opacity:1}
+
+/* CHECKLIST PAGE */
+.ctx-strip{padding:10px 16px;background:rgba(33,104,253,.06);border-bottom:1px solid rgba(33,104,253,.14);display:flex;align-items:center;gap:6px;flex-shrink:0}
+.ctx-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue-light)}
+.ctx-val{font-size:13px;font-weight:700}
+.prog-bar-wrap{flex-shrink:0;padding:10px 16px;background:var(--bg-card);border-bottom:1px solid var(--border)}
+.prog-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.prog-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim)}
+.prog-cnt{font-size:13px;font-weight:800;color:var(--teal)}
+.prog-track{height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:var(--grad);border-radius:2px;transition:width .35s cubic-bezier(.4,0,.2,1)}
+.door-info-banner{margin:14px 16px 0;background:linear-gradient(135deg,rgba(33,104,253,.08),rgba(58,228,201,.03));border:1px solid rgba(33,104,253,.18);border-radius:12px;padding:14px 16px}
+.dib-code{font-size:11px;font-weight:800;color:var(--blue-light);background:rgba(33,104,253,.12);border:1px solid rgba(33,104,253,.22);border-radius:4px;padding:2px 8px;display:inline-block;margin-bottom:6px}
+.dib-name{font-size:17px;font-weight:800;letter-spacing:-.2px;margin-bottom:4px}
+.dib-meta{font-size:12px;color:var(--muted)}
+.cl-section{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.cl-sec-head{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:9px;background:rgba(33,104,253,.04)}
+.cl-sec-icon{width:28px;height:28px;border-radius:8px;background:rgba(33,104,253,.12);border:1px solid rgba(33,104,253,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cl-sec-name{font-size:13px;font-weight:800;flex:1}
+.cl-sec-cnt{font-size:10px;color:var(--dim)}
+.cl-item{border-bottom:1px solid rgba(255,255,255,.04)}
+.cl-item:last-child{border-bottom:none}
+.cl-item-row{padding:13px 14px;display:flex;align-items:flex-start;gap:10px}
+.cl-item-q{font-size:13px;font-weight:600;color:var(--muted);flex:1;line-height:1.5;padding-top:2px}
+.cl-item.answered .cl-item-q{color:var(--fg)}
+.rb-grp{display:flex;gap:6px;flex-shrink:0}
+.rb{height:34px;padding:0 11px;border-radius:8px;border:1.5px solid var(--border-hi);font-size:11px;font-weight:700;color:var(--dim);background:transparent;transition:all .15s;min-width:50px;display:flex;align-items:center;justify-content:center}
+.rb:active{transform:scale(.92)}
+.rb.ok.sel{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.35);color:var(--green)}
+.rb.fail.sel{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.35);color:var(--red)}
+.rb.na.sel{background:rgba(107,114,128,.12);border-color:rgba(107,114,128,.35);color:var(--muted)}
+.defect-zone{display:none;padding:0 14px 13px}
+.defect-zone.open{display:block}
+.note-area{width:100%;background:rgba(0,0,0,.3);border:1.5px solid rgba(239,68,68,.2);border-radius:9px;padding:11px 13px;color:var(--fg);font-size:16px;resize:none;outline:none;min-height:68px;line-height:1.55;margin-top:8px}
+.note-area:focus{border-color:rgba(239,68,68,.45)}
+.note-area::placeholder{color:#555}
+
+/* SUBMIT AREA */
+.submit-area{flex-shrink:0;padding:14px 16px calc(14px + var(--safe-bottom));background:var(--bg-card);border-top:1px solid var(--border)}
+.submit-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--dim);margin-bottom:7px}
+.submit-meta strong{color:var(--fg)}
+.sbprog-track{height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;margin-bottom:12px}
+.sbprog-fill{height:100%;background:var(--grad);border-radius:2px;transition:width .35s}
+.btn-submit{width:100%;padding:16px;background:var(--grad);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:800;transition:opacity .15s,transform .1s;min-height:44px}
+.btn-submit:active{opacity:.85;transform:scale(.98)}
+.btn-submit:disabled{opacity:.3;pointer-events:none}
+.result-banner{display:none;margin-bottom:10px;padding:12px 14px;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.2);border-radius:11px;font-size:13px;font-weight:700;color:var(--green);text-align:center}
+.result-banner.show{display:block}
+
+/* ALERT MODAL */
+.alert-modal{display:none;position:fixed;inset:0;z-index:9990;background:rgba(0,0,0,.88);align-items:center;justify-content:center;padding:20px}
+.alert-modal.open{display:flex}
+.alert-box{background:var(--bg-card);border:1px solid var(--border-hi);border-radius:20px;padding:28px 24px;width:100%;max-width:340px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.8);animation:popIn .3s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+.alert-icon{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.alert-icon.warn{background:rgba(251,191,36,.1);border:2px solid rgba(251,191,36,.25)}
+.alert-icon.err{background:rgba(239,68,68,.1);border:2px solid rgba(239,68,68,.25)}
+.alert-icon.ok{background:rgba(74,222,128,.1);border:2px solid rgba(74,222,128,.25)}
+.alert-title{font-size:17px;font-weight:900;letter-spacing:-.3px;margin-bottom:8px}
+.alert-msg{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:16px}
+.alert-detail{background:rgba(255,255,255,.04);border:1px solid var(--border-hi);border-radius:10px;padding:11px 13px;margin-bottom:16px;text-align:left;font-size:12px;color:var(--muted);line-height:1.65}
+.btn-alert{width:100%;padding:13px;border:none;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;transition:opacity .15s}
+.btn-alert.primary{background:var(--grad-d);color:#fff}
+.btn-alert.secondary{background:rgba(255,255,255,.06);border:1px solid var(--border-hi);color:var(--muted);margin-top:8px}
+.btn-alert:active{opacity:.85}
 </style>
 </head>
 <body>
 
-<!-- LOADING -->
-<div id="loadingOverlay">
-  <div class="load-logo"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-  <div class="spin"></div>
-  <div class="load-text" id="loadText">กำลังโหลด...</div>
-</div>
-
-<!-- LOGIN -->
-<div id="loginPage">
-  <div class="login-box">
-    <div class="login-logo"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-    <div class="login-h1">WD Security</div>
-    <div class="login-sub">Emergency Door Inspection<br>Western Digital — Security MFM</div>
-    <div class="lf"><label>Username</label><input type="text" id="loginUser" placeholder="username" autocomplete="username"></div>
-    <div class="lf"><label>Password</label><input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password"></div>
-    <div class="login-err" id="loginErr"></div>
-    <button class="btn-login" id="loginBtn" onclick="doLogin()">เข้าสู่ระบบ</button>
-  </div>
-</div>
-
-<!-- TOPBAR -->
-<div class="topbar" id="mainTopbar" style="display:none">
-  <div class="topbar-grad"></div>
-  <div class="topbar-inner">
-    <div class="topbar-brand">
-      <div class="topbar-logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-      <div><div class="topbar-title">Door Inspection</div><div class="topbar-sub" id="topbarUser">Inspector</div></div>
-    </div>
-    <div class="topbar-right">
-      <div class="shift-badge" id="shiftBadge"><div class="sb-dot"></div><span id="shiftBadgeText">--</span></div>
-      <button class="tb-btn" onclick="doLogout()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
-      <div class="tb-avatar" id="tbAvatar">IN</div>
-    </div>
-  </div>
-</div>
-
-<!-- LOCK SCREEN -->
-<div id="lockScreen">
-  <div class="lock-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-  <div class="lock-title">นอกเวลากะ</div>
-  <div class="lock-msg" id="lockMsg">ขณะนี้ไม่อยู่ในเวลากะที่กำหนด</div>
-  <div class="lock-shifts" id="lockShiftList"></div>
-  <div class="lock-contact" id="lockContact" style="display:none"></div>
-</div>
-
-<!-- MAIN -->
-<div class="main" id="mainContent" style="display:none">
-  <div class="container">
-
-    <!-- STEP INDICATOR -->
-    <div class="steps" id="stepBar">
-      <div class="step">
-        <div class="step-num active" id="sn1">1</div>
-        <div class="step-label active" id="sl1">เลือกพื้นที่</div>
-      </div>
-      <div class="step-line" id="stl1"></div>
-      <div class="step">
-        <div class="step-num idle" id="sn2">2</div>
-        <div class="step-label idle" id="sl2">เลือกประตู</div>
-      </div>
-      <div class="step-line" id="stl2"></div>
-      <div class="step">
-        <div class="step-num idle" id="sn3">3</div>
-        <div class="step-label idle" id="sl3">ตรวจสอบ</div>
-      </div>
-    </div>
-
-    <!-- STEP 1: ZONE -->
-    <div id="step1">
-      <div class="card">
-        <div class="card-title">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          เลือกพื้นที่ตรวจสอบ
-        </div>
-        <div class="zone-grid" id="zoneGrid">
-          <div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--dim)"><div class="spin"></div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- STEP 2: DOOR -->
-    <div id="step2" style="display:none">
-      <button class="btn-back" onclick="goToStep(1)">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        กลับเลือกพื้นที่
-      </button>
-      <div class="card">
-        <div class="card-title">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          <span id="zoneTitleLabel">เลือกประตู</span>
-        </div>
-
-        <!-- Zone stats -->
-        <div class="zone-stats" id="zoneStats"></div>
-
-        <!-- Search + Scan -->
-        <div class="door-search-row">
-          <input class="door-input" id="doorSearchInput" placeholder="ค้นหารหัสหรือชื่อประตู..." oninput="filterDoorList()" autocomplete="off" autocorrect="off" spellcheck="false">
-          <button class="btn-scan" onclick="startQRScanner()">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/><rect x="3" y="16" width="5" height="5" rx="1"/><path d="M21 16h-3v3M21 21h-3M16 16v5"/></svg>
-            สแกน QR
-          </button>
-        </div>
-        <div class="door-list" id="doorList"></div>
-      </div>
-    </div>
-
-    <!-- STEP 3: CHECKLIST -->
-    <div id="step3" style="display:none">
-      <button class="btn-back" onclick="goToStep(2)">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        กลับเลือกประตู
-      </button>
-      <div class="door-info-card show" id="doorInfoCard">
-        <div class="door-code-tag" id="doorCodeTag">--</div>
-        <div class="door-name" id="doorNameText">--</div>
-        <div class="door-meta-row">
-          <span class="badge bb" id="doorZoneText">--</span>
-          <span id="doorTypeText" style="font-size:12px;color:var(--muted)">--</span>
-        </div>
-      </div>
-      <div class="card" id="checklistCard">
-        <div class="card-title">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-          แบบฟอร์มตรวจสอบ
-          <span class="badge bb" id="shiftBadge2" style="margin-left:auto">--</span>
-        </div>
-        <div class="progress-wrap">
-          <div class="progress-label">
-            <span style="font-size:12px;font-weight:700;color:var(--muted)">ความคืบหน้า</span>
-            <span class="progress-pct" id="progressPct">0%</span>
-          </div>
-          <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-        </div>
-        <div id="checklistBody"></div>
-        <div style="margin-top:16px">
-          <div style="font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);margin-bottom:7px">หมายเหตุเพิ่มเติม</div>
-          <textarea class="remark-input" id="remarkInput" placeholder="ระบุข้อสังเกตหรือปัญหาที่พบ (ถ้ามี)"></textarea>
-        </div>
-        <div style="margin-top:20px">
-          <div class="result-preview">
-            <div class="res-chip" style="border-color:rgba(74,222,128,.2)"><div class="res-num" id="countOk" style="color:#4ADE80">0</div><div class="res-lbl">ผ่าน</div></div>
-            <div class="res-chip" style="border-color:rgba(239,68,68,.2)"><div class="res-num" id="countFail" style="color:#FCA5A5">0</div><div class="res-lbl">ไม่ผ่าน</div></div>
-            <div class="res-chip" style="border-color:rgba(107,114,128,.2)"><div class="res-num" id="countNa" style="color:var(--dim)">0</div><div class="res-lbl">N/A</div></div>
-            <div class="res-chip" style="border-color:rgba(34,102,255,.2)"><div class="res-num" id="countTotal" style="color:var(--blue-light)">0</div><div class="res-lbl">ทั้งหมด</div></div>
-          </div>
-          <button class="btn-submit" id="submitBtn" onclick="submitInspection()" disabled>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            ส่งผลการตรวจ
-          </button>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- SUCCESS -->
-<div id="successScreen">
-  <div class="success-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#4ADE80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-  <div class="success-title">บันทึกสำเร็จ!</div>
-  <div class="success-sub" id="successMsg">ส่งผลการตรวจเรียบร้อยแล้ว</div>
-  <button class="btn-next" onclick="afterSubmitNext()">ตรวจประตูต่อไป</button>
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="load-txt" id="loadTxt">กำลังเชื่อมต่อระบบ...</div>
 </div>
 
 <!-- QR MODAL -->
-<div id="qrScannerModal">
-  <div class="qr-modal-box">
-    <div class="qr-modal-hdr">
-      <h3>สแกน QR Code</h3>
-      <button class="btn-close-qr" onclick="stopQRScanner()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-    </div>
-    <div class="qr-scan-overlay">
-      <video id="qrVideo" autoplay muted playsinline webkit-playsinline x5-video-player-type="h5" style="width:100%;display:block;background:#000;max-height:320px;object-fit:cover"></video>
-      <canvas id="qrCanvas" style="display:none;position:absolute;top:0;left:0"></canvas>
-      <div class="qr-viewfinder">
+<div class="qr-modal" id="qrModal">
+  <div class="qr-mhdr">
+    <span class="qr-mtitle">สแกน QR Code ประตู</span>
+    <button class="qr-mclose" onclick="closeQR()">ยกเลิก</button>
+  </div>
+  <div class="qr-vidwrap">
+    <video id="qrVideo" autoplay playsinline muted webkit-playsinline x5-video-player-type="h5"></video>
+    <canvas id="qrCanvas"></canvas>
+    <div class="qr-overlay-ui">
+      <div class="qr-frame">
         <div class="qr-corner tl"></div><div class="qr-corner tr"></div>
         <div class="qr-corner bl"></div><div class="qr-corner br"></div>
-        <div class="qr-scan-line"></div>
+        <div class="qr-scanline"></div>
       </div>
     </div>
-    <div class="qr-status-bar"><div class="qr-status-text" id="qrStatusText">กำลังเตรียมกล้อง...</div></div>
+    <div class="qr-status-pill" id="qrStatusPill"><div class="qr-sdot"></div><span id="qrStatusTxt">กำลังเปิดกล้อง...</span></div>
+    <div class="qr-hint-txt">จัดกล้องให้ QR Code อยู่ในกรอบ</div>
+    <div class="qr-flash" id="qrFlash"></div>
   </div>
 </div>
 
 <!-- ALERT MODAL -->
-<div id="alertModal">
+<div class="alert-modal" id="alertModal">
   <div class="alert-box">
     <div class="alert-icon warn" id="alertIcon">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
     </div>
     <div class="alert-title" id="alertTitle">แจ้งเตือน</div>
-    <div class="alert-msg" id="alertMsg">--</div>
+    <div class="alert-msg" id="alertMsg"></div>
     <div class="alert-detail" id="alertDetail" style="display:none"></div>
-    <button class="btn-alert-ok" id="alertOkBtn" onclick="closeAlert()">รับทราบ</button>
-    <button class="btn-alert-cancel" id="alertCancelBtn" style="display:none" onclick="closeAlert()">ยกเลิก</button>
+    <button class="btn-alert primary" onclick="closeAlert()">รับทราบ</button>
+    <button class="btn-alert secondary" id="alertSecBtn" style="display:none" onclick="closeAlert()">ยกเลิก</button>
   </div>
 </div>
 
-<!-- TOAST -->
+<!-- PAGE: LOGIN -->
+<div id="p-login" class="page active">
+  <div class="login-outer">
+    <div class="login-card">
+      <div class="logo-mark"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <div class="login-h1">Emergency Door <span class="gt">Inspector</span></div>
+      <div class="login-sub">ระบบตรวจสอบประตูฉุกเฉิน<br>Western Digital — Security MFM</div>
+      <div class="conn-pill loading" id="connPill">
+        <div class="spinner" style="width:13px;height:13px;border-width:2px"></div>กำลังเชื่อมต่อ...
+      </div>
+      <div class="field"><label>Username</label><input type="text" id="uIn" placeholder="กรอก Username" autocomplete="username" inputmode="text"></div>
+      <div class="field"><label>Password</label><input type="password" id="pIn" placeholder="••••••••" autocomplete="current-password"></div>
+      <div class="err-msg" id="errMsg"></div>
+      <button class="btn-login" id="loginBtn" onclick="doLogin()" disabled>เข้าสู่ระบบ</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: LOCK -->
+<div id="p-lock" class="page">
+  <div class="topbar">
+    <div class="tb-logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+    <div class="tb-info"><div class="tb-title">Emergency Door Inspector</div><div class="tb-sub" id="lockUserLbl">—</div></div>
+    <div class="tb-right"><button class="tb-logout" onclick="doLogout()">ออก</button></div>
+  </div>
+  <div class="lock-body">
+    <div class="lock-icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+    <div class="lock-title">นอกเวลาตรวจสอบ</div>
+    <div class="lock-sub">ฟอร์มเปิดใช้งานได้เฉพาะช่วงเวลากะที่กำหนด</div>
+    <div class="shift-sched" id="shiftSched"></div>
+    <div class="admin-box">
+      <div class="admin-lbl">ติดต่อ Admin</div>
+      <div class="admin-row"><div class="admin-av" id="adminAv">A</div><div><div class="admin-name" id="adminNm">Admin</div><div class="admin-role-t" id="adminRl">Security Supervisor</div></div></div>
+      <div class="admin-ext" id="adminCt">—</div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: ZONE SELECT -->
+<div id="p-zone" class="page">
+  <div class="topbar">
+    <div class="tb-logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+    <div class="tb-info"><div class="tb-title">Door Inspection</div><div class="tb-sub" id="zoneUserLbl">—</div></div>
+    <div class="tb-right">
+      <div class="live-chip"><div class="ld"></div><span id="shiftChipZ">กะ A</span></div>
+      <button class="tb-logout" onclick="doLogout()">ออก</button>
+      <div class="tb-avatar" id="tbAvZ">IN</div>
+    </div>
+  </div>
+  <div class="stepbar" id="stepbarZ"></div>
+  <div class="pscroll">
+    <div class="page-pad">
+      <div class="sec-eyebrow">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#737373" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        เลือกพื้นที่ตรวจสอบ
+      </div>
+      <div class="zone-grid" id="zoneGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: DOOR LIST -->
+<div id="p-doors" class="page">
+  <div class="topbar">
+    <button class="hdr-back" onclick="goPage('p-zone')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FAFAFA" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="tb-info"><div class="tb-title" id="doorPageTitle">ประตูในโซน</div><div class="tb-sub" id="doorPageSub">—</div></div>
+    <div class="tb-right">
+      <div class="live-chip"><div class="ld"></div><span id="shiftChipD">กะ A</span></div>
+      <div class="tb-avatar" id="tbAvD">IN</div>
+    </div>
+  </div>
+  <div class="stepbar" id="stepbarD"></div>
+  <div class="zone-stat-row" id="zoneStatRow"></div>
+  <div class="scan-banner">
+    <div class="scan-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/><rect x="3" y="16" width="5" height="5" rx="1"/><path d="M21 16h-3v3M21 21h-3M16 16v5"/></svg></div>
+    <div class="scan-info"><div class="scan-title">สแกน QR เพื่อตรวจสอบ</div><div class="scan-sub">ต้องสแกน QR Code บนประตูเท่านั้น</div></div>
+    <button class="btn-scan-big" onclick="openQR()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/><rect x="3" y="16" width="5" height="5" rx="1"/><path d="M21 16h-3v3M21 21h-3M16 16v5"/></svg>
+      สแกน QR
+    </button>
+  </div>
+  <div class="door-list" id="doorList"></div>
+</div>
+
+<!-- PAGE: CHECKLIST -->
+<div id="p-check" class="page">
+  <div class="topbar">
+    <button class="hdr-back" onclick="goPage('p-doors')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FAFAFA" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="tb-info"><div class="tb-title" id="checkTitle">ตรวจสอบประตู</div><div class="tb-sub" id="checkSub">—</div></div>
+    <div class="tb-right"><div class="live-chip"><div class="ld"></div>Realtime</div></div>
+  </div>
+  <div class="stepbar" id="stepbarC"></div>
+  <div class="ctx-strip">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+    <span class="ctx-lbl">พื้นที่ :</span><span class="ctx-val" id="ctxZone">—</span>
+  </div>
+  <div class="prog-bar-wrap">
+    <div class="prog-meta"><span class="prog-lbl">ความคืบหน้า</span><span class="prog-cnt" id="progCnt">0 / 0</span></div>
+    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+  </div>
+  <div class="pscroll" id="checkScroll">
+    <div style="padding:14px 16px;display:flex;flex-direction:column;gap:12px" id="checkContent">
+      <div class="door-info-banner" id="doorInfoBanner">
+        <div class="dib-code" id="dibCode">--</div>
+        <div class="dib-name" id="dibName">--</div>
+        <div class="dib-meta" id="dibMeta">--</div>
+      </div>
+      <div id="clWrap"></div>
+    </div>
+  </div>
+  <div class="submit-area">
+    <div class="result-banner" id="resultBanner">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:4px"><polyline points="20 6 9 17 4 12"/></svg>
+      บันทึกและส่งข้อมูล Realtime เรียบร้อยแล้ว
+    </div>
+    <div class="submit-meta"><span>ตอบแล้ว <strong id="sbDone">0</strong> ข้อ</span><span>ทั้งหมด <strong id="sbTotal">0</strong> ข้อ</span></div>
+    <div class="sbprog-track"><div class="sbprog-fill" id="sbFill" style="width:0%"></div></div>
+    <button class="btn-submit" id="btnSubmit" onclick="doSubmit()" disabled>ส่งผลการตรวจสอบ</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, collection, doc, getDoc, getDocs, addDoc, setDoc, query, where, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, collection, doc, getDoc, getDocs, addDoc, query, where, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAoOTx0rrzqZ-V2t9QE6FhQQl5dcL81GZc",
-  authDomain: "smart-logistics-system-v1.firebaseapp.com",
-  databaseURL: "https://smart-logistics-system-v1-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "smart-logistics-system-v1",
-  storageBucket: "smart-logistics-system-v1.firebasestorage.app",
-  messagingSenderId: "255204464932",
-  appId: "1:255204464932:web:c0e032f51866ae4e017bb1"
+const FB = {
+  apiKey:"AIzaSyAoOTx0rrzqZ-V2t9QE6FhQQl5dcL81GZc",
+  authDomain:"smart-logistics-system-v1.firebaseapp.com",
+  projectId:"smart-logistics-system-v1",
+  storageBucket:"smart-logistics-system-v1.firebasestorage.app",
+  messagingSenderId:"255204464932",
+  appId:"1:255204464932:web:c0e032f51866ae4e017bb1"
 };
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const db = getFirestore(initializeApp(FB));
 
 // ── STATE ──
-let currentUser = null;
-let allDoors = [];
-let allChecklists = [];
-let allShifts = [];
-let adminContact = {};
-let selectedZone = null;
-let selectedDoor = null;
-let answers = {};
-let todaySubmissions = []; // submissions in current shift
-let currentShift = null;
-let zoneDoors = []; // doors in selected zone
-let doorSearchTimer = null;
+let user=null, allDoors=[], checklists=[], shifts=[], adminContact={};
+let selZone='', selDoor=null, answers={}, totalItems=0, submitted=false;
+let shiftSubmissions=[], currentShift=null, unsubSubs=null;
+let qrStream=null, qrActive=false, qrAnim=null, bdDetector=null;
 
 // ── HELPERS ──
-let toastTimer;
-window.showToast = function(msg, type) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = 'toast show ' + (type || 'info');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
-};
+let toastT;
+function toast(m,t){const e=document.getElementById('toast');e.textContent=m;e.className='toast show '+(t||'info');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('show'),2800);}
+function setLoad(t){document.getElementById('loadTxt').textContent=t;}
+function showLoad(t){if(t)setLoad(t);document.getElementById('loadingOverlay').classList.remove('hide');}
+function hideLoad(){document.getElementById('loadingOverlay').classList.add('hide');}
 
-function setLoadText(t) { document.getElementById('loadText').textContent = t; }
-function showLoading() { document.getElementById('loadingOverlay').classList.remove('hide'); }
-function hideLoading() { document.getElementById('loadingOverlay').classList.add('hide'); }
+function goPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='p-check')document.getElementById('checkScroll').scrollTop=0;
+}
 
-function getCurrentShift(shifts) {
-  const h = new Date().getHours();
-  for (const sh of shifts) {
-    const s = sh.startH, e = sh.endH;
-    if (s < e) { if (h >= s && h < e) return sh; }
-    else { if (h >= s || h < e) return sh; }
+function getShift(){
+  const h=new Date().getHours();
+  for(const s of shifts){
+    if(s.startH<s.endH){if(h>=s.startH&&h<s.endH)return s;}
+    else{if(h>=s.startH||h<s.endH)return s;}
   }
   return null;
 }
-
-function getShiftStartTime(sh) {
-  const now = new Date();
-  const start = new Date(now);
-  start.setHours(sh.startH, 0, 0, 0);
-  if (sh.startH > sh.endH && now.getHours() < sh.endH) {
-    start.setDate(start.getDate() - 1);
-  }
-  return start;
+function shiftStart(s){
+  const now=new Date(),d=new Date(now);
+  d.setHours(s.startH,0,0,0);
+  if(s.startH>s.endH&&now.getHours()<s.endH)d.setDate(d.getDate()-1);
+  return d;
 }
+function defaultShifts(){return[{id:'A',name:'กะ A (เช้า)',startH:6,endH:14},{id:'B',name:'กะ B (บ่าย)',startH:14,endH:22},{id:'C',name:'กะ C (ดึก)',startH:22,endH:6}];}
+
+function renderStepbar(step,targetId){
+  const steps=[{n:1,l:'เลือกพื้นที่'},{n:2,l:'เลือกประตู'},{n:3,l:'ตรวจสอบ'}];
+  const el=document.getElementById(targetId);
+  if(!el)return;
+  let h='';
+  steps.forEach((s,i)=>{
+    const state=s.n<step?'done':s.n===step?'active':'idle';
+    const numHtml=state==='done'?'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':s.n;
+    h+=`<div class="step-item"><div class="step-num ${state}">${numHtml}</div><div class="step-label ${state}">${s.l}</div></div>`;
+    if(i<steps.length-1)h+=`<div class="step-line${step>s.n?' done':''}"></div>`;
+  });
+  el.innerHTML=h;
+}
+
+// ── ALERT ──
+window.showAlert=function(title,msg,detail,type='warn'){
+  document.getElementById('alertTitle').textContent=title;
+  document.getElementById('alertMsg').textContent=msg;
+  const det=document.getElementById('alertDetail');
+  if(detail){det.style.display='';det.innerHTML=detail.replace(/\n/g,'<br>');}else det.style.display='none';
+  const ico=document.getElementById('alertIcon');
+  const iconMap={
+    warn:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+    err:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+    ok:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#4ADE80" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
+  };
+  ico.className='alert-icon '+type;
+  ico.innerHTML=iconMap[type]||iconMap.warn;
+  document.getElementById('alertSecBtn').style.display='none';
+  document.getElementById('alertModal').classList.add('open');
+};
+window.closeAlert=()=>document.getElementById('alertModal').classList.remove('open');
 
 // ── INIT ──
-async function init() {
-  setLoadText('กำลังโหลดข้อมูล...');
-  try {
-    const [doorsSnap, clSnap, settingsSnap] = await Promise.all([
-      getDocs(collection(db, 'door_doors')),
-      getDocs(collection(db, 'door_checklists')),
-      getDoc(doc(db, 'door_settings', 'config'))
-    ]);
-    allDoors = [];
-    doorsSnap.forEach(d => allDoors.push({ id: d.id, ...d.data() }));
-    allDoors.sort((a, b) => (a.code || '').localeCompare(b.code || ''));
-
-    allChecklists = [];
-    clSnap.forEach(d => allChecklists.push({ id: d.id, ...d.data() }));
-    allChecklists.sort((a, b) => (a.order || 0) - (b.order || 0));
-
-    if (settingsSnap.exists()) {
-      const sd = settingsSnap.data();
-      allShifts = sd.shifts || getDefaultShifts();
-      adminContact = sd.adminContact || {};
-    } else {
-      allShifts = getDefaultShifts();
-    }
-    hideLoading();
-  } catch (e) {
-    setLoadText('โหลดไม่สำเร็จ: ' + e.message);
+async function init(){
+  try{
+    const snap=await getDoc(doc(db,'door_settings','config'));
+    document.getElementById('connPill').className='conn-pill ok';
+    document.getElementById('connPill').innerHTML='<div class="ld"></div>เชื่อมต่อสำเร็จ';
+    document.getElementById('loginBtn').disabled=false;
+    if(snap.exists()){
+      const d=snap.data();
+      shifts=d.shifts||defaultShifts();
+      if(d.adminContact){
+        adminContact=d.adminContact;
+        document.getElementById('adminNm').textContent=d.adminContact.name||'Admin';
+        document.getElementById('adminRl').textContent=d.adminContact.role||'Security Supervisor';
+        document.getElementById('adminCt').textContent=d.adminContact.contact||'—';
+        document.getElementById('adminAv').textContent=(d.adminContact.name||'A').charAt(0).toUpperCase();
+      }
+    }else shifts=defaultShifts();
+  }catch(e){
+    document.getElementById('connPill').className='conn-pill err';
+    document.getElementById('connPill').innerHTML='เชื่อมต่อไม่ได้ — ลองใหม่';
+    document.getElementById('loginBtn').disabled=false;
+    shifts=defaultShifts();
   }
-}
+  hideLoad();
 
-function getDefaultShifts() {
-  return [
-    { id: 'A', name: 'กะ A (เช้า)', startH: 6, endH: 14 },
-    { id: 'B', name: 'กะ B (บ่าย)', startH: 14, endH: 22 },
-    { id: 'C', name: 'กะ C (ดึก)', startH: 22, endH: 6 }
-  ];
+  const params=new URLSearchParams(window.location.search);
+  const dc=params.get('door')||params.get('code')||params.get('id');
+  if(dc)sessionStorage.setItem('pendingDoor',dc);
 }
 
 // ── LOGIN ──
-window.doLogin = async function() {
-  const username = document.getElementById('loginUser').value.trim();
-  const password = document.getElementById('loginPass').value;
-  const errEl = document.getElementById('loginErr');
-  if (!username || !password) { errEl.textContent = 'กรุณากรอก Username และ Password'; return; }
-  const btn = document.getElementById('loginBtn');
-  btn.disabled = true; btn.textContent = 'กำลังตรวจสอบ...';
-  showLoading(); setLoadText('กำลังตรวจสอบ...');
-  try {
-    const snap = await getDocs(collection(db, 'door_users'));
-    let found = null;
-    snap.forEach(d => {
-      const u = d.data();
-      if (u.username === username && u.password === password && u.active !== false) found = { id: d.id, ...u };
-    });
-    if (found) {
-      currentUser = found;
-      await afterLogin();
-    } else {
-      errEl.textContent = 'Username หรือ Password ไม่ถูกต้อง';
-      hideLoading();
-    }
-  } catch (e) {
-    errEl.textContent = 'เข้าสู่ระบบไม่สำเร็จ: ' + e.message;
-    hideLoading();
-  }
-  btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ';
+document.getElementById('uIn').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('pIn').focus();});
+document.getElementById('pIn').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+
+window.doLogin=async function(){
+  const u=document.getElementById('uIn').value.trim(),p=document.getElementById('pIn').value;
+  const err=document.getElementById('errMsg');
+  err.textContent='';
+  if(!u||!p){err.textContent='กรุณากรอก Username และรหัสผ่าน';return;}
+  const btn=document.getElementById('loginBtn');
+  btn.disabled=true;btn.textContent='กำลังตรวจสอบ...';
+  showLoad('กำลังตรวจสอบ...');
+  try{
+    const snap=await getDocs(collection(db,'door_users'));
+    let found=null;
+    snap.forEach(d=>{const ud=d.data();if(ud.username===u&&ud.password===p&&ud.active!==false)found={id:d.id,...ud};});
+    if(!found){err.textContent='Username หรือ Password ไม่ถูกต้อง';hideLoad();btn.disabled=false;btn.textContent='เข้าสู่ระบบ';return;}
+    user=found;
+    await loadData();
+    afterLogin();
+    toast('ยินดีต้อนรับ '+(user.displayName||user.username),'ok');
+    const pd=sessionStorage.getItem('pendingDoor');
+    if(pd){sessionStorage.removeItem('pendingDoor');setTimeout(()=>handleQRResult(pd),600);}
+  }catch(e){err.textContent='เข้าสู่ระบบไม่สำเร็จ: '+e.message;hideLoad();btn.disabled=false;btn.textContent='เข้าสู่ระบบ';}
 };
 
-document.getElementById('loginUser').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('loginPass').focus(); });
-document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') window.doLogin(); });
-
-async function afterLogin() {
-  currentShift = getCurrentShift(allShifts);
-  if (!currentShift) { showLockScreen(); hideLoading(); return; }
-
-  // Load today submissions in current shift
-  await loadShiftSubmissions();
-
-  document.getElementById('loginPage').classList.add('hide');
-  document.getElementById('mainTopbar').style.display = '';
-  document.getElementById('mainContent').style.display = '';
-  hideLoading();
-
-  const initials = (currentUser.displayName || currentUser.username || 'IN').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-  document.getElementById('tbAvatar').textContent = initials;
-  document.getElementById('topbarUser').textContent = currentUser.displayName || currentUser.username;
-  document.getElementById('shiftBadgeText').textContent = currentShift.name;
-  document.getElementById('shiftBadge2').textContent = currentShift.name;
-
-  renderZoneGrid();
-  goToStep(1);
-
-  // URL param auto-select
-  const params = new URLSearchParams(window.location.search);
-  const doorParam = params.get('door') || params.get('code') || params.get('id');
-  if (doorParam) setTimeout(() => handleQRResult(doorParam), 400);
-
-  showToast('ยินดีต้อนรับ ' + (currentUser.displayName || currentUser.username), 'ok');
+async function loadData(){
+  setLoad('โหลดข้อมูลประตู...');
+  const [ds,cs]=await Promise.all([getDocs(collection(db,'door_doors')),getDocs(collection(db,'door_checklists'))]);
+  allDoors=[];ds.forEach(d=>allDoors.push({id:d.id,...d.data()}));
+  allDoors.sort((a,b)=>(a.code||'').localeCompare(b.code||''));
+  // Filter by user zones
+  if(user.zones&&Array.isArray(user.zones)&&user.zones.length>0){
+    allDoors=allDoors.filter(d=>user.zones.includes(d.zone));
+  }
+  checklists=[];cs.forEach(d=>checklists.push({id:d.id,...d.data()}));
+  checklists.sort((a,b)=>(a.order||0)-(b.order||0));
+  if(!checklists.length)checklists=defaultChecklists();
 }
 
-async function loadShiftSubmissions() {
-  try {
-    const shiftStart = getShiftStartTime(currentShift);
-    const snap = await getDocs(collection(db, 'door_submissions'));
-    todaySubmissions = [];
-    snap.forEach(d => {
-      const s = d.data();
-      const ts = s.timestamp ? (s.timestamp.toDate ? s.timestamp.toDate() : new Date(s.timestamp)) : null;
-      if (ts && ts >= shiftStart && s.shift === currentShift.name) {
-        todaySubmissions.push({ id: d.id, ...s });
-      }
-    });
-  } catch (e) {
-    todaySubmissions = [];
-  }
+function afterLogin(){
+  currentShift=getShift();
+  const av=(user.displayName||user.username||'IN').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  ['tbAvZ','tbAvD'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=av;});
+  ['zoneUserLbl'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=user.displayName||user.username;});
+  ['shiftChipZ','shiftChipD'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=currentShift?currentShift.name:'—';});
+  renderStepbar(1,'stepbarZ');renderStepbar(2,'stepbarD');renderStepbar(3,'stepbarC');
+
+  if(!currentShift){showLock();return;}
+  startSubsListener();
+  goPage('p-zone');
+  hideLoad();
 }
 
-function isDoorInspected(doorCode) {
-  return todaySubmissions.find(s => s.doorCode === doorCode);
+function showLock(){
+  document.getElementById('lockUserLbl').textContent=user.displayName||user.username;
+  document.getElementById('shiftSched').innerHTML=shifts.map(s=>{
+    const a=currentShift&&s.id===currentShift.id;
+    return `<div class="sh-row${a?' active':''}"><div><div class="sh-name">${s.name}</div><div class="sh-time">${String(s.startH).padStart(2,'0')}:00 – ${String(s.endH).padStart(2,'0')}:00</div></div><span class="sh-badge ${a?'sh-live':'sh-off'}">${a?'Active':'Closed'}</span></div>`;
+  }).join('');
+  goPage('p-lock');hideLoad();
 }
 
-// ── STEP NAVIGATION ──
-window.goToStep = function(step) {
-  document.getElementById('step1').style.display = step === 1 ? '' : 'none';
-  document.getElementById('step2').style.display = step === 2 ? '' : 'none';
-  document.getElementById('step3').style.display = step === 3 ? '' : 'none';
-
-  for (let i = 1; i <= 3; i++) {
-    const numEl = document.getElementById('sn' + i);
-    const lblEl = document.getElementById('sl' + i);
-    if (i < step) {
-      numEl.className = 'step-num done';
-      numEl.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
-      lblEl.className = 'step-label done';
-    } else if (i === step) {
-      numEl.className = 'step-num active'; numEl.textContent = i;
-      lblEl.className = 'step-label active';
-    } else {
-      numEl.className = 'step-num idle'; numEl.textContent = i;
-      lblEl.className = 'step-label idle';
-    }
-  }
-  for (let i = 1; i <= 2; i++) {
-    document.getElementById('stl' + i).className = 'step-line' + (i < step ? ' done' : '');
-  }
+window.doLogout=function(){
+  if(unsubSubs){unsubSubs();unsubSubs=null;}
+  stopQR();user=null;selZone='';selDoor=null;shiftSubmissions=[];
+  document.getElementById('uIn').value='';document.getElementById('pIn').value='';
+  document.getElementById('errMsg').textContent='';
+  goPage('p-login');
 };
+
+// ── SUBMISSIONS LISTENER ──
+function startSubsListener(){
+  if(unsubSubs){unsubSubs();unsubSubs=null;}
+  unsubSubs=onSnapshot(collection(db,'door_submissions'),snap=>{
+    const start=getShift()?shiftStart(getShift()):new Date();
+    shiftSubmissions=[];
+    snap.forEach(d=>{
+      const s=d.data();
+      const ts=s.timestamp?(s.timestamp.toDate?s.timestamp.toDate():new Date(s.timestamp)):null;
+      if(ts&&ts>=start&&s.shift===(currentShift?currentShift.name:''))shiftSubmissions.push({id:d.id,...s});
+    });
+    renderZoneGrid();
+    if(selZone)renderDoorList();
+  });
+}
+
+function isDoorDone(code){return shiftSubmissions.find(s=>s.doorCode===code);}
 
 // ── ZONE GRID ──
-function renderZoneGrid() {
-  const zones = [...new Set(allDoors.map(d => d.zone))].sort();
-  const grid = document.getElementById('zoneGrid');
-  if (!zones.length) { grid.innerHTML = '<div style="color:var(--dim);text-align:center;padding:20px">ไม่พบโซนในระบบ — กรุณา Seed ข้อมูล</div>'; return; }
-
-  grid.innerHTML = zones.map(zone => {
-    const doors = allDoors.filter(d => d.zone === zone);
-    const inspected = doors.filter(d => isDoorInspected(d.code)).length;
-    const pct = doors.length > 0 ? Math.round(inspected / doors.length * 100) : 0;
-    const allDone = inspected === doors.length && doors.length > 0;
-    return '<button class="zone-btn" onclick="selectZone(\'' + zone.replace(/'/g, "\\'") + '\')" id="zone-btn-' + encodeURIComponent(zone) + '">' +
-      (allDone ? '<div class="zone-done-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#4ADE80" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>' : '') +
-      '<div class="zone-name">' + zone + '</div>' +
-      '<div class="zone-count">' + inspected + '/' + doors.length + ' ตรวจแล้ว</div>' +
-      '<div class="zone-progress"><div class="zone-progress-fill" style="width:' + pct + '%"></div></div>' +
-      '</button>';
+function renderZoneGrid(){
+  const zones=[...new Set(allDoors.map(d=>d.zone))].sort();
+  const grid=document.getElementById('zoneGrid');
+  if(!zones.length){grid.innerHTML='<div style="color:var(--dim);text-align:center;padding:24px;font-size:13px;font-weight:600">ไม่พบพื้นที่ที่ได้รับสิทธิ์<br>กรุณาติดต่อ Admin</div>';return;}
+  grid.innerHTML=zones.map(z=>{
+    const doors=allDoors.filter(d=>d.zone===z);
+    const done=doors.filter(d=>isDoorDone(d.code)).length;
+    const pct=doors.length>0?Math.round(done/doors.length*100):0;
+    const allDone=done===doors.length&&doors.length>0;
+    return `<button class="zone-card${allDone?' all-done':''}" onclick="selectZone('${z.replace(/'/g,"\\'")}')">
+      ${allDone?`<div class="zc-done-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#4ADE80" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>`:''}
+      <div class="zc-name">${z}</div>
+      <div class="zc-count">${done}/${doors.length} ตรวจแล้ว</div>
+      <div class="zc-bar"><div class="zc-fill" style="width:${pct}%"></div></div>
+    </button>`;
   }).join('');
 }
 
-window.selectZone = function(zone) {
-  selectedZone = zone;
-  zoneDoors = allDoors.filter(d => d.zone === zone).sort((a, b) => (a.code || '').localeCompare(b.code || ''));
-  document.getElementById('zoneTitleLabel').textContent = zone + ' — เลือกประตู';
-  document.getElementById('doorSearchInput').value = '';
-  renderDoorList(zoneDoors);
-  renderZoneStats(zone);
-  goToStep(2);
+window.selectZone=function(z){
+  selZone=z;
+  document.getElementById('doorPageTitle').textContent=z;
+  document.getElementById('doorPageSub').textContent='สแกน QR เพื่อตรวจสอบ';
+  document.getElementById('ctxZone').textContent=z;
+  renderDoorList();
+  renderZoneStats(z);
+  goPage('p-doors');
 };
 
-function renderZoneStats(zone) {
-  const doors = allDoors.filter(d => d.zone === zone);
-  const inspected = doors.filter(d => isDoorInspected(d.code)).length;
-  const remaining = doors.length - inspected;
-  document.getElementById('zoneStats').innerHTML =
-    '<div class="zone-stat"><div class="zone-stat-num" style="color:var(--blue-light)">' + doors.length + '</div><div class="zone-stat-lbl">ทั้งหมด</div></div>' +
-    '<div class="zone-stat"><div class="zone-stat-num" style="color:#4ADE80">' + inspected + '</div><div class="zone-stat-lbl">ตรวจแล้ว</div></div>' +
-    '<div class="zone-stat"><div class="zone-stat-num" style="color:#FCD34D">' + remaining + '</div><div class="zone-stat-lbl">คงเหลือ</div></div>';
+function renderZoneStats(z){
+  const doors=allDoors.filter(d=>d.zone===z);
+  const done=doors.filter(d=>isDoorDone(d.code)).length;
+  const fail=shiftSubmissions.filter(s=>s.zone===z&&s.overall==='fail').length;
+  document.getElementById('zoneStatRow').innerHTML=
+    `<div class="zone-stat-cell"><div class="zs-num" style="background:var(--grad-d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${doors.length}</div><div class="zs-lbl">ทั้งหมด</div></div>
+     <div class="zone-stat-cell"><div class="zs-num" style="color:var(--green)">${done}</div><div class="zs-lbl">ตรวจแล้ว</div></div>
+     <div class="zone-stat-cell"><div class="zs-num" style="color:var(--yellow)">${Math.max(0,doors.length-done)}</div><div class="zs-lbl">ค้างตรวจ</div></div>`;
 }
 
-window.filterDoorList = function() {
-  clearTimeout(doorSearchTimer);
-  doorSearchTimer = setTimeout(() => {
-    const q = (document.getElementById('doorSearchInput').value || '').toLowerCase();
-    const filtered = q ? zoneDoors.filter(d => d.code.toLowerCase().includes(q) || (d.name || '').toLowerCase().includes(q)) : zoneDoors;
-    renderDoorList(filtered);
-  }, 200);
+function renderDoorList(){
+  const doors=allDoors.filter(d=>d.zone===selZone);
+  const list=document.getElementById('doorList');
+  const resMap={ok:['drs-ok','ผ่าน'],fail:['drs-fail','ไม่ผ่าน'],cond:['drs-cond','เงื่อนไข']};
+  list.innerHTML=doors.map(d=>{
+    const sub=isDoorDone(d.code);
+    const inspected=!!sub;
+    const [bc,bt]=inspected&&resMap[sub.overall]?resMap[sub.overall]:['drs-none','ยังไม่ตรวจ'];
+    return `<div class="door-row${inspected?' inspected':' locked'}" onclick="${inspected?`showDoneAlert('${d.code}','${sub.overall||''}','${sub.inspectorName||''}','${sub.shift||''}')`:''}" style="${!inspected?'cursor:default':''}">
+      <div class="door-row-left">
+        <div class="dr-code">${d.code}</div>
+        <div class="dr-name">${d.name}</div>
+        <div class="dr-meta">${d.location||d.zone}${d.type?' · '+d.type:''}</div>
+      </div>
+      <div class="dr-status ${bc}">${bt}</div>
+      ${!inspected?`<div class="lock-overlay"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;right:12px;top:50%;transform:translateY(-50%)"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>`:''}
+    </div>`;
+  }).join('');
+}
+
+window.showDoneAlert=function(code,overall,inspector,shift){
+  const resMap={ok:'ผ่าน',fail:'ไม่ผ่าน',cond:'มีเงื่อนไข'};
+  showAlert(
+    'ตรวจสอบแล้ว',
+    `ประตู ${code} ได้รับการตรวจสอบในกะนี้แล้ว`,
+    `ผู้ตรวจ: ${inspector||'—'}\nกะ: ${shift||'—'}\nผล: ${resMap[overall]||overall||'—'}`,
+    'ok'
+  );
 };
 
-function renderDoorList(doors) {
-  const list = document.getElementById('doorList');
-  if (!doors.length) {
-    list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--dim);font-size:13px">ไม่พบประตูที่ตรงกัน</div>';
+// ── QR ──
+window.openQR=function(){
+  document.getElementById('qrModal').classList.add('open');
+  setQRStatus('กำลังเปิดกล้อง...',true);
+  startQRStream();
+};
+window.closeQR=function(){stopQR();document.getElementById('qrModal').classList.remove('open');};
+
+function startQRStream(){
+  stopQR();
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+    setQRStatus('Browser ไม่รองรับกล้อง',false);toast('ไม่รองรับกล้อง','err');return;
+  }
+  if(typeof BarcodeDetector!=='undefined'){
+    try{bdDetector=new BarcodeDetector({formats:['qr_code']});}catch(e){bdDetector=null;}
+  }else bdDetector=null;
+
+  navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false})
+    .then(stream=>{
+      qrStream=stream;
+      const v=document.getElementById('qrVideo');
+      v.srcObject=stream;
+      v.onloadedmetadata=()=>{
+        v.play().then(()=>waitVid(v,0)).catch(e=>setQRStatus('เปิดกล้องไม่สำเร็จ',false));
+      };
+    }).catch(err=>{
+      const m=String(err.message||err);
+      setQRStatus(m.includes('NotAllowed')||m.includes('Permission')?'ไม่ได้รับอนุญาตกล้อง':'เปิดกล้องไม่สำเร็จ',false);
+      toast('ไม่สามารถเปิดกล้องได้','err');
+    });
+}
+
+function waitVid(v,n){
+  if(n>50){setQRStatus('กล้องโหลดช้า',false);return;}
+  if(v.readyState>=2&&v.videoWidth>0){qrActive=true;setQRStatus('พร้อมสแกน — จ่ออยู่กับ QR Code',true);qrScanLoop();}
+  else setTimeout(()=>waitVid(v,n+1),150);
+}
+
+function qrScanLoop(){
+  if(!qrActive)return;
+  const v=document.getElementById('qrVideo'),c=document.getElementById('qrCanvas');
+  if(!v||!c)return;
+  if(v.readyState>=2&&v.videoWidth>0){
+    c.width=v.videoWidth;c.height=v.videoHeight;
+    const ctx=c.getContext('2d',{willReadFrequently:true});
+    ctx.drawImage(v,0,0,c.width,c.height);
+    if(bdDetector){
+      bdDetector.detect(c).then(bs=>{
+        if(bs&&bs.length>0){onQRFound(bs[0].rawValue);}else tryJsQR(ctx,c.width,c.height);
+      }).catch(()=>tryJsQR(ctx,c.width,c.height));
+    }else tryJsQR(ctx,c.width,c.height);
+  }else{qrAnim=requestAnimationFrame(qrScanLoop);}
+}
+
+function tryJsQR(ctx,w,h){
+  if(window.jsQR){
+    try{const id=ctx.getImageData(0,0,w,h),code=window.jsQR(id.data,w,h,{inversionAttempts:'attemptBoth'});if(code&&code.data){onQRFound(code.data);return;}}catch(e){}
+  }
+  if(qrActive)qrAnim=requestAnimationFrame(qrScanLoop);
+}
+
+function onQRFound(text){
+  qrActive=false;
+  const flash=document.getElementById('qrFlash');
+  flash.classList.add('on');setTimeout(()=>flash.classList.remove('on'),300);
+  setQRStatus('พบ QR Code!',true);
+  setTimeout(()=>{closeQR();handleQRResult(text);},350);
+}
+
+function stopQR(){
+  qrActive=false;
+  if(qrAnim){cancelAnimationFrame(qrAnim);qrAnim=null;}
+  const v=document.getElementById('qrVideo');
+  if(v){try{v.pause();}catch(e){}try{v.srcObject=null;}catch(e){}}
+  if(qrStream){qrStream.getTracks().forEach(t=>{try{t.stop();}catch(e){}});qrStream=null;}
+}
+
+function setQRStatus(t,a){
+  document.getElementById('qrStatusTxt').textContent=t;
+  const dot=document.querySelector('.qr-sdot');
+  if(dot)dot.style.background=a?'var(--teal)':'var(--red)';
+}
+
+// ── QR RESULT HANDLER ──
+window.handleQRResult=function(raw){
+  let code=String(raw||'').trim();
+  if(/^https?:\/\//i.test(code)){
+    try{const u=new URL(code);code=u.searchParams.get('door')||u.searchParams.get('code')||u.searchParams.get('id')||code;}catch(e){}
+  }
+  code=code.trim();
+  if(!code){toast('ไม่พบรหัสประตูใน QR นี้','err');return;}
+
+  const door=allDoors.find(d=>d.code.toUpperCase()===code.toUpperCase());
+  if(!door){
+    showAlert('ไม่พบประตู','ไม่พบประตูรหัส "'+code+'" ในพื้นที่ที่ได้รับสิทธิ์','ตรวจสอบว่า QR ถูกต้อง และคุณมีสิทธิ์ตรวจโซนนี้','err');
     return;
   }
-  list.innerHTML = doors.map(d => {
-    const sub = isDoorInspected(d.code);
-    const inspected = !!sub;
-    const resultMap = { ok: ['dsb-ok', 'ผ่าน'], fail: ['dsb-fail', 'ไม่ผ่าน'], cond: ['dsb-cond', 'เงื่อนไข'] };
-    const [badgeCls, badgeTxt] = inspected && resultMap[sub.overall] ? resultMap[sub.overall] : ['dsb-none', 'ยังไม่ตรวจ'];
-    return '<div class="door-row' + (inspected ? ' inspected' : '') + '" onclick="selectDoorById(\'' + d.id + '\')">' +
-      '<div class="door-row-code">' + d.code + '</div>' +
-      '<div class="door-row-info"><div class="door-row-name">' + d.name + '</div>' +
-      '<div class="door-row-meta">' + (d.location || d.zone) + '</div></div>' +
-      '<div class="door-status-badge ' + badgeCls + '">' + badgeTxt + '</div>' +
-      '</div>';
-  }).join('');
-}
 
-window.selectDoorById = function(id) {
-  const door = allDoors.find(d => d.id === id);
-  if (!door) return;
+  // Auto set zone
+  if(selZone!==door.zone){
+    selZone=door.zone;
+    document.getElementById('doorPageTitle').textContent=door.zone;
+    document.getElementById('ctxZone').textContent=door.zone;
+    renderZoneStats(door.zone);
+    renderDoorList();
+  }
 
-  const existing = isDoorInspected(door.code);
-  if (existing) {
-    const ts = existing.timestamp ? (existing.timestamp.toDate ? existing.timestamp.toDate() : new Date(existing.timestamp)) : null;
-    const timeStr = ts ? ts.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) : '--';
-    const resMap = { ok: 'ผ่าน', fail: 'ไม่ผ่าน', cond: 'มีเงื่อนไข' };
+  // Check if already done
+  const sub=isDoorDone(door.code);
+  if(sub){
+    const resMap={ok:'ผ่าน',fail:'ไม่ผ่าน',cond:'มีเงื่อนไข'};
+    const ts=sub.timestamp?(sub.timestamp.toDate?sub.timestamp.toDate():new Date(sub.timestamp)):null;
+    const timeStr=ts?ts.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}):'—';
     showAlert(
       'ประตูนี้ตรวจแล้ว',
-      'ประตู ' + door.code + ' ได้รับการตรวจสอบในกะนี้แล้ว',
-      'ผู้ตรวจ: ' + (existing.inspectorName || '--') + '\nเวลา: ' + timeStr + '\nผล: ' + (resMap[existing.overall] || existing.overall),
+      `${door.code} — ${door.name}`,
+      `ผู้ตรวจ: ${sub.inspectorName||'—'}\nเวลา: ${timeStr}\nผล: ${resMap[sub.overall]||sub.overall||'—'}`,
       'warn'
     );
     return;
   }
 
-  selectedDoor = door;
-  answers = {};
-  document.getElementById('doorCodeTag').textContent = door.code;
-  document.getElementById('doorNameText').textContent = door.name;
-  document.getElementById('doorZoneText').textContent = door.zone;
-  document.getElementById('doorTypeText').textContent = door.type || 'Fire Exit Door';
-  renderChecklist();
-  goToStep(3);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-};
-
-// QR Result Handler
-window.handleQRResult = function(raw) {
-  let doorCode = String(raw || '').trim();
-  if (/^https?:\/\//i.test(doorCode)) {
-    try {
-      const url = new URL(doorCode);
-      doorCode = url.searchParams.get('door') || url.searchParams.get('code') || url.searchParams.get('id') || '';
-    } catch (e) {}
-  }
-  doorCode = doorCode.trim();
-  if (!doorCode) { showToast('ไม่พบรหัสประตูใน QR นี้', 'err'); return; }
-
-  const door = allDoors.find(d => d.code.toUpperCase() === doorCode.toUpperCase());
-  if (!door) { showToast('ไม่พบประตูรหัส: ' + doorCode, 'err'); return; }
-
-  // Auto-select zone if needed
-  if (!selectedZone || selectedZone !== door.zone) {
-    selectedZone = door.zone;
-    zoneDoors = allDoors.filter(d => d.zone === door.zone).sort((a, b) => (a.code || '').localeCompare(b.code || ''));
-    document.getElementById('zoneTitleLabel').textContent = door.zone + ' — เลือกประตู';
-    document.getElementById('doorSearchInput').value = '';
-    renderDoorList(zoneDoors);
-    renderZoneStats(door.zone);
-  }
-
-  showToast('QR: ' + door.code, 'ok');
-  setTimeout(() => window.selectDoorById(door.id), 200);
+  // Load checklist
+  selDoor=door;
+  document.getElementById('dibCode').textContent=door.code;
+  document.getElementById('dibName').textContent=door.name;
+  document.getElementById('dibMeta').textContent=(door.location||door.zone)+' · '+(door.type||'Fire Exit Door');
+  document.getElementById('checkTitle').textContent=door.code;
+  document.getElementById('checkSub').textContent=door.name;
+  buildChecklist();
+  goPage('p-check');
+  toast('สแกนสำเร็จ: '+door.code,'ok');
 };
 
 // ── CHECKLIST ──
-function renderChecklist() {
-  const body = document.getElementById('checklistBody');
-  body.innerHTML = '';
-  allChecklists.forEach((sec, si) => {
-    const secEl = document.createElement('div');
-    secEl.className = 'cl-section';
-    secEl.innerHTML = '<div class="cl-sec-title">' + sec.name + '</div>';
-    (sec.items || []).forEach((item, ii) => {
-      const key = si + '_' + ii;
-      const row = document.createElement('div');
-      row.className = 'cl-item';
-      row.innerHTML = '<div class="cl-item-text">' + item + '</div>' +
-        '<div class="cl-opts">' +
-        '<button class="cl-opt ok" onclick="setAnswer(\'' + key + '\',\'ok\',this)">ผ่าน</button>' +
-        '<button class="cl-opt fail" onclick="setAnswer(\'' + key + '\',\'fail\',this)">ไม่ผ่าน</button>' +
-        '<button class="cl-opt na" onclick="setAnswer(\'' + key + '\',\'na\',this)">N/A</button>' +
-        '</div>';
-      secEl.appendChild(row);
-      const remarkRow = document.createElement('div');
-      remarkRow.id = 'remark_' + key;
-      remarkRow.className = 'remark-wrap';
-      remarkRow.innerHTML = '<textarea class="remark-input" id="remarkText_' + key + '" placeholder="ระบุสาเหตุที่ไม่ผ่าน..."></textarea>';
-      secEl.appendChild(remarkRow);
-    });
-    body.appendChild(secEl);
-  });
-  updateProgress();
+function defaultChecklists(){
+  return[
+    {id:'ext',name:'สภาพภายนอก',icon:'shield',order:1,items:['บานประตูไม่มีรอยบุบหรือเสียหาย','วงกบประตูและซีลยางสภาพสมบูรณ์','ป้ายทางออกฉุกเฉินชัดเจนและมองเห็นได้','พื้นที่หน้าประตูไม่มีสิ่งกีดขวาง']},
+    {id:'hw',name:'Hardware & กลไก',icon:'tool',order:2,items:['บานพับประตูสภาพดี ไม่หลวม ไม่ขึ้นสนิม','มือจับและกลอนประตูทำงานได้ปกติ','อุปกรณ์ Panic Bar ทำงานได้','Door Closer ปิดประตูอัตโนมัติได้','ประตูเปิด-ปิดได้สะดวก ไม่ติดขัด']},
+    {id:'alarm',name:'Alarm & ระบบสัญญาณ',icon:'bell',order:3,items:['สัญญาณเตือนภัยบริเวณประตูทำงาน','แสงฉุกเฉิน (Emergency Light) ทำงาน','ป้าย Exit ติดไฟสว่างสมบูรณ์']}
+  ];
 }
 
-window.setAnswer = function(key, val, btn) {
-  answers[key] = val;
-  ['ok', 'fail', 'na'].forEach(t => {
-    const el = document.getElementById('opt_' + key + '_' + t);
-    if (el) { el.style.background = ''; el.style.borderColor = ''; el.style.color = ''; el.style.fontWeight = ''; }
-  });
-  const row = btn?.closest('.cl-item');
-  if (row) {
-    row.querySelectorAll('.cl-opt').forEach(b => { b.style.background = ''; b.style.borderColor = ''; b.style.color = ''; b.style.fontWeight = ''; });
-  }
-  if (btn) {
-    if (val === 'ok') { btn.style.background = 'rgba(74,222,128,.2)'; btn.style.borderColor = 'rgba(74,222,128,.5)'; btn.style.color = '#4ADE80'; btn.style.fontWeight = '800'; }
-    if (val === 'fail') { btn.style.background = 'rgba(239,68,68,.18)'; btn.style.borderColor = 'rgba(239,68,68,.5)'; btn.style.color = '#FCA5A5'; btn.style.fontWeight = '800'; }
-    if (val === 'na') { btn.style.background = 'rgba(107,114,128,.18)'; btn.style.borderColor = 'rgba(107,114,128,.5)'; btn.style.color = '#9CA3AF'; btn.style.fontWeight = '800'; }
-  }
-  const remarkEl = document.getElementById('remark_' + key);
-  if (remarkEl) { val === 'fail' ? remarkEl.classList.add('show') : remarkEl.classList.remove('show'); }
-  updateProgress();
+function buildChecklist(){
+  answers={};totalItems=0;submitted=false;
+  checklists.forEach(s=>{if(s.items)s.items.forEach(()=>totalItems++);});
+  document.getElementById('sbTotal').textContent=totalItems;
+  document.getElementById('sbDone').textContent='0';
+  document.getElementById('progCnt').textContent='0 / '+totalItems;
+  document.getElementById('progFill').style.width='0%';
+  document.getElementById('sbFill').style.width='0%';
+  document.getElementById('btnSubmit').disabled=true;
+  document.getElementById('resultBanner').classList.remove('show');
+
+  const ICONS={
+    shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+    tool:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+    bell:'<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>'
+  };
+
+  document.getElementById('clWrap').innerHTML=checklists.map(sec=>{
+    const items=sec.items||[];
+    return `<div class="cl-section">
+      <div class="cl-sec-head">
+        <div class="cl-sec-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICONS[sec.icon]||ICONS.shield}</svg></div>
+        <span class="cl-sec-name">${sec.name}</span>
+        <span class="cl-sec-cnt">${items.length} ข้อ</span>
+      </div>
+      ${items.map((q,i)=>{
+        const key=`${sec.id}_${i}`;
+        return `<div class="cl-item" id="ci-${key}">
+          <div class="cl-item-row">
+            <span class="cl-item-q">${q}</span>
+            <div class="rb-grp">
+              <button class="rb ok" data-key="${key}" onclick="pick(this,'ok')">ปกติ</button>
+              <button class="rb fail" data-key="${key}" onclick="pick(this,'fail')">ชำรุด</button>
+            </div>
+          </div>
+          <div class="defect-zone" id="dz-${key}">
+            <textarea class="note-area" id="note-${key}" placeholder="อธิบายปัญหาที่พบ..." rows="2" oninput="if(answers['${key}'])answers['${key}'].note=this.value"></textarea>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }).join('');
+}
+
+window.pick=function(btn,val){
+  if(submitted)return;
+  const key=btn.dataset.key;
+  btn.closest('.rb-grp').querySelectorAll('.rb').forEach(b=>{b.classList.remove('sel');});
+  btn.classList.add('sel');
+  if(!answers[key])answers[key]={val:null,note:''};
+  answers[key].val=val;
+  document.getElementById('ci-'+key).classList.add('answered');
+  const dz=document.getElementById('dz-'+key);
+  if(dz)dz.classList[val==='fail'?'add':'remove']('open');
+  updateProg();
 };
 
-function updateProgress() {
-  const allKeys = [];
-  allChecklists.forEach((sec, si) => (sec.items || []).forEach((_, ii) => allKeys.push(si + '_' + ii)));
-  const total = allKeys.length;
-  const answered = allKeys.filter(k => answers[k]).length;
-  const ok = allKeys.filter(k => answers[k] === 'ok').length;
-  const fail = allKeys.filter(k => answers[k] === 'fail').length;
-  const na = allKeys.filter(k => answers[k] === 'na').length;
-  const pct = total > 0 ? Math.round(answered / total * 100) : 0;
-  document.getElementById('progressPct').textContent = pct + '%';
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('countOk').textContent = ok;
-  document.getElementById('countFail').textContent = fail;
-  document.getElementById('countNa').textContent = na;
-  document.getElementById('countTotal').textContent = total;
-  document.getElementById('submitBtn').disabled = answered < total;
+function updateProg(){
+  const done=Object.values(answers).filter(a=>a&&a.val).length;
+  const pct=totalItems>0?Math.round(done/totalItems*100):0;
+  document.getElementById('sbDone').textContent=done;
+  document.getElementById('progCnt').textContent=done+' / '+totalItems;
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('sbFill').style.width=pct+'%';
+  document.getElementById('btnSubmit').disabled=done<totalItems;
 }
 
 // ── SUBMIT ──
-window.submitInspection = async function() {
-  if (!selectedDoor || !currentUser) return;
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<div class="spin" style="width:20px;height:20px;border-width:2px"></div> กำลังบันทึก...';
+window.doSubmit=async function(){
+  if(submitted||!selDoor||!user)return;
+  submitted=true;
+  const btn=document.getElementById('btnSubmit');
+  btn.disabled=true;btn.textContent='กำลังบันทึก...';
 
-  const allKeys = [];
-  allChecklists.forEach((sec, si) => (sec.items || []).forEach((_, ii) => allKeys.push(si + '_' + ii)));
-  const ok = allKeys.filter(k => answers[k] === 'ok').length;
-  const fail = allKeys.filter(k => answers[k] === 'fail').length;
-  const total = allKeys.length;
-  let overall = fail > 0 ? 'fail' : ok < total ? 'cond' : 'ok';
+  const as={};Object.keys(answers).forEach(k=>{as[k]={val:answers[k].val,note:answers[k].note||''};});
+  const ok=Object.values(answers).filter(a=>a.val==='ok').length;
+  const fail=Object.values(answers).filter(a=>a.val==='fail').length;
+  const overall=fail>0?'fail':ok===totalItems?'ok':'cond';
+  const sh=getShift();
 
-  const remarks = {};
-  allKeys.forEach(k => { const t = document.getElementById('remarkText_' + k); if (t && t.value.trim()) remarks[k] = t.value.trim(); });
-
-  const payload = {
-    doorId: selectedDoor.id, doorCode: selectedDoor.code, doorName: selectedDoor.name,
-    zone: selectedDoor.zone, inspectorId: currentUser.id,
-    inspectorName: currentUser.displayName || currentUser.username,
-    shift: currentShift.name, answers, remarks,
-    overallRemark: document.getElementById('remarkInput').value.trim(),
-    overall, answeredItems: total, totalItems: total, okItems: ok, failItems: fail,
-    timestamp: serverTimestamp()
-  };
-
-  try {
-    const ref = await addDoc(collection(db, 'door_submissions'), payload);
-    todaySubmissions.push({ id: ref.id, ...payload, timestamp: new Date() });
-    const resMap = { ok: 'ผ่าน', fail: 'ไม่ผ่าน', cond: 'มีเงื่อนไข' };
-    document.getElementById('successMsg').textContent = selectedDoor.code + ' — ' + selectedDoor.name + '\nผล: ' + resMap[overall] + ' (' + ok + '/' + total + ' ผ่าน)';
-    document.getElementById('successScreen').classList.add('show');
+  try{
+    await addDoc(collection(db,'door_submissions'),{
+      doorId:selDoor.id,doorCode:selDoor.code,doorName:selDoor.name,
+      zone:selDoor.zone,inspectorId:user.id,
+      inspectorName:user.displayName||user.username,
+      shift:sh?sh.name:'ไม่ระบุ',overall,answers:as,
+      totalItems,answeredItems:totalItems,okItems:ok,failItems:fail,
+      timestamp:serverTimestamp()
+    });
+    document.getElementById('resultBanner').classList.add('show');
+    document.querySelectorAll('.rb,.note-area').forEach(el=>{el.style.pointerEvents='none';el.style.opacity='.45';});
+    toast('บันทึกเรียบร้อย — '+selDoor.code,'ok');
+    renderDoorList();
+    if(selZone)renderZoneStats(selZone);
     renderZoneGrid();
-    if (selectedZone) renderZoneStats(selectedZone);
-  } catch (e) {
-    showToast('บันทึกไม่สำเร็จ: ' + e.message, 'err');
-    btn.disabled = false;
-    btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> ส่งผลการตรวจ';
+    setTimeout(()=>goPage('p-doors'),1800);
+  }catch(e){
+    submitted=false;btn.disabled=false;btn.textContent='ส่งผลการตรวจสอบ';
+    toast('บันทึกไม่สำเร็จ: '+e.message,'err');
   }
 };
 
-window.afterSubmitNext = function() {
-  document.getElementById('successScreen').classList.remove('show');
-  selectedDoor = null; answers = {};
-  document.getElementById('remarkInput').value = '';
-  if (selectedZone) {
-    renderDoorList(zoneDoors);
-    renderZoneStats(selectedZone);
-    goToStep(2);
-  } else {
-    goToStep(1);
-  }
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-};
-
-// ── ALERT MODAL ──
-window.showAlert = function(title, msg, detail, type) {
-  document.getElementById('alertTitle').textContent = title;
-  document.getElementById('alertMsg').textContent = msg;
-  const detailEl = document.getElementById('alertDetail');
-  if (detail) { detailEl.style.display = ''; detailEl.innerHTML = detail.replace(/\n/g, '<br>'); }
-  else { detailEl.style.display = 'none'; }
-  const iconEl = document.getElementById('alertIcon');
-  if (type === 'err') {
-    iconEl.className = 'alert-icon err';
-    iconEl.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
-  } else {
-    iconEl.className = 'alert-icon warn';
-    iconEl.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
-  }
-  document.getElementById('alertCancelBtn').style.display = 'none';
-  document.getElementById('alertModal').classList.add('open');
-};
-window.closeAlert = function() { document.getElementById('alertModal').classList.remove('open'); };
-
-// ── LOGOUT ──
-window.doLogout = function() {
-  currentUser = null; selectedZone = null; selectedDoor = null; answers = []; todaySubmissions = [];
-  document.getElementById('loginPage').classList.remove('hide');
-  document.getElementById('mainTopbar').style.display = 'none';
-  document.getElementById('mainContent').style.display = 'none';
-  document.getElementById('lockScreen').classList.remove('show');
-  document.getElementById('loginUser').value = ''; document.getElementById('loginPass').value = '';
-  document.getElementById('loginErr').textContent = '';
-};
-
-function showLockScreen() {
-  document.getElementById('lockScreen').classList.add('show');
-  document.getElementById('lockMsg').textContent = 'ขณะนี้ไม่อยู่ในเวลากะที่กำหนด';
-  document.getElementById('lockShiftList').innerHTML = allShifts.map(sh =>
-    '<div class="lock-shift-row"><span style="font-size:13px;font-weight:700">' + sh.name + '</span>' +
-    '<span style="font-size:12px;color:var(--muted)">' + String(sh.startH).padStart(2,'0') + ':00 – ' + String(sh.endH).padStart(2,'0') + ':00</span></div>'
-  ).join('');
-  const cEl = document.getElementById('lockContact');
-  if (adminContact.name) { cEl.innerHTML = '<strong style="color:var(--fg)">' + adminContact.name + '</strong><br>' + (adminContact.role || '') + '<br>' + (adminContact.contact || ''); cEl.style.display = ''; }
-  else cEl.style.display = 'none';
-  document.getElementById('loginPage').classList.add('hide');
-  hideLoading();
-}
-
+window.addEventListener('beforeunload',()=>stopQR());
 init();
 </script>
 
-<!-- QR SCANNER (non-module) -->
+<!-- QR non-module guard -->
 <script>
-var qrStream=null,qrAnimId=null,qrScanning=false,qrLastText='',barcodeDetector=null;
-function qrSetStatus(t){var e=document.getElementById('qrStatusText');if(e)e.textContent=t;}
-window.startQRScanner=function(){
-  var modal=document.getElementById('qrScannerModal'),video=document.getElementById('qrVideo');
-  if(!modal||!video){alert('ไม่พบ element สำหรับสแกน');return;}
-  modal.classList.add('open');qrSetStatus('กำลังขอสิทธิ์กล้อง...');
-  qrStopInternal(false);qrLastText='';
-  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){alert('Browser นี้ไม่รองรับกล้อง');modal.classList.remove('open');return;}
-  if(typeof BarcodeDetector!=='undefined'){try{barcodeDetector=new BarcodeDetector({formats:['qr_code']});}catch(e){barcodeDetector=null;}}else{barcodeDetector=null;}
-  navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false})
-  .then(function(stream){
-    qrStream=stream;video.srcObject=stream;
-    video.onloadedmetadata=function(){video.play().then(function(){waitVideoReady(video,0);}).catch(function(e){qrSetStatus('เล่น video ไม่สำเร็จ: '+e.message);});};
-  }).catch(function(err){
-    var msg=err.message||String(err);
-    if(msg.indexOf('NotAllowed')!==-1||msg.indexOf('Permission')!==-1){qrSetStatus('ไม่ได้รับอนุญาต');alert('กรุณาอนุญาตการเข้าถึงกล้องใน Browser Settings');}
-    else if(msg.indexOf('NotFound')!==-1){qrSetStatus('ไม่พบกล้อง');alert('ไม่พบกล้องในอุปกรณ์นี้');}
-    else{qrSetStatus('เปิดกล้องไม่สำเร็จ');alert('ไม่สามารถเปิดกล้องได้: '+msg);}
-    modal.classList.remove('open');
-  });
-};
-function waitVideoReady(video,attempt){
-  if(attempt>50){qrSetStatus('กล้องโหลดช้า ลองใหม่อีกครั้ง');return;}
-  if(video.readyState>=2&&video.videoWidth>0&&video.videoHeight>0){qrScanning=true;qrSetStatus('กำลังสแกน QR...');qrScanFrame();}
-  else{setTimeout(function(){waitVideoReady(video,attempt+1);},150);}
-}
-function qrScanFrame(){
-  if(!qrScanning)return;
-  var video=document.getElementById('qrVideo'),canvas=document.getElementById('qrCanvas');
-  if(!video||!canvas)return;
-  if(video.readyState>=2&&video.videoWidth>0&&video.videoHeight>0){
-    var w=video.videoWidth,h=video.videoHeight;
-    canvas.width=w;canvas.height=h;
-    var ctx=canvas.getContext('2d',{willReadFrequently:true});
-    ctx.drawImage(video,0,0,w,h);
-    if(barcodeDetector){
-      barcodeDetector.detect(canvas).then(function(barcodes){
-        if(barcodes&&barcodes.length>0){var t=barcodes[0].rawValue;if(t&&t!==qrLastText){qrLastText=t;qrSetStatus('พบ QR!');qrStopInternal(true);if(typeof handleQRResult==='function')handleQRResult(t);return;}}
-        tryJsQR(ctx,w,h);
-      }).catch(function(){tryJsQR(ctx,w,h);});
-    }else{tryJsQR(ctx,w,h);}
-  }else{qrAnimId=requestAnimationFrame(qrScanFrame);}
-}
-function tryJsQR(ctx,w,h){
-  if(window.jsQR){try{var id=ctx.getImageData(0,0,w,h),code=window.jsQR(id.data,w,h,{inversionAttempts:'attemptBoth'});if(code&&code.data&&code.data!==qrLastText){qrLastText=code.data;qrSetStatus('พบ QR!');qrStopInternal(true);if(typeof handleQRResult==='function')handleQRResult(code.data);return;}}catch(e){}}
-  if(qrScanning)qrAnimId=requestAnimationFrame(qrScanFrame);
-}
-function qrStopInternal(closeModal){
-  qrScanning=false;
-  if(qrAnimId){cancelAnimationFrame(qrAnimId);qrAnimId=null;}
-  var video=document.getElementById('qrVideo');
-  if(video){try{video.pause();}catch(e){}try{video.srcObject=null;}catch(e){}}
-  if(qrStream){qrStream.getTracks().forEach(function(t){try{t.stop();}catch(e){}});qrStream=null;}
-  if(closeModal){var m=document.getElementById('qrScannerModal');if(m)m.classList.remove('open');}
-}
-window.stopQRScanner=function(){qrStopInternal(true);};
-window.addEventListener('beforeunload',function(){qrStopInternal(false);});
+// ensure jsQR global accessible from module
+window.addEventListener('load',function(){
+  if(typeof jsQR!=='undefined')window.jsQR=jsQR;
+});
 </script>
-
 </body>
 </html>
