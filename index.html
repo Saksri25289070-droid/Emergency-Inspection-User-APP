@@ -16,7 +16,7 @@
   --orange:#F59E0B;--purple:#7C3AED;
   --grad:linear-gradient(90deg,#2168FD 0%,#1E71FA 22%,#37B1D3 55%,#39D6CB 78%,#3AE4C9 100%);
   --grad-d:linear-gradient(135deg,#2168FD 0%,#37B1D3 50%,#3AE4C9 100%);
-  --shadow:0 4px 24px rgba(0,0,0,.4);
+  --shadow:0 4px 24px rgba(0,0,0,.5);
   --radius:14px;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -27,19 +27,19 @@ input,select,textarea,button{font-family:inherit}
 button{cursor:pointer}
 
 /* SPINNER */
-.spin{width:28px;height:28px;border:2.5px solid rgba(255,255,255,.12);border-top-color:#2266FF;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
+.spin{width:26px;height:26px;border:2.5px solid rgba(255,255,255,.1);border-top-color:#2266FF;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* LOADING OVERLAY */
-#loadingOverlay{position:fixed;inset:0;background:#0A0F1A;z-index:9000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+/* LOADING */
+#loadingOverlay{position:fixed;inset:0;background:var(--bg);z-index:9000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
 #loadingOverlay.hide{display:none}
-.load-logo{width:56px;height:56px;border-radius:16px;background:var(--grad-d);display:flex;align-items:center;justify-content:center}
+.load-logo{width:52px;height:52px;border-radius:16px;background:var(--grad-d);display:flex;align-items:center;justify-content:center}
 .load-text{font-size:13px;font-weight:700;color:var(--muted)}
 
 /* LOGIN */
-#loginPage{position:fixed;inset:0;background:linear-gradient(135deg,#060B14 0%,#0D1B35 50%,#091428 100%);display:flex;align-items:center;justify-content:center;padding:16px;z-index:800;overflow-y:auto}
+#loginPage{position:fixed;inset:0;background:linear-gradient(135deg,#060B14 0%,#0D1B35 50%,#091428 100%);display:flex;align-items:center;justify-content:center;padding:20px;z-index:800;overflow-y:auto}
 #loginPage.hide{display:none}
-.login-box{background:rgba(17,24,39,.95);border:1px solid var(--border-hi);border-radius:20px;padding:36px 28px;width:100%;max-width:380px;box-shadow:var(--shadow);backdrop-filter:blur(8px)}
+.login-box{background:rgba(17,24,39,.96);border:1px solid var(--border-hi);border-radius:20px;padding:36px 28px;width:100%;max-width:380px;box-shadow:var(--shadow)}
 .login-logo{width:52px;height:52px;border-radius:14px;background:var(--grad-d);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
 .login-h1{font-size:22px;font-weight:900;text-align:center;letter-spacing:-.5px;margin-bottom:4px}
 .login-sub{font-size:12px;color:var(--muted);text-align:center;margin-bottom:24px;line-height:1.6}
@@ -69,48 +69,86 @@ button{cursor:pointer}
 @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(74,222,128,.4)}70%{opacity:.7;box-shadow:0 0 0 4px rgba(74,222,128,0)}}
 
 /* MAIN */
-.main{padding-top:55px;padding-bottom:40px;min-height:100vh}
+.main{padding-top:55px;padding-bottom:60px;min-height:100vh}
 .container{max-width:640px;margin:0 auto;padding:20px 16px}
+
+/* STEP INDICATOR */
+.steps{display:flex;align-items:center;gap:0;margin-bottom:20px}
+.step{display:flex;align-items:center;gap:7px;flex:1}
+.step-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;transition:all .2s}
+.step-num.done{background:var(--green);color:#000}
+.step-num.active{background:var(--grad-d);color:#fff}
+.step-num.idle{background:rgba(255,255,255,.06);color:var(--dim);border:1.5px solid var(--border-hi)}
+.step-label{font-size:11px;font-weight:700;transition:color .2s}
+.step-label.active{color:var(--fg)}
+.step-label.done{color:var(--green)}
+.step-label.idle{color:var(--dim)}
+.step-line{flex:1;height:2px;background:var(--border-hi);margin:0 8px;border-radius:2px;transition:background .3s}
+.step-line.done{background:var(--green)}
 
 /* CARD */
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:14px;position:relative;overflow:hidden}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
 .card-title{font-size:13px;font-weight:800;color:var(--fg);margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.card-title svg{flex-shrink:0}
+
+/* ZONE SELECT */
+.zone-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.zone-btn{background:rgba(255,255,255,.03);border:1.5px solid var(--border-hi);border-radius:12px;padding:14px 12px;text-align:left;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
+.zone-btn:hover{background:rgba(34,102,255,.08);border-color:rgba(34,102,255,.3)}
+.zone-btn.selected{background:rgba(34,102,255,.12);border-color:rgba(34,102,255,.5)}
+.zone-btn::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--grad-v);opacity:0;transition:opacity .2s}
+.zone-btn.selected::before{opacity:1}
+.zone-name{font-size:13px;font-weight:800;color:var(--fg);margin-bottom:3px}
+.zone-count{font-size:11px;color:var(--muted)}
+.zone-progress{margin-top:7px;height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+.zone-progress-fill{height:100%;background:var(--grad);border-radius:2px;transition:width .4s}
+.zone-done-badge{position:absolute;top:8px;right:8px;width:16px;height:16px;border-radius:50%;background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.3);display:flex;align-items:center;justify-content:center}
 
 /* DOOR SELECT */
-.door-select-wrap{margin-bottom:14px}
-.door-select-wrap label{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:7px}
-.door-search-row{display:flex;gap:8px}
+.door-search-row{display:flex;gap:8px;margin-bottom:10px}
 .door-input{flex:1;padding:12px 14px;border:1.5px solid var(--border-hi);border-radius:10px;font-size:14px;font-weight:600;color:var(--fg);background:rgba(255,255,255,.04);outline:none;transition:all .2s}
 .door-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(34,102,255,.1)}
-.btn-scan{padding:12px 16px;background:var(--grad-d);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;gap:7px;flex-shrink:0;transition:opacity .15s,transform .1s}
+.btn-scan{padding:12px 16px;background:var(--grad-d);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;gap:6px;flex-shrink:0;transition:opacity .15s,transform .1s;white-space:nowrap}
 .btn-scan:active{opacity:.8;transform:scale(.97)}
-.door-info-card{background:rgba(34,102,255,.05);border:1px solid rgba(34,102,255,.18);border-radius:10px;padding:14px 16px;margin-top:10px;display:none}
+
+/* DOOR LIST */
+.door-list{display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto}
+.door-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;border:1.5px solid var(--border-hi);background:rgba(255,255,255,.02);cursor:pointer;transition:all .15s;position:relative}
+.door-row:hover{background:rgba(34,102,255,.08);border-color:rgba(34,102,255,.3)}
+.door-row.selected{background:rgba(34,102,255,.12);border-color:rgba(34,102,255,.5)}
+.door-row.inspected{cursor:default;opacity:.7}
+.door-row.inspected:hover{background:rgba(255,255,255,.02);border-color:var(--border-hi)}
+.door-row-code{font-size:12px;font-weight:800;color:var(--blue-light);background:rgba(34,102,255,.1);border:1px solid rgba(34,102,255,.2);border-radius:5px;padding:2px 8px;flex-shrink:0;min-width:64px;text-align:center}
+.door-row-info{flex:1;min-width:0}
+.door-row-name{font-size:13px;font-weight:700;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.door-row-meta{font-size:10px;color:var(--dim);margin-top:1px}
+.door-status-badge{flex-shrink:0;font-size:9px;font-weight:800;padding:3px 8px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase}
+.dsb-ok{background:rgba(74,222,128,.1);color:#4ADE80;border:1px solid rgba(74,222,128,.2)}
+.dsb-fail{background:rgba(239,68,68,.1);color:#FCA5A5;border:1px solid rgba(239,68,68,.2)}
+.dsb-cond{background:rgba(245,158,11,.1);color:#FCD34D;border:1px solid rgba(245,158,11,.2)}
+.dsb-none{background:rgba(255,255,255,.04);color:var(--dim);border:1px solid var(--border-hi)}
+
+/* SELECTED DOOR INFO */
+.door-info-card{background:rgba(34,102,255,.05);border:1px solid rgba(34,102,255,.18);border-radius:10px;padding:14px 16px;margin-bottom:14px;display:none}
 .door-info-card.show{display:block}
-.door-code-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(34,102,255,.12);border:1px solid rgba(34,102,255,.25);border-radius:6px;padding:3px 10px;font-size:12px;font-weight:800;color:var(--blue-light);margin-bottom:8px}
-.door-name{font-size:16px;font-weight:800;color:var(--fg);margin-bottom:4px}
-.door-meta{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.door-not-found{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:10px;padding:12px 16px;margin-top:10px;font-size:13px;color:#FCA5A5;display:none}
-.door-not-found.show{display:block}
+.door-code-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(34,102,255,.12);border:1px solid rgba(34,102,255,.25);border-radius:6px;padding:3px 10px;font-size:12px;font-weight:800;color:var(--blue-light);margin-bottom:7px}
+.door-name{font-size:16px;font-weight:800;margin-bottom:4px}
+.door-meta-row{font-size:12px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 
 /* CHECKLIST */
 .cl-section{margin-bottom:18px}
-.cl-sec-title{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue-light);margin-bottom:8px;padding:8px 12px;background:rgba(34,102,255,.06);border-radius:8px;border:1px solid rgba(34,102,255,.12)}
+.cl-sec-title{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue-light);padding:8px 12px;background:rgba(34,102,255,.06);border-radius:8px;border:1px solid rgba(34,102,255,.12);margin-bottom:8px}
 .cl-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;border:1px solid transparent;margin-bottom:4px;transition:all .15s;background:rgba(255,255,255,.02)}
 .cl-item:hover{background:rgba(255,255,255,.04);border-color:var(--border)}
-.cl-item-text{flex:1;font-size:14px;font-weight:500;color:var(--fg);line-height:1.4}
+.cl-item-text{flex:1;font-size:14px;font-weight:500;line-height:1.4}
 .cl-opts{display:flex;gap:6px;flex-shrink:0}
 .cl-opt{padding:6px 12px;border-radius:7px;border:1.5px solid var(--border-hi);background:transparent;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
-.cl-opt:hover{border-color:var(--border-hi)}
 .cl-opt.ok{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.35);color:var(--green)}
 .cl-opt.fail{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:#FCA5A5}
 .cl-opt.na{background:rgba(107,114,128,.1);border-color:rgba(107,114,128,.3);color:var(--dim)}
-
-/* REMARK */
-.remark-wrap{margin-top:10px;display:none}
+.remark-wrap{margin-top:6px;display:none}
 .remark-wrap.show{display:block}
-.remark-input{width:100%;padding:10px 12px;border:1.5px solid var(--border-hi);border-radius:9px;background:rgba(255,255,255,.04);font-size:13px;color:var(--fg);outline:none;resize:vertical;min-height:70px;transition:border-color .2s;font-family:'Manrope',sans-serif}
+.remark-input{width:100%;padding:10px 12px;border:1.5px solid var(--border-hi);border-radius:9px;background:rgba(255,255,255,.04);font-size:13px;color:var(--fg);outline:none;resize:vertical;min-height:68px;transition:border-color .2s;font-family:'Manrope',sans-serif}
 .remark-input:focus{border-color:var(--blue)}
 
 /* PROGRESS */
@@ -120,85 +158,101 @@ button{cursor:pointer}
 .progress-fill{height:100%;background:var(--grad);border-radius:3px;transition:width .4s ease}
 .progress-pct{font-size:12px;font-weight:800;color:var(--blue-light)}
 
+/* RESULT CHIPS */
+.result-preview{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.res-chip{flex:1;min-width:72px;text-align:center;padding:12px 8px;border-radius:10px;border:1px solid var(--border-hi)}
+.res-num{font-size:22px;font-weight:900;letter-spacing:-1px}
+.res-lbl{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+
 /* SUBMIT */
-.submit-section{margin-top:20px}
-.result-preview{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
-.res-chip{flex:1;min-width:80px;text-align:center;padding:12px 8px;border-radius:10px;border:1px solid var(--border-hi)}
-.res-num{font-size:24px;font-weight:900;letter-spacing:-1px}
-.res-lbl{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
 .btn-submit{width:100%;padding:16px;background:var(--grad-d);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:800;letter-spacing:.3px;transition:opacity .15s,transform .1s;display:flex;align-items:center;justify-content:center;gap:10px}
-.btn-submit:disabled{opacity:.4;cursor:not-allowed}
+.btn-submit:disabled{opacity:.35;cursor:not-allowed}
 .btn-submit:not(:disabled):active{opacity:.85;transform:scale(.98)}
-.btn-submit.loading{opacity:.7;cursor:not-allowed}
 
-/* BADGE */
-.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase}
-.bg{background:rgba(74,222,128,.1);color:#4ADE80;border:1px solid rgba(74,222,128,.2)}
-.bb{background:rgba(34,102,255,.1);color:var(--blue-light);border:1px solid rgba(34,102,255,.2)}
-.br{background:rgba(239,68,68,.1);color:#FCA5A5;border:1px solid rgba(239,68,68,.2)}
-.bo{background:rgba(245,158,11,.1);color:#FCD34D;border:1px solid rgba(245,158,11,.2)}
+/* BACK BUTTON */
+.btn-back{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9px;border:1px solid var(--border-hi);background:rgba(255,255,255,.04);font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;margin-bottom:14px;transition:all .15s}
+.btn-back:hover{background:rgba(255,255,255,.08);color:var(--fg)}
 
-/* SUCCESS SCREEN */
-#successScreen{display:none;position:fixed;inset:0;z-index:700;background:rgba(10,15,26,.97);align-items:center;justify-content:center;padding:20px;flex-direction:column;gap:20px}
+/* SUCCESS */
+#successScreen{display:none;position:fixed;inset:0;z-index:700;background:rgba(10,15,26,.97);align-items:center;justify-content:center;padding:20px;flex-direction:column;gap:20px;text-align:center}
 #successScreen.show{display:flex}
 .success-icon{width:72px;height:72px;border-radius:50%;background:rgba(74,222,128,.12);border:2px solid rgba(74,222,128,.35);display:flex;align-items:center;justify-content:center;animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
 @keyframes popIn{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
-.success-title{font-size:24px;font-weight:900;letter-spacing:-.5px;text-align:center}
-.success-sub{font-size:14px;color:var(--muted);text-align:center;line-height:1.6}
-.btn-next{padding:14px 32px;background:var(--grad-d);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:800;transition:opacity .15s}
-.btn-next:active{opacity:.85}
+.success-title{font-size:24px;font-weight:900;letter-spacing:-.5px}
+.success-sub{font-size:14px;color:var(--muted);line-height:1.6;max-width:300px}
+.btn-next{padding:14px 32px;background:var(--grad-d);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:800}
 
-/* QR SCANNER MODAL */
+/* QR MODAL */
 #qrScannerModal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.92);align-items:center;justify-content:center;padding:16px}
 #qrScannerModal.open{display:flex}
 .qr-modal-box{width:100%;max-width:480px;background:var(--card);border:1px solid var(--border-hi);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
 .qr-modal-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)}
-.qr-modal-hdr h3{font-size:16px;font-weight:800;letter-spacing:-.3px}
-.btn-close-qr{width:32px;height:32px;border-radius:8px;border:1px solid var(--border-hi);background:rgba(239,68,68,.08);color:#FCA5A5;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}
-.btn-close-qr:hover{background:rgba(239,68,68,.18)}
-#qrVideo{width:100%;display:block;background:#000;min-height:240px;max-height:360px;object-fit:cover}
+.qr-modal-hdr h3{font-size:16px;font-weight:800}
+.btn-close-qr{width:32px;height:32px;border-radius:8px;border:1px solid var(--border-hi);background:rgba(239,68,68,.08);color:#FCA5A5;display:flex;align-items:center;justify-content:center;cursor:pointer}
+#qrVideo{width:100%;display:block;background:#000;max-height:320px;object-fit:cover}
 #qrCanvas{display:none;position:absolute}
-.qr-status-bar{padding:14px 20px;background:rgba(255,255,255,.02);border-top:1px solid var(--border)}
-.qr-status-text{font-size:13px;font-weight:600;color:var(--muted);text-align:center}
 .qr-scan-overlay{position:relative}
-.qr-viewfinder{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:200px;height:200px;pointer-events:none}
-.qr-viewfinder::before,.qr-viewfinder::after{content:'';position:absolute;width:28px;height:28px}
-.qr-corner{position:absolute;width:28px;height:28px}
+.qr-viewfinder{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:190px;height:190px;pointer-events:none}
+.qr-corner{position:absolute;width:26px;height:26px}
 .qr-corner.tl{top:0;left:0;border-top:3px solid var(--teal);border-left:3px solid var(--teal)}
 .qr-corner.tr{top:0;right:0;border-top:3px solid var(--teal);border-right:3px solid var(--teal)}
 .qr-corner.bl{bottom:0;left:0;border-bottom:3px solid var(--teal);border-left:3px solid var(--teal)}
 .qr-corner.br{bottom:0;right:0;border-bottom:3px solid var(--teal);border-right:3px solid var(--teal)}
-.qr-scan-line{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--teal),transparent);animation:scanLine 2s ease-in-out infinite;top:0}
+.qr-scan-line{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--teal),transparent);animation:scanLine 2s ease-in-out infinite}
 @keyframes scanLine{0%,100%{top:10px;opacity:.8}50%{top:calc(100% - 10px);opacity:1}}
+.qr-status-bar{padding:14px 20px;border-top:1px solid var(--border)}
+.qr-status-text{font-size:13px;font-weight:600;color:var(--muted);text-align:center}
+
+/* ALERT MODAL */
+#alertModal{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:20px}
+#alertModal.open{display:flex}
+.alert-box{background:var(--card);border:1px solid var(--border-hi);border-radius:20px;padding:32px 28px;width:100%;max-width:360px;text-align:center;box-shadow:var(--shadow);animation:popIn .3s cubic-bezier(.34,1.56,.64,1)}
+.alert-icon{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.alert-icon.warn{background:rgba(245,158,11,.12);border:2px solid rgba(245,158,11,.3)}
+.alert-icon.err{background:rgba(239,68,68,.12);border:2px solid rgba(239,68,68,.3)}
+.alert-title{font-size:18px;font-weight:900;margin-bottom:8px;letter-spacing:-.3px}
+.alert-msg{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:20px}
+.alert-detail{background:rgba(255,255,255,.04);border:1px solid var(--border-hi);border-radius:10px;padding:12px 14px;margin-bottom:20px;text-align:left;font-size:12px;color:var(--muted);line-height:1.6}
+.btn-alert-ok{width:100%;padding:13px;background:var(--grad-d);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:800;cursor:pointer;transition:opacity .15s}
+.btn-alert-ok:active{opacity:.85}
+.btn-alert-cancel{width:100%;padding:13px;background:rgba(255,255,255,.06);border:1px solid var(--border-hi);border-radius:10px;color:var(--muted);font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;transition:all .15s}
+.btn-alert-cancel:hover{background:rgba(255,255,255,.1);color:var(--fg)}
 
 /* TOAST */
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);z-index:9998;background:#1F2937;color:var(--fg);padding:11px 20px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:var(--shadow);transition:all .3s cubic-bezier(.4,0,.2,1);white-space:nowrap;max-width:320px;text-align:center;opacity:0}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);z-index:9998;background:#1F2937;color:var(--fg);padding:11px 20px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:var(--shadow);transition:all .3s cubic-bezier(.4,0,.2,1);white-space:nowrap;max-width:320px;text-align:center;opacity:0;pointer-events:none}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 .toast.ok{border-left:4px solid var(--green)}
 .toast.err{border-left:4px solid var(--red)}
 .toast.info{border-left:4px solid var(--blue)}
 
-/* LOCK SCREEN */
-#lockScreen{display:none;position:fixed;inset:0;z-index:850;background:linear-gradient(135deg,#060B14 0%,#0D1B35 100%);align-items:center;justify-content:center;padding:20px;flex-direction:column;gap:20px;text-align:center}
+/* LOCK */
+#lockScreen{display:none;position:fixed;inset:0;z-index:850;background:linear-gradient(135deg,#060B14,#0D1B35);align-items:center;justify-content:center;padding:20px;flex-direction:column;gap:20px;text-align:center}
 #lockScreen.show{display:flex}
 .lock-icon{width:64px;height:64px;border-radius:50%;background:rgba(245,158,11,.1);border:2px solid rgba(245,158,11,.25);display:flex;align-items:center;justify-content:center}
 .lock-title{font-size:22px;font-weight:900;letter-spacing:-.5px}
-.lock-msg{font-size:14px;color:var(--muted);line-height:1.7;max-width:320px}
-.lock-shifts{display:flex;flex-direction:column;gap:8px;margin:8px 0;width:100%;max-width:280px}
+.lock-msg{font-size:14px;color:var(--muted);line-height:1.7;max-width:300px}
+.lock-shifts{display:flex;flex-direction:column;gap:8px;width:100%;max-width:280px}
 .lock-shift-row{background:rgba(255,255,255,.03);border:1px solid var(--border-hi);border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
-.lock-shift-name{font-size:13px;font-weight:700}
-.lock-shift-time{font-size:12px;color:var(--muted);font-weight:600}
 .lock-contact{background:rgba(34,102,255,.06);border:1px solid rgba(34,102,255,.15);border-radius:10px;padding:14px 18px;font-size:13px;color:var(--muted);line-height:1.6;max-width:300px}
 
-/* EMPTY STATE */
+/* BADGE */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase}
+.bb{background:rgba(34,102,255,.1);color:var(--blue-light);border:1px solid rgba(34,102,255,.2)}
+
+/* EMPTY */
 .empty-state{text-align:center;padding:40px 20px;color:var(--dim)}
-.empty-state svg{opacity:.4;margin-bottom:12px}
-.empty-state p{font-size:14px;font-weight:600}
+
+/* SUMMARY STATS */
+.zone-stats{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.zone-stat{flex:1;min-width:80px;background:rgba(255,255,255,.03);border:1px solid var(--border-hi);border-radius:10px;padding:10px;text-align:center}
+.zone-stat-num{font-size:20px;font-weight:900;letter-spacing:-1px}
+.zone-stat-lbl{font-size:9px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
 
 @media(max-width:480px){
   .cl-item{flex-direction:column;align-items:flex-start;gap:10px}
   .cl-opts{width:100%}
   .cl-opt{flex:1;text-align:center}
+  .zone-grid{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 </head>
@@ -206,19 +260,15 @@ button{cursor:pointer}
 
 <!-- LOADING -->
 <div id="loadingOverlay">
-  <div class="load-logo">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-  </div>
+  <div class="load-logo"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
   <div class="spin"></div>
-  <div class="load-text" id="loadText">กำลังเชื่อมต่อ...</div>
+  <div class="load-text" id="loadText">กำลังโหลด...</div>
 </div>
 
 <!-- LOGIN -->
 <div id="loginPage">
   <div class="login-box">
-    <div class="login-logo">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-    </div>
+    <div class="login-logo"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
     <div class="login-h1">WD Security</div>
     <div class="login-sub">Emergency Door Inspection<br>Western Digital — Security MFM</div>
     <div class="lf"><label>Username</label><input type="text" id="loginUser" placeholder="username" autocomplete="username"></div>
@@ -233,19 +283,12 @@ button{cursor:pointer}
   <div class="topbar-grad"></div>
   <div class="topbar-inner">
     <div class="topbar-brand">
-      <div class="topbar-logo">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      </div>
-      <div>
-        <div class="topbar-title">Door Inspection</div>
-        <div class="topbar-sub" id="topbarUser">Inspector</div>
-      </div>
+      <div class="topbar-logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <div><div class="topbar-title">Door Inspection</div><div class="topbar-sub" id="topbarUser">Inspector</div></div>
     </div>
     <div class="topbar-right">
       <div class="shift-badge" id="shiftBadge"><div class="sb-dot"></div><span id="shiftBadgeText">--</span></div>
-      <button class="tb-btn" onclick="doLogout()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-      </button>
+      <button class="tb-btn" onclick="doLogout()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
       <div class="tb-avatar" id="tbAvatar">IN</div>
     </div>
   </div>
@@ -253,143 +296,164 @@ button{cursor:pointer}
 
 <!-- LOCK SCREEN -->
 <div id="lockScreen">
-  <div class="lock-icon">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-  </div>
+  <div class="lock-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
   <div class="lock-title">นอกเวลากะ</div>
-  <div class="lock-msg" id="lockMsg">ขณะนี้ไม่อยู่ในเวลากะที่กำหนด<br>กรุณาติดต่อ Admin</div>
+  <div class="lock-msg" id="lockMsg">ขณะนี้ไม่อยู่ในเวลากะที่กำหนด</div>
   <div class="lock-shifts" id="lockShiftList"></div>
-  <div class="lock-contact" id="lockContact"></div>
+  <div class="lock-contact" id="lockContact" style="display:none"></div>
 </div>
 
 <!-- MAIN -->
 <div class="main" id="mainContent" style="display:none">
   <div class="container">
 
-    <!-- DOOR SELECTION -->
-    <div class="card">
-      <div class="card-title">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        เลือกประตู
+    <!-- STEP INDICATOR -->
+    <div class="steps" id="stepBar">
+      <div class="step">
+        <div class="step-num active" id="sn1">1</div>
+        <div class="step-label active" id="sl1">เลือกพื้นที่</div>
       </div>
-      <div class="door-select-wrap">
-        <label>รหัสประตู / สแกน QR</label>
+      <div class="step-line" id="stl1"></div>
+      <div class="step">
+        <div class="step-num idle" id="sn2">2</div>
+        <div class="step-label idle" id="sl2">เลือกประตู</div>
+      </div>
+      <div class="step-line" id="stl2"></div>
+      <div class="step">
+        <div class="step-num idle" id="sn3">3</div>
+        <div class="step-label idle" id="sl3">ตรวจสอบ</div>
+      </div>
+    </div>
+
+    <!-- STEP 1: ZONE -->
+    <div id="step1">
+      <div class="card">
+        <div class="card-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          เลือกพื้นที่ตรวจสอบ
+        </div>
+        <div class="zone-grid" id="zoneGrid">
+          <div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--dim)"><div class="spin"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: DOOR -->
+    <div id="step2" style="display:none">
+      <button class="btn-back" onclick="goToStep(1)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        กลับเลือกพื้นที่
+      </button>
+      <div class="card">
+        <div class="card-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span id="zoneTitleLabel">เลือกประตู</span>
+        </div>
+
+        <!-- Zone stats -->
+        <div class="zone-stats" id="zoneStats"></div>
+
+        <!-- Search + Scan -->
         <div class="door-search-row">
-          <input class="door-input" id="doorCodeInput" placeholder="พิมพ์รหัสประตู เช่น P1001" oninput="onDoorInput()" autocomplete="off" autocorrect="off" spellcheck="false">
+          <input class="door-input" id="doorSearchInput" placeholder="ค้นหารหัสหรือชื่อประตู..." oninput="filterDoorList()" autocomplete="off" autocorrect="off" spellcheck="false">
           <button class="btn-scan" onclick="startQRScanner()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/><rect x="3" y="16" width="5" height="5" rx="1"/><path d="M21 16h-3v3M21 21h-3M16 16v5"/></svg>
-            สแกน
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/><rect x="3" y="16" width="5" height="5" rx="1"/><path d="M21 16h-3v3M21 21h-3M16 16v5"/></svg>
+            สแกน QR
           </button>
         </div>
-        <div id="doorDropdown" style="display:none;background:var(--card2);border:1px solid var(--border-hi);border-radius:10px;margin-top:6px;max-height:200px;overflow-y:auto"></div>
+        <div class="door-list" id="doorList"></div>
       </div>
-      <div class="door-info-card" id="doorInfoCard">
+    </div>
+
+    <!-- STEP 3: CHECKLIST -->
+    <div id="step3" style="display:none">
+      <button class="btn-back" onclick="goToStep(2)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        กลับเลือกประตู
+      </button>
+      <div class="door-info-card show" id="doorInfoCard">
         <div class="door-code-tag" id="doorCodeTag">--</div>
         <div class="door-name" id="doorNameText">--</div>
-        <div class="door-meta">
-          <span id="doorZoneText" class="badge bb">--</span>
+        <div class="door-meta-row">
+          <span class="badge bb" id="doorZoneText">--</span>
           <span id="doorTypeText" style="font-size:12px;color:var(--muted)">--</span>
-          <span id="doorLocationText" style="font-size:12px;color:var(--dim)">--</span>
         </div>
       </div>
-      <div class="door-not-found" id="doorNotFound">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;margin-right:6px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-        ไม่พบประตูรหัสนี้ในระบบ
-      </div>
-    </div>
-
-    <!-- CHECKLIST -->
-    <div class="card" id="checklistCard" style="display:none">
-      <div class="card-title">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        แบบฟอร์มตรวจสอบ
-        <span class="badge bb" id="shiftBadge2" style="margin-left:auto">--</span>
-      </div>
-      <div class="progress-wrap">
-        <div class="progress-label">
-          <span style="font-size:12px;font-weight:700;color:var(--muted)">ความคืบหน้า</span>
-          <span class="progress-pct" id="progressPct">0%</span>
+      <div class="card" id="checklistCard">
+        <div class="card-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          แบบฟอร์มตรวจสอบ
+          <span class="badge bb" id="shiftBadge2" style="margin-left:auto">--</span>
         </div>
-        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-      </div>
-      <div id="checklistBody"></div>
-
-      <!-- REMARK -->
-      <div style="margin-top:16px">
-        <div style="font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);margin-bottom:7px">หมายเหตุเพิ่มเติม</div>
-        <textarea class="remark-input" id="remarkInput" placeholder="ระบุข้อสังเกตหรือปัญหาที่พบ (ถ้ามี)"></textarea>
-      </div>
-
-      <!-- SUBMIT -->
-      <div class="submit-section">
-        <div class="result-preview" id="resultPreview">
-          <div class="res-chip" style="border-color:rgba(74,222,128,.2)">
-            <div class="res-num" id="countOk" style="color:#4ADE80">0</div>
-            <div class="res-lbl">ผ่าน</div>
+        <div class="progress-wrap">
+          <div class="progress-label">
+            <span style="font-size:12px;font-weight:700;color:var(--muted)">ความคืบหน้า</span>
+            <span class="progress-pct" id="progressPct">0%</span>
           </div>
-          <div class="res-chip" style="border-color:rgba(239,68,68,.2)">
-            <div class="res-num" id="countFail" style="color:#FCA5A5">0</div>
-            <div class="res-lbl">ไม่ผ่าน</div>
-          </div>
-          <div class="res-chip" style="border-color:rgba(107,114,128,.2)">
-            <div class="res-num" id="countNa" style="color:var(--dim)">0</div>
-            <div class="res-lbl">N/A</div>
-          </div>
-          <div class="res-chip" style="border-color:rgba(34,102,255,.2)">
-            <div class="res-num" id="countTotal" style="color:var(--blue-light)">0</div>
-            <div class="res-lbl">ทั้งหมด</div>
-          </div>
+          <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
         </div>
-        <button class="btn-submit" id="submitBtn" onclick="submitInspection()" disabled>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          ส่งผลการตรวจ
-        </button>
+        <div id="checklistBody"></div>
+        <div style="margin-top:16px">
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);margin-bottom:7px">หมายเหตุเพิ่มเติม</div>
+          <textarea class="remark-input" id="remarkInput" placeholder="ระบุข้อสังเกตหรือปัญหาที่พบ (ถ้ามี)"></textarea>
+        </div>
+        <div style="margin-top:20px">
+          <div class="result-preview">
+            <div class="res-chip" style="border-color:rgba(74,222,128,.2)"><div class="res-num" id="countOk" style="color:#4ADE80">0</div><div class="res-lbl">ผ่าน</div></div>
+            <div class="res-chip" style="border-color:rgba(239,68,68,.2)"><div class="res-num" id="countFail" style="color:#FCA5A5">0</div><div class="res-lbl">ไม่ผ่าน</div></div>
+            <div class="res-chip" style="border-color:rgba(107,114,128,.2)"><div class="res-num" id="countNa" style="color:var(--dim)">0</div><div class="res-lbl">N/A</div></div>
+            <div class="res-chip" style="border-color:rgba(34,102,255,.2)"><div class="res-num" id="countTotal" style="color:var(--blue-light)">0</div><div class="res-lbl">ทั้งหมด</div></div>
+          </div>
+          <button class="btn-submit" id="submitBtn" onclick="submitInspection()" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            ส่งผลการตรวจ
+          </button>
+        </div>
       </div>
-    </div>
-
-    <!-- EMPTY STATE -->
-    <div id="emptyState" style="text-align:center;padding:48px 20px;color:var(--dim)">
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 16px;display:block;opacity:.25"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      <div style="font-size:15px;font-weight:700;color:var(--muted);margin-bottom:6px">เลือกประตูก่อนเริ่มตรวจ</div>
-      <div style="font-size:13px;color:var(--dim)">พิมพ์รหัสประตู หรือกดสแกน QR</div>
     </div>
 
   </div>
 </div>
 
-<!-- SUCCESS SCREEN -->
+<!-- SUCCESS -->
 <div id="successScreen">
-  <div class="success-icon">
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#4ADE80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-  </div>
+  <div class="success-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#4ADE80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
   <div class="success-title">บันทึกสำเร็จ!</div>
   <div class="success-sub" id="successMsg">ส่งผลการตรวจเรียบร้อยแล้ว</div>
-  <button class="btn-next" onclick="resetForm()">ตรวจประตูต่อไป</button>
+  <button class="btn-next" onclick="afterSubmitNext()">ตรวจประตูต่อไป</button>
 </div>
 
-<!-- QR SCANNER MODAL -->
+<!-- QR MODAL -->
 <div id="qrScannerModal">
   <div class="qr-modal-box">
     <div class="qr-modal-hdr">
       <h3>สแกน QR Code</h3>
-      <button class="btn-close-qr" onclick="stopQRScanner()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+      <button class="btn-close-qr" onclick="stopQRScanner()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div class="qr-scan-overlay">
-      <video id="qrVideo" autoplay muted playsinline webkit-playsinline x5-video-player-type="h5" x5-video-player-fullscreen="false" style="width:100%;display:block;background:#000;max-height:320px;object-fit:cover"></video>
+      <video id="qrVideo" autoplay muted playsinline webkit-playsinline x5-video-player-type="h5" style="width:100%;display:block;background:#000;max-height:320px;object-fit:cover"></video>
       <canvas id="qrCanvas" style="display:none;position:absolute;top:0;left:0"></canvas>
       <div class="qr-viewfinder">
-        <div class="qr-corner tl"></div>
-        <div class="qr-corner tr"></div>
-        <div class="qr-corner bl"></div>
-        <div class="qr-corner br"></div>
+        <div class="qr-corner tl"></div><div class="qr-corner tr"></div>
+        <div class="qr-corner bl"></div><div class="qr-corner br"></div>
         <div class="qr-scan-line"></div>
       </div>
     </div>
-    <div class="qr-status-bar">
-      <div class="qr-status-text" id="qrStatusText">กำลังเตรียมกล้อง...</div>
+    <div class="qr-status-bar"><div class="qr-status-text" id="qrStatusText">กำลังเตรียมกล้อง...</div></div>
+  </div>
+</div>
+
+<!-- ALERT MODAL -->
+<div id="alertModal">
+  <div class="alert-box">
+    <div class="alert-icon warn" id="alertIcon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
     </div>
+    <div class="alert-title" id="alertTitle">แจ้งเตือน</div>
+    <div class="alert-msg" id="alertMsg">--</div>
+    <div class="alert-detail" id="alertDetail" style="display:none"></div>
+    <button class="btn-alert-ok" id="alertOkBtn" onclick="closeAlert()">รับทราบ</button>
+    <button class="btn-alert-cancel" id="alertCancelBtn" style="display:none" onclick="closeAlert()">ยกเลิก</button>
   </div>
 </div>
 
@@ -398,7 +462,7 @@ button{cursor:pointer}
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, collection, doc, getDoc, getDocs, addDoc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, collection, doc, getDoc, getDocs, addDoc, setDoc, query, where, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAoOTx0rrzqZ-V2t9QE6FhQQl5dcL81GZc",
@@ -419,33 +483,46 @@ let allDoors = [];
 let allChecklists = [];
 let allShifts = [];
 let adminContact = {};
+let selectedZone = null;
 let selectedDoor = null;
 let answers = {};
-let doorSearchTimeout = null;
+let todaySubmissions = []; // submissions in current shift
+let currentShift = null;
+let zoneDoors = []; // doors in selected zone
+let doorSearchTimer = null;
 
 // ── HELPERS ──
 let toastTimer;
-function showToast(msg, type) {
+window.showToast = function(msg, type) {
   const el = document.getElementById('toast');
   el.textContent = msg;
   el.className = 'toast show ' + (type || 'info');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
-}
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+};
 
 function setLoadText(t) { document.getElementById('loadText').textContent = t; }
 function showLoading() { document.getElementById('loadingOverlay').classList.remove('hide'); }
 function hideLoading() { document.getElementById('loadingOverlay').classList.add('hide'); }
 
 function getCurrentShift(shifts) {
-  const now = new Date();
-  const h = now.getHours();
+  const h = new Date().getHours();
   for (const sh of shifts) {
     const s = sh.startH, e = sh.endH;
     if (s < e) { if (h >= s && h < e) return sh; }
     else { if (h >= s || h < e) return sh; }
   }
   return null;
+}
+
+function getShiftStartTime(sh) {
+  const now = new Date();
+  const start = new Date(now);
+  start.setHours(sh.startH, 0, 0, 0);
+  if (sh.startH > sh.endH && now.getHours() < sh.endH) {
+    start.setDate(start.getDate() - 1);
+  }
+  return start;
 }
 
 // ── INIT ──
@@ -457,7 +534,6 @@ async function init() {
       getDocs(collection(db, 'door_checklists')),
       getDoc(doc(db, 'door_settings', 'config'))
     ]);
-
     allDoors = [];
     doorsSnap.forEach(d => allDoors.push({ id: d.id, ...d.data() }));
     allDoors.sort((a, b) => (a.code || '').localeCompare(b.code || ''));
@@ -473,10 +549,9 @@ async function init() {
     } else {
       allShifts = getDefaultShifts();
     }
-
     hideLoading();
   } catch (e) {
-    setLoadText('โหลดข้อมูลไม่สำเร็จ: ' + e.message);
+    setLoadText('โหลดไม่สำเร็จ: ' + e.message);
   }
 }
 
@@ -489,29 +564,24 @@ function getDefaultShifts() {
 }
 
 // ── LOGIN ──
-window.doLogin = async function () {
+window.doLogin = async function() {
   const username = document.getElementById('loginUser').value.trim();
   const password = document.getElementById('loginPass').value;
   const errEl = document.getElementById('loginErr');
   if (!username || !password) { errEl.textContent = 'กรุณากรอก Username และ Password'; return; }
-
   const btn = document.getElementById('loginBtn');
   btn.disabled = true; btn.textContent = 'กำลังตรวจสอบ...';
   showLoading(); setLoadText('กำลังตรวจสอบ...');
-
   try {
     const snap = await getDocs(collection(db, 'door_users'));
     let found = null;
     snap.forEach(d => {
       const u = d.data();
-      if (u.username === username && u.password === password && u.active !== false) {
-        found = { id: d.id, ...u };
-      }
+      if (u.username === username && u.password === password && u.active !== false) found = { id: d.id, ...u };
     });
-
     if (found) {
       currentUser = found;
-      afterLogin();
+      await afterLogin();
     } else {
       errEl.textContent = 'Username หรือ Password ไม่ถูกต้อง';
       hideLoading();
@@ -526,267 +596,267 @@ window.doLogin = async function () {
 document.getElementById('loginUser').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('loginPass').focus(); });
 document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') window.doLogin(); });
 
-function afterLogin() {
-  const currentShift = getCurrentShift(allShifts);
+async function afterLogin() {
+  currentShift = getCurrentShift(allShifts);
+  if (!currentShift) { showLockScreen(); hideLoading(); return; }
 
-  if (!currentShift) {
-    showLockScreen();
-    hideLoading();
-    return;
-  }
+  // Load today submissions in current shift
+  await loadShiftSubmissions();
 
   document.getElementById('loginPage').classList.add('hide');
   document.getElementById('mainTopbar').style.display = '';
   document.getElementById('mainContent').style.display = '';
   hideLoading();
 
-  const initials = (currentUser.displayName || currentUser.username || 'IN')
-    .split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+  const initials = (currentUser.displayName || currentUser.username || 'IN').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
   document.getElementById('tbAvatar').textContent = initials;
   document.getElementById('topbarUser').textContent = currentUser.displayName || currentUser.username;
   document.getElementById('shiftBadgeText').textContent = currentShift.name;
   document.getElementById('shiftBadge2').textContent = currentShift.name;
 
+  renderZoneGrid();
+  goToStep(1);
+
+  // URL param auto-select
   const params = new URLSearchParams(window.location.search);
   const doorParam = params.get('door') || params.get('code') || params.get('id');
-  if (doorParam) {
-    setTimeout(() => handleQRResult(doorParam), 300);
-  }
+  if (doorParam) setTimeout(() => handleQRResult(doorParam), 400);
 
   showToast('ยินดีต้อนรับ ' + (currentUser.displayName || currentUser.username), 'ok');
 }
 
-function showLockScreen() {
-  const lockEl = document.getElementById('lockScreen');
-  lockEl.classList.add('show');
+async function loadShiftSubmissions() {
+  try {
+    const shiftStart = getShiftStartTime(currentShift);
+    const snap = await getDocs(collection(db, 'door_submissions'));
+    todaySubmissions = [];
+    snap.forEach(d => {
+      const s = d.data();
+      const ts = s.timestamp ? (s.timestamp.toDate ? s.timestamp.toDate() : new Date(s.timestamp)) : null;
+      if (ts && ts >= shiftStart && s.shift === currentShift.name) {
+        todaySubmissions.push({ id: d.id, ...s });
+      }
+    });
+  } catch (e) {
+    todaySubmissions = [];
+  }
+}
 
-  document.getElementById('lockMsg').innerHTML =
-    'ขณะนี้ไม่อยู่ในเวลากะที่กำหนด<br>ไม่สามารถใช้งานได้';
+function isDoorInspected(doorCode) {
+  return todaySubmissions.find(s => s.doorCode === doorCode);
+}
 
-  const shiftList = document.getElementById('lockShiftList');
-  shiftList.innerHTML = allShifts.map(sh =>
-    '<div class="lock-shift-row"><span class="lock-shift-name">' + sh.name + '</span>' +
-    '<span class="lock-shift-time">' + String(sh.startH).padStart(2, '0') + ':00 – ' + String(sh.endH).padStart(2, '0') + ':00</span></div>'
-  ).join('');
+// ── STEP NAVIGATION ──
+window.goToStep = function(step) {
+  document.getElementById('step1').style.display = step === 1 ? '' : 'none';
+  document.getElementById('step2').style.display = step === 2 ? '' : 'none';
+  document.getElementById('step3').style.display = step === 3 ? '' : 'none';
 
-  const contactEl = document.getElementById('lockContact');
-  if (adminContact.name) {
-    contactEl.innerHTML =
-      '<strong style="color:var(--fg)">' + adminContact.name + '</strong><br>' +
-      (adminContact.role ? adminContact.role + '<br>' : '') +
-      (adminContact.contact ? adminContact.contact : '');
-    contactEl.style.display = '';
-  } else {
-    contactEl.style.display = 'none';
+  for (let i = 1; i <= 3; i++) {
+    const numEl = document.getElementById('sn' + i);
+    const lblEl = document.getElementById('sl' + i);
+    if (i < step) {
+      numEl.className = 'step-num done';
+      numEl.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+      lblEl.className = 'step-label done';
+    } else if (i === step) {
+      numEl.className = 'step-num active'; numEl.textContent = i;
+      lblEl.className = 'step-label active';
+    } else {
+      numEl.className = 'step-num idle'; numEl.textContent = i;
+      lblEl.className = 'step-label idle';
+    }
+  }
+  for (let i = 1; i <= 2; i++) {
+    document.getElementById('stl' + i).className = 'step-line' + (i < step ? ' done' : '');
+  }
+};
+
+// ── ZONE GRID ──
+function renderZoneGrid() {
+  const zones = [...new Set(allDoors.map(d => d.zone))].sort();
+  const grid = document.getElementById('zoneGrid');
+  if (!zones.length) { grid.innerHTML = '<div style="color:var(--dim);text-align:center;padding:20px">ไม่พบโซนในระบบ — กรุณา Seed ข้อมูล</div>'; return; }
+
+  grid.innerHTML = zones.map(zone => {
+    const doors = allDoors.filter(d => d.zone === zone);
+    const inspected = doors.filter(d => isDoorInspected(d.code)).length;
+    const pct = doors.length > 0 ? Math.round(inspected / doors.length * 100) : 0;
+    const allDone = inspected === doors.length && doors.length > 0;
+    return '<button class="zone-btn" onclick="selectZone(\'' + zone.replace(/'/g, "\\'") + '\')" id="zone-btn-' + encodeURIComponent(zone) + '">' +
+      (allDone ? '<div class="zone-done-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#4ADE80" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>' : '') +
+      '<div class="zone-name">' + zone + '</div>' +
+      '<div class="zone-count">' + inspected + '/' + doors.length + ' ตรวจแล้ว</div>' +
+      '<div class="zone-progress"><div class="zone-progress-fill" style="width:' + pct + '%"></div></div>' +
+      '</button>';
+  }).join('');
+}
+
+window.selectZone = function(zone) {
+  selectedZone = zone;
+  zoneDoors = allDoors.filter(d => d.zone === zone).sort((a, b) => (a.code || '').localeCompare(b.code || ''));
+  document.getElementById('zoneTitleLabel').textContent = zone + ' — เลือกประตู';
+  document.getElementById('doorSearchInput').value = '';
+  renderDoorList(zoneDoors);
+  renderZoneStats(zone);
+  goToStep(2);
+};
+
+function renderZoneStats(zone) {
+  const doors = allDoors.filter(d => d.zone === zone);
+  const inspected = doors.filter(d => isDoorInspected(d.code)).length;
+  const remaining = doors.length - inspected;
+  document.getElementById('zoneStats').innerHTML =
+    '<div class="zone-stat"><div class="zone-stat-num" style="color:var(--blue-light)">' + doors.length + '</div><div class="zone-stat-lbl">ทั้งหมด</div></div>' +
+    '<div class="zone-stat"><div class="zone-stat-num" style="color:#4ADE80">' + inspected + '</div><div class="zone-stat-lbl">ตรวจแล้ว</div></div>' +
+    '<div class="zone-stat"><div class="zone-stat-num" style="color:#FCD34D">' + remaining + '</div><div class="zone-stat-lbl">คงเหลือ</div></div>';
+}
+
+window.filterDoorList = function() {
+  clearTimeout(doorSearchTimer);
+  doorSearchTimer = setTimeout(() => {
+    const q = (document.getElementById('doorSearchInput').value || '').toLowerCase();
+    const filtered = q ? zoneDoors.filter(d => d.code.toLowerCase().includes(q) || (d.name || '').toLowerCase().includes(q)) : zoneDoors;
+    renderDoorList(filtered);
+  }, 200);
+};
+
+function renderDoorList(doors) {
+  const list = document.getElementById('doorList');
+  if (!doors.length) {
+    list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--dim);font-size:13px">ไม่พบประตูที่ตรงกัน</div>';
+    return;
+  }
+  list.innerHTML = doors.map(d => {
+    const sub = isDoorInspected(d.code);
+    const inspected = !!sub;
+    const resultMap = { ok: ['dsb-ok', 'ผ่าน'], fail: ['dsb-fail', 'ไม่ผ่าน'], cond: ['dsb-cond', 'เงื่อนไข'] };
+    const [badgeCls, badgeTxt] = inspected && resultMap[sub.overall] ? resultMap[sub.overall] : ['dsb-none', 'ยังไม่ตรวจ'];
+    return '<div class="door-row' + (inspected ? ' inspected' : '') + '" onclick="selectDoorById(\'' + d.id + '\')">' +
+      '<div class="door-row-code">' + d.code + '</div>' +
+      '<div class="door-row-info"><div class="door-row-name">' + d.name + '</div>' +
+      '<div class="door-row-meta">' + (d.location || d.zone) + '</div></div>' +
+      '<div class="door-status-badge ' + badgeCls + '">' + badgeTxt + '</div>' +
+      '</div>';
+  }).join('');
+}
+
+window.selectDoorById = function(id) {
+  const door = allDoors.find(d => d.id === id);
+  if (!door) return;
+
+  const existing = isDoorInspected(door.code);
+  if (existing) {
+    const ts = existing.timestamp ? (existing.timestamp.toDate ? existing.timestamp.toDate() : new Date(existing.timestamp)) : null;
+    const timeStr = ts ? ts.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) : '--';
+    const resMap = { ok: 'ผ่าน', fail: 'ไม่ผ่าน', cond: 'มีเงื่อนไข' };
+    showAlert(
+      'ประตูนี้ตรวจแล้ว',
+      'ประตู ' + door.code + ' ได้รับการตรวจสอบในกะนี้แล้ว',
+      'ผู้ตรวจ: ' + (existing.inspectorName || '--') + '\nเวลา: ' + timeStr + '\nผล: ' + (resMap[existing.overall] || existing.overall),
+      'warn'
+    );
+    return;
   }
 
-  document.getElementById('loginPage').classList.add('hide');
-  hideLoading();
-}
-
-window.doLogout = function () {
-  currentUser = null;
-  selectedDoor = null;
-  answers = {};
-  document.getElementById('loginPage').classList.remove('hide');
-  document.getElementById('mainTopbar').style.display = 'none';
-  document.getElementById('mainContent').style.display = 'none';
-  document.getElementById('lockScreen').classList.remove('show');
-  document.getElementById('loginUser').value = '';
-  document.getElementById('loginPass').value = '';
-  document.getElementById('loginErr').textContent = '';
-  document.getElementById('checklistCard').style.display = 'none';
-  document.getElementById('emptyState').style.display = '';
-  document.getElementById('doorCodeInput').value = '';
-  document.getElementById('doorInfoCard').classList.remove('show');
-  document.getElementById('doorNotFound').classList.remove('show');
-};
-
-// ── DOOR SEARCH ──
-window.onDoorInput = function () {
-  clearTimeout(doorSearchTimeout);
-  doorSearchTimeout = setTimeout(() => {
-    const q = document.getElementById('doorCodeInput').value.trim().toUpperCase();
-    if (!q) { hideDoorDropdown(); hideResultPanels(); return; }
-
-    const exact = allDoors.find(d => d.code === q);
-    if (exact) { selectDoor(exact); return; }
-
-    const matches = allDoors.filter(d =>
-      d.code?.toUpperCase().includes(q) || d.name?.toUpperCase().includes(q)
-    ).slice(0, 12);
-
-    if (matches.length === 0) {
-      hideDoorDropdown();
-      document.getElementById('doorInfoCard').classList.remove('show');
-      document.getElementById('doorNotFound').classList.add('show');
-      selectedDoor = null;
-    } else {
-      showDoorDropdown(matches);
-      document.getElementById('doorNotFound').classList.remove('show');
-    }
-  }, 300);
-};
-
-function showDoorDropdown(doors) {
-  const dd = document.getElementById('doorDropdown');
-  dd.innerHTML = doors.map(d =>
-    '<div style="padding:11px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .12s" ' +
-    'onmouseover="this.style.background=\'rgba(255,255,255,.04)\'" ' +
-    'onmouseout="this.style.background=\'transparent\'" ' +
-    'onclick="selectDoor_id(\'' + d.id + '\')">' +
-    '<div style="font-size:13px;font-weight:700;color:var(--fg)">' + d.code + ' <span style="font-weight:500;color:var(--muted)">— ' + d.name + '</span></div>' +
-    '<div style="font-size:11px;color:var(--dim);margin-top:2px">' + d.zone + '</div>' +
-    '</div>'
-  ).join('');
-  dd.style.display = 'block';
-}
-
-function hideDoorDropdown() {
-  document.getElementById('doorDropdown').style.display = 'none';
-}
-
-function hideResultPanels() {
-  document.getElementById('doorInfoCard').classList.remove('show');
-  document.getElementById('doorNotFound').classList.remove('show');
-}
-
-window.selectDoor_id = function (id) {
-  const door = allDoors.find(d => d.id === id);
-  if (door) selectDoor(door);
-};
-
-function selectDoor(door) {
   selectedDoor = door;
   answers = {};
-  hideDoorDropdown();
-  document.getElementById('doorCodeInput').value = door.code;
-  document.getElementById('doorInfoCard').classList.add('show');
-  document.getElementById('doorNotFound').classList.remove('show');
   document.getElementById('doorCodeTag').textContent = door.code;
   document.getElementById('doorNameText').textContent = door.name;
   document.getElementById('doorZoneText').textContent = door.zone;
   document.getElementById('doorTypeText').textContent = door.type || 'Fire Exit Door';
-  document.getElementById('doorLocationText').textContent = door.location || '';
   renderChecklist();
-}
+  goToStep(3);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
 
-function handleQRResult(raw) {
+// QR Result Handler
+window.handleQRResult = function(raw) {
   let doorCode = String(raw || '').trim();
   if (/^https?:\/\//i.test(doorCode)) {
     try {
       const url = new URL(doorCode);
       doorCode = url.searchParams.get('door') || url.searchParams.get('code') || url.searchParams.get('id') || '';
-    } catch (e) { }
+    } catch (e) {}
   }
   doorCode = doorCode.trim();
   if (!doorCode) { showToast('ไม่พบรหัสประตูใน QR นี้', 'err'); return; }
 
-  const door = allDoors.find(d => d.code === doorCode || d.code.toUpperCase() === doorCode.toUpperCase());
-  if (door) {
-    selectDoor(door);
-    showToast('พบ: ' + door.code + ' — ' + door.name, 'ok');
-    document.getElementById('checklistCard').scrollIntoView({ behavior: 'smooth' });
-  } else {
-    document.getElementById('doorCodeInput').value = doorCode;
-    document.getElementById('doorInfoCard').classList.remove('show');
-    document.getElementById('doorNotFound').classList.add('show');
-    selectedDoor = null;
-    showToast('ไม่พบประตูรหัส: ' + doorCode, 'err');
+  const door = allDoors.find(d => d.code.toUpperCase() === doorCode.toUpperCase());
+  if (!door) { showToast('ไม่พบประตูรหัส: ' + doorCode, 'err'); return; }
+
+  // Auto-select zone if needed
+  if (!selectedZone || selectedZone !== door.zone) {
+    selectedZone = door.zone;
+    zoneDoors = allDoors.filter(d => d.zone === door.zone).sort((a, b) => (a.code || '').localeCompare(b.code || ''));
+    document.getElementById('zoneTitleLabel').textContent = door.zone + ' — เลือกประตู';
+    document.getElementById('doorSearchInput').value = '';
+    renderDoorList(zoneDoors);
+    renderZoneStats(door.zone);
   }
-}
-window.handleQRResult = handleQRResult;
+
+  showToast('QR: ' + door.code, 'ok');
+  setTimeout(() => window.selectDoorById(door.id), 200);
+};
 
 // ── CHECKLIST ──
 function renderChecklist() {
-  const card = document.getElementById('checklistCard');
-  const empty = document.getElementById('emptyState');
-
-  if (!selectedDoor || !allChecklists.length) {
-    card.style.display = 'none';
-    empty.style.display = '';
-    return;
-  }
-
-  card.style.display = '';
-  empty.style.display = 'none';
-
   const body = document.getElementById('checklistBody');
   body.innerHTML = '';
-
   allChecklists.forEach((sec, si) => {
     const secEl = document.createElement('div');
     secEl.className = 'cl-section';
     secEl.innerHTML = '<div class="cl-sec-title">' + sec.name + '</div>';
-
     (sec.items || []).forEach((item, ii) => {
       const key = si + '_' + ii;
       const row = document.createElement('div');
       row.className = 'cl-item';
-      row.id = 'row_' + key;
-      row.innerHTML =
-        '<div class="cl-item-text">' + item + '</div>' +
+      row.innerHTML = '<div class="cl-item-text">' + item + '</div>' +
         '<div class="cl-opts">' +
-        '<button class="cl-opt ok" onclick="setAnswer(\'' + key + '\',\'ok\',this)" id="opt_' + key + '_ok">ผ่าน</button>' +
-        '<button class="cl-opt fail" onclick="setAnswer(\'' + key + '\',\'fail\',this)" id="opt_' + key + '_fail">ไม่ผ่าน</button>' +
-        '<button class="cl-opt na" onclick="setAnswer(\'' + key + '\',\'na\',this)" id="opt_' + key + '_na">N/A</button>' +
+        '<button class="cl-opt ok" onclick="setAnswer(\'' + key + '\',\'ok\',this)">ผ่าน</button>' +
+        '<button class="cl-opt fail" onclick="setAnswer(\'' + key + '\',\'fail\',this)">ไม่ผ่าน</button>' +
+        '<button class="cl-opt na" onclick="setAnswer(\'' + key + '\',\'na\',this)">N/A</button>' +
         '</div>';
       secEl.appendChild(row);
-
       const remarkRow = document.createElement('div');
       remarkRow.id = 'remark_' + key;
       remarkRow.className = 'remark-wrap';
       remarkRow.innerHTML = '<textarea class="remark-input" id="remarkText_' + key + '" placeholder="ระบุสาเหตุที่ไม่ผ่าน..."></textarea>';
       secEl.appendChild(remarkRow);
     });
-
     body.appendChild(secEl);
   });
-
   updateProgress();
 }
 
-window.setAnswer = function (key, val, btn) {
+window.setAnswer = function(key, val, btn) {
   answers[key] = val;
-
-  const types = ['ok', 'fail', 'na'];
-  types.forEach(t => {
+  ['ok', 'fail', 'na'].forEach(t => {
     const el = document.getElementById('opt_' + key + '_' + t);
-    if (el) {
-      el.style.background = '';
-      el.style.borderColor = '';
-      el.style.color = '';
-      el.style.fontWeight = '';
-    }
+    if (el) { el.style.background = ''; el.style.borderColor = ''; el.style.color = ''; el.style.fontWeight = ''; }
   });
-
+  const row = btn?.closest('.cl-item');
+  if (row) {
+    row.querySelectorAll('.cl-opt').forEach(b => { b.style.background = ''; b.style.borderColor = ''; b.style.color = ''; b.style.fontWeight = ''; });
+  }
   if (btn) {
     if (val === 'ok') { btn.style.background = 'rgba(74,222,128,.2)'; btn.style.borderColor = 'rgba(74,222,128,.5)'; btn.style.color = '#4ADE80'; btn.style.fontWeight = '800'; }
     if (val === 'fail') { btn.style.background = 'rgba(239,68,68,.18)'; btn.style.borderColor = 'rgba(239,68,68,.5)'; btn.style.color = '#FCA5A5'; btn.style.fontWeight = '800'; }
     if (val === 'na') { btn.style.background = 'rgba(107,114,128,.18)'; btn.style.borderColor = 'rgba(107,114,128,.5)'; btn.style.color = '#9CA3AF'; btn.style.fontWeight = '800'; }
   }
-
   const remarkEl = document.getElementById('remark_' + key);
-  if (remarkEl) {
-    if (val === 'fail') remarkEl.classList.add('show');
-    else remarkEl.classList.remove('show');
-  }
-
+  if (remarkEl) { val === 'fail' ? remarkEl.classList.add('show') : remarkEl.classList.remove('show'); }
   updateProgress();
 };
 
 function updateProgress() {
   const allKeys = [];
-  allChecklists.forEach((sec, si) => {
-    (sec.items || []).forEach((_, ii) => allKeys.push(si + '_' + ii));
-  });
-
+  allChecklists.forEach((sec, si) => (sec.items || []).forEach((_, ii) => allKeys.push(si + '_' + ii)));
   const total = allKeys.length;
   const answered = allKeys.filter(k => answers[k]).length;
   const ok = allKeys.filter(k => answers[k] === 'ok').length;
   const fail = allKeys.filter(k => answers[k] === 'fail').length;
   const na = allKeys.filter(k => answers[k] === 'na').length;
-
   const pct = total > 0 ? Math.round(answered / total * 100) : 0;
   document.getElementById('progressPct').textContent = pct + '%';
   document.getElementById('progressFill').style.width = pct + '%';
@@ -794,260 +864,172 @@ function updateProgress() {
   document.getElementById('countFail').textContent = fail;
   document.getElementById('countNa').textContent = na;
   document.getElementById('countTotal').textContent = total;
-
   document.getElementById('submitBtn').disabled = answered < total;
 }
 
 // ── SUBMIT ──
-window.submitInspection = async function () {
+window.submitInspection = async function() {
   if (!selectedDoor || !currentUser) return;
-
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
-  btn.classList.add('loading');
   btn.innerHTML = '<div class="spin" style="width:20px;height:20px;border-width:2px"></div> กำลังบันทึก...';
 
   const allKeys = [];
   allChecklists.forEach((sec, si) => (sec.items || []).forEach((_, ii) => allKeys.push(si + '_' + ii)));
-
   const ok = allKeys.filter(k => answers[k] === 'ok').length;
   const fail = allKeys.filter(k => answers[k] === 'fail').length;
   const total = allKeys.length;
-
-  let overall = 'ok';
-  if (fail > 0) overall = 'fail';
-  else if (ok < total) overall = 'cond';
+  let overall = fail > 0 ? 'fail' : ok < total ? 'cond' : 'ok';
 
   const remarks = {};
-  allKeys.forEach(k => {
-    const t = document.getElementById('remarkText_' + k);
-    if (t && t.value.trim()) remarks[k] = t.value.trim();
-  });
-
-  const currentShift = getCurrentShift(allShifts);
+  allKeys.forEach(k => { const t = document.getElementById('remarkText_' + k); if (t && t.value.trim()) remarks[k] = t.value.trim(); });
 
   const payload = {
-    doorId: selectedDoor.id,
-    doorCode: selectedDoor.code,
-    doorName: selectedDoor.name,
-    zone: selectedDoor.zone,
-    inspectorId: currentUser.id,
+    doorId: selectedDoor.id, doorCode: selectedDoor.code, doorName: selectedDoor.name,
+    zone: selectedDoor.zone, inspectorId: currentUser.id,
     inspectorName: currentUser.displayName || currentUser.username,
-    shift: currentShift ? currentShift.name : 'ไม่ระบุ',
-    answers,
-    remarks,
+    shift: currentShift.name, answers, remarks,
     overallRemark: document.getElementById('remarkInput').value.trim(),
-    overall,
-    answeredItems: ok + fail + allKeys.filter(k => answers[k] === 'na').length,
-    totalItems: total,
-    okItems: ok,
-    failItems: fail,
+    overall, answeredItems: total, totalItems: total, okItems: ok, failItems: fail,
     timestamp: serverTimestamp()
   };
 
   try {
-    await addDoc(collection(db, 'door_submissions'), payload);
-    const resultText = overall === 'ok' ? 'ผ่าน' : overall === 'fail' ? 'ไม่ผ่าน' : 'มีเงื่อนไข';
-    document.getElementById('successMsg').textContent =
-      selectedDoor.code + ' — ' + selectedDoor.name + '\nผล: ' + resultText + ' (' + ok + '/' + total + ' ผ่าน)';
+    const ref = await addDoc(collection(db, 'door_submissions'), payload);
+    todaySubmissions.push({ id: ref.id, ...payload, timestamp: new Date() });
+    const resMap = { ok: 'ผ่าน', fail: 'ไม่ผ่าน', cond: 'มีเงื่อนไข' };
+    document.getElementById('successMsg').textContent = selectedDoor.code + ' — ' + selectedDoor.name + '\nผล: ' + resMap[overall] + ' (' + ok + '/' + total + ' ผ่าน)';
     document.getElementById('successScreen').classList.add('show');
+    renderZoneGrid();
+    if (selectedZone) renderZoneStats(selectedZone);
   } catch (e) {
     showToast('บันทึกไม่สำเร็จ: ' + e.message, 'err');
     btn.disabled = false;
-    btn.classList.remove('loading');
     btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> ส่งผลการตรวจ';
   }
 };
 
-window.resetForm = function () {
-  selectedDoor = null;
-  answers = {};
+window.afterSubmitNext = function() {
   document.getElementById('successScreen').classList.remove('show');
-  document.getElementById('checklistCard').style.display = 'none';
-  document.getElementById('emptyState').style.display = '';
-  document.getElementById('doorCodeInput').value = '';
-  document.getElementById('doorInfoCard').classList.remove('show');
-  document.getElementById('doorNotFound').classList.remove('show');
+  selectedDoor = null; answers = {};
   document.getElementById('remarkInput').value = '';
+  if (selectedZone) {
+    renderDoorList(zoneDoors);
+    renderZoneStats(selectedZone);
+    goToStep(2);
+  } else {
+    goToStep(1);
+  }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
+
+// ── ALERT MODAL ──
+window.showAlert = function(title, msg, detail, type) {
+  document.getElementById('alertTitle').textContent = title;
+  document.getElementById('alertMsg').textContent = msg;
+  const detailEl = document.getElementById('alertDetail');
+  if (detail) { detailEl.style.display = ''; detailEl.innerHTML = detail.replace(/\n/g, '<br>'); }
+  else { detailEl.style.display = 'none'; }
+  const iconEl = document.getElementById('alertIcon');
+  if (type === 'err') {
+    iconEl.className = 'alert-icon err';
+    iconEl.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+  } else {
+    iconEl.className = 'alert-icon warn';
+    iconEl.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+  }
+  document.getElementById('alertCancelBtn').style.display = 'none';
+  document.getElementById('alertModal').classList.add('open');
+};
+window.closeAlert = function() { document.getElementById('alertModal').classList.remove('open'); };
+
+// ── LOGOUT ──
+window.doLogout = function() {
+  currentUser = null; selectedZone = null; selectedDoor = null; answers = []; todaySubmissions = [];
+  document.getElementById('loginPage').classList.remove('hide');
+  document.getElementById('mainTopbar').style.display = 'none';
+  document.getElementById('mainContent').style.display = 'none';
+  document.getElementById('lockScreen').classList.remove('show');
+  document.getElementById('loginUser').value = ''; document.getElementById('loginPass').value = '';
+  document.getElementById('loginErr').textContent = '';
+};
+
+function showLockScreen() {
+  document.getElementById('lockScreen').classList.add('show');
+  document.getElementById('lockMsg').textContent = 'ขณะนี้ไม่อยู่ในเวลากะที่กำหนด';
+  document.getElementById('lockShiftList').innerHTML = allShifts.map(sh =>
+    '<div class="lock-shift-row"><span style="font-size:13px;font-weight:700">' + sh.name + '</span>' +
+    '<span style="font-size:12px;color:var(--muted)">' + String(sh.startH).padStart(2,'0') + ':00 – ' + String(sh.endH).padStart(2,'0') + ':00</span></div>'
+  ).join('');
+  const cEl = document.getElementById('lockContact');
+  if (adminContact.name) { cEl.innerHTML = '<strong style="color:var(--fg)">' + adminContact.name + '</strong><br>' + (adminContact.role || '') + '<br>' + (adminContact.contact || ''); cEl.style.display = ''; }
+  else cEl.style.display = 'none';
+  document.getElementById('loginPage').classList.add('hide');
+  hideLoading();
+}
 
 init();
 </script>
 
-<!-- QR SCANNER — standalone script (NOT module, runs separately from Firebase) -->
+<!-- QR SCANNER (non-module) -->
 <script>
-var qrStream = null;
-var qrAnimId = null;
-var qrScanning = false;
-var qrLastText = '';
-var barcodeDetector = null;
-
-function qrSetStatus(txt) {
-  var el = document.getElementById('qrStatusText');
-  if (el) el.textContent = txt;
-}
-
-window.startQRScanner = function () {
-  var modal = document.getElementById('qrScannerModal');
-  var video = document.getElementById('qrVideo');
-
-  if (!modal || !video) {
-    alert('ไม่พบ element สำหรับสแกน');
-    return;
-  }
-
-  modal.classList.add('open');
-  qrSetStatus('กำลังขอสิทธิ์กล้อง...');
-  qrStopInternal(false);
-  qrLastText = '';
-
-  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    qrSetStatus('Browser นี้ไม่รองรับกล้อง');
-    alert('Browser นี้ไม่รองรับการใช้กล้อง กรุณาใช้ Chrome หรือ Safari');
-    return;
-  }
-
-  // Setup BarcodeDetector if available
-  if (typeof BarcodeDetector !== 'undefined') {
-    try {
-      barcodeDetector = new BarcodeDetector({ formats: ['qr_code'] });
-    } catch (e) {
-      barcodeDetector = null;
-    }
-  } else {
-    barcodeDetector = null;
-  }
-
-  navigator.mediaDevices.getUserMedia({
-    video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } },
-    audio: false
-  }).then(function (stream) {
-    qrStream = stream;
-    video.srcObject = stream;
-    video.onloadedmetadata = function () {
-      video.play().then(function () {
-        waitVideoReady(video, 0);
-      }).catch(function (e) {
-        qrSetStatus('เล่น video ไม่สำเร็จ: ' + e.message);
-      });
-    };
-  }).catch(function (err) {
-    var msg = err.message || String(err);
-    if (msg.indexOf('NotAllowed') !== -1 || msg.indexOf('Permission') !== -1) {
-      qrSetStatus('ไม่ได้รับอนุญาตให้ใช้กล้อง');
-      alert('กรุณาอนุญาตการเข้าถึงกล้องในการตั้งค่า Browser');
-    } else if (msg.indexOf('NotFound') !== -1) {
-      qrSetStatus('ไม่พบกล้อง');
-      alert('ไม่พบกล้องในอุปกรณ์นี้');
-    } else {
-      qrSetStatus('เปิดกล้องไม่สำเร็จ: ' + msg);
-      alert('ไม่สามารถเปิดกล้องได้: ' + msg);
-    }
+var qrStream=null,qrAnimId=null,qrScanning=false,qrLastText='',barcodeDetector=null;
+function qrSetStatus(t){var e=document.getElementById('qrStatusText');if(e)e.textContent=t;}
+window.startQRScanner=function(){
+  var modal=document.getElementById('qrScannerModal'),video=document.getElementById('qrVideo');
+  if(!modal||!video){alert('ไม่พบ element สำหรับสแกน');return;}
+  modal.classList.add('open');qrSetStatus('กำลังขอสิทธิ์กล้อง...');
+  qrStopInternal(false);qrLastText='';
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){alert('Browser นี้ไม่รองรับกล้อง');modal.classList.remove('open');return;}
+  if(typeof BarcodeDetector!=='undefined'){try{barcodeDetector=new BarcodeDetector({formats:['qr_code']});}catch(e){barcodeDetector=null;}}else{barcodeDetector=null;}
+  navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false})
+  .then(function(stream){
+    qrStream=stream;video.srcObject=stream;
+    video.onloadedmetadata=function(){video.play().then(function(){waitVideoReady(video,0);}).catch(function(e){qrSetStatus('เล่น video ไม่สำเร็จ: '+e.message);});};
+  }).catch(function(err){
+    var msg=err.message||String(err);
+    if(msg.indexOf('NotAllowed')!==-1||msg.indexOf('Permission')!==-1){qrSetStatus('ไม่ได้รับอนุญาต');alert('กรุณาอนุญาตการเข้าถึงกล้องใน Browser Settings');}
+    else if(msg.indexOf('NotFound')!==-1){qrSetStatus('ไม่พบกล้อง');alert('ไม่พบกล้องในอุปกรณ์นี้');}
+    else{qrSetStatus('เปิดกล้องไม่สำเร็จ');alert('ไม่สามารถเปิดกล้องได้: '+msg);}
     modal.classList.remove('open');
   });
 };
-
-function waitVideoReady(video, attempt) {
-  if (attempt > 40) {
-    qrSetStatus('กล้องโหลดนานเกินไป ลองใหม่อีกครั้ง');
-    return;
-  }
-  if (video.readyState >= 2 && video.videoWidth > 0 && video.videoHeight > 0) {
-    qrScanning = true;
-    qrSetStatus('กำลังสแกน QR...');
-    qrScanFrame();
-  } else {
-    setTimeout(function () { waitVideoReady(video, attempt + 1); }, 150);
-  }
+function waitVideoReady(video,attempt){
+  if(attempt>50){qrSetStatus('กล้องโหลดช้า ลองใหม่อีกครั้ง');return;}
+  if(video.readyState>=2&&video.videoWidth>0&&video.videoHeight>0){qrScanning=true;qrSetStatus('กำลังสแกน QR...');qrScanFrame();}
+  else{setTimeout(function(){waitVideoReady(video,attempt+1);},150);}
 }
-
-function qrScanFrame() {
-  if (!qrScanning) return;
-
-  var video = document.getElementById('qrVideo');
-  var canvas = document.getElementById('qrCanvas');
-
-  if (!video || !canvas) return;
-
-  if (video.readyState >= 2 && video.videoWidth > 0 && video.videoHeight > 0) {
-    var w = video.videoWidth;
-    var h = video.videoHeight;
-    canvas.width = w;
-    canvas.height = h;
-    var ctx = canvas.getContext('2d', { willReadFrequently: true });
-    ctx.drawImage(video, 0, 0, w, h);
-
-    // Try BarcodeDetector first
-    if (barcodeDetector) {
-      barcodeDetector.detect(canvas).then(function (barcodes) {
-        if (barcodes && barcodes.length > 0) {
-          var text = barcodes[0].rawValue;
-          if (text && text !== qrLastText) {
-            qrLastText = text;
-            qrSetStatus('พบ QR!');
-            qrStopInternal(true);
-            if (typeof handleQRResult === 'function') handleQRResult(text);
-            return;
-          }
-        }
-        // fallback jsQR
-        tryJsQR(ctx, w, h);
-      }).catch(function () {
-        tryJsQR(ctx, w, h);
-      });
-    } else {
-      tryJsQR(ctx, w, h);
-    }
-  } else {
-    qrAnimId = requestAnimationFrame(qrScanFrame);
-  }
+function qrScanFrame(){
+  if(!qrScanning)return;
+  var video=document.getElementById('qrVideo'),canvas=document.getElementById('qrCanvas');
+  if(!video||!canvas)return;
+  if(video.readyState>=2&&video.videoWidth>0&&video.videoHeight>0){
+    var w=video.videoWidth,h=video.videoHeight;
+    canvas.width=w;canvas.height=h;
+    var ctx=canvas.getContext('2d',{willReadFrequently:true});
+    ctx.drawImage(video,0,0,w,h);
+    if(barcodeDetector){
+      barcodeDetector.detect(canvas).then(function(barcodes){
+        if(barcodes&&barcodes.length>0){var t=barcodes[0].rawValue;if(t&&t!==qrLastText){qrLastText=t;qrSetStatus('พบ QR!');qrStopInternal(true);if(typeof handleQRResult==='function')handleQRResult(t);return;}}
+        tryJsQR(ctx,w,h);
+      }).catch(function(){tryJsQR(ctx,w,h);});
+    }else{tryJsQR(ctx,w,h);}
+  }else{qrAnimId=requestAnimationFrame(qrScanFrame);}
 }
-
-function tryJsQR(ctx, w, h) {
-  if (window.jsQR) {
-    try {
-      var imageData = ctx.getImageData(0, 0, w, h);
-      var code = window.jsQR(imageData.data, w, h, { inversionAttempts: 'attemptBoth' });
-      if (code && code.data && code.data !== qrLastText) {
-        qrLastText = code.data;
-        qrSetStatus('พบ QR!');
-        qrStopInternal(true);
-        if (typeof handleQRResult === 'function') handleQRResult(code.data);
-        return;
-      }
-    } catch (e) { }
-  }
-  if (qrScanning) {
-    qrAnimId = requestAnimationFrame(qrScanFrame);
-  }
+function tryJsQR(ctx,w,h){
+  if(window.jsQR){try{var id=ctx.getImageData(0,0,w,h),code=window.jsQR(id.data,w,h,{inversionAttempts:'attemptBoth'});if(code&&code.data&&code.data!==qrLastText){qrLastText=code.data;qrSetStatus('พบ QR!');qrStopInternal(true);if(typeof handleQRResult==='function')handleQRResult(code.data);return;}}catch(e){}}
+  if(qrScanning)qrAnimId=requestAnimationFrame(qrScanFrame);
 }
-
-function qrStopInternal(closeModal) {
-  qrScanning = false;
-  if (qrAnimId) { cancelAnimationFrame(qrAnimId); qrAnimId = null; }
-  var video = document.getElementById('qrVideo');
-  if (video) {
-    try { video.pause(); } catch (e) { }
-    try { video.srcObject = null; } catch (e) { }
-  }
-  if (qrStream) {
-    qrStream.getTracks().forEach(function (t) { try { t.stop(); } catch (e) { } });
-    qrStream = null;
-  }
-  if (closeModal) {
-    var modal = document.getElementById('qrScannerModal');
-    if (modal) modal.classList.remove('open');
-  }
+function qrStopInternal(closeModal){
+  qrScanning=false;
+  if(qrAnimId){cancelAnimationFrame(qrAnimId);qrAnimId=null;}
+  var video=document.getElementById('qrVideo');
+  if(video){try{video.pause();}catch(e){}try{video.srcObject=null;}catch(e){}}
+  if(qrStream){qrStream.getTracks().forEach(function(t){try{t.stop();}catch(e){}});qrStream=null;}
+  if(closeModal){var m=document.getElementById('qrScannerModal');if(m)m.classList.remove('open');}
 }
-
-window.stopQRScanner = function () {
-  qrStopInternal(true);
-};
-
-window.addEventListener('beforeunload', function () {
-  qrStopInternal(false);
-});
+window.stopQRScanner=function(){qrStopInternal(true);};
+window.addEventListener('beforeunload',function(){qrStopInternal(false);});
 </script>
 
 </body>
