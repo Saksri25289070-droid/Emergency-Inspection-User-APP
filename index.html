@@ -225,6 +225,21 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .note-area:focus{border-color:rgba(239,68,68,.45)}
 .note-area::placeholder{color:#555}
 
+/* PHOTO SECTION */
+.photo-section{margin-top:10px}
+.photo-label{font-size:11px;font-weight:700;color:rgba(239,68,68,.8);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.photo-btns{display:flex;gap:8px;margin-bottom:10px}
+.btn-photo{flex:1;height:40px;border-radius:9px;border:1.5px dashed rgba(239,68,68,.3);background:rgba(239,68,68,.06);color:rgba(239,68,68,.8);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s}
+.btn-photo:active{opacity:.75;transform:scale(.97)}
+.btn-photo.has-photo{border-style:solid;border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.1);color:var(--red)}
+.photo-previews{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px}
+.photo-thumb{position:relative;width:72px;height:72px;border-radius:9px;overflow:hidden;border:1.5px solid rgba(239,68,68,.3);flex-shrink:0}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-del{position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.75);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.photo-count-badge{font-size:9px;font-weight:800;color:var(--red);background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);padding:2px 7px;border-radius:10px;margin-left:4px}
+/* hidden file input */
+#photoInput{display:none}
+
 /* SUBMIT AREA */
 .submit-area{flex-shrink:0;padding:14px 16px calc(14px + var(--safe-bottom));background:var(--bg-card);border-top:1px solid var(--border)}
 .submit-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--dim);margin-bottom:7px}
@@ -236,6 +251,14 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .btn-submit:disabled{opacity:.3;pointer-events:none}
 .result-banner{display:none;margin-bottom:10px;padding:12px 14px;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.2);border-radius:11px;font-size:13px;font-weight:700;color:var(--green);text-align:center}
 .result-banner.show{display:block}
+
+/* PHOTO VIEWER MODAL */
+.photo-viewer{display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.95);flex-direction:column;align-items:center;justify-content:center}
+.photo-viewer.open{display:flex}
+.pv-hdr{position:absolute;top:0;left:0;right:0;padding:calc(14px + var(--safe-top)) 16px 14px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(180deg,rgba(0,0,0,.8),transparent)}
+.pv-title{font-size:14px;font-weight:700;color:#fff}
+.pv-close{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center}
+.pv-img{max-width:100%;max-height:80vh;object-fit:contain;border-radius:8px}
 
 /* ALERT MODAL */
 .alert-modal{display:none;position:fixed;inset:0;z-index:9990;background:rgba(0,0,0,.88);align-items:center;justify-content:center;padding:20px}
@@ -284,6 +307,15 @@ button{cursor:pointer;border:none;background:none;color:inherit}
   </div>
 </div>
 
+<!-- PHOTO VIEWER -->
+<div class="photo-viewer" id="photoViewer">
+  <div class="pv-hdr">
+    <span class="pv-title" id="pvTitle">รูปภาพ</span>
+    <button class="pv-close" onclick="closePhotoViewer()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <img class="pv-img" id="pvImg" src="" alt="">
+</div>
+
 <!-- ALERT MODAL -->
 <div class="alert-modal" id="alertModal">
   <div class="alert-box">
@@ -297,6 +329,9 @@ button{cursor:pointer;border:none;background:none;color:inherit}
     <button class="btn-alert secondary" id="alertSecBtn" style="display:none" onclick="closeAlert()">ยกเลิก</button>
   </div>
 </div>
+
+<!-- Hidden file input for photo -->
+<input type="file" id="photoInput" accept="image/*" multiple>
 
 <!-- PAGE: LOGIN -->
 <div id="p-login" class="page active">
@@ -350,10 +385,7 @@ button{cursor:pointer;border:none;background:none;color:inherit}
   <div class="stepbar" id="stepbarZ"></div>
   <div class="pscroll">
     <div class="page-pad">
-      <div class="sec-eyebrow">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#737373" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        เลือกพื้นที่ตรวจสอบ
-      </div>
+      <div class="sec-eyebrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#737373" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>เลือกพื้นที่ตรวจสอบ</div>
       <div class="zone-grid" id="zoneGrid"></div>
     </div>
   </div>
@@ -374,10 +406,7 @@ button{cursor:pointer;border:none;background:none;color:inherit}
   <div class="scan-banner">
     <div class="scan-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/><rect x="3" y="16" width="5" height="5" rx="1"/><path d="M21 16h-3v3M21 21h-3M16 16v5"/></svg></div>
     <div class="scan-info"><div class="scan-title">สแกน QR เพื่อตรวจสอบ</div><div class="scan-sub">ต้องสแกน QR Code บนประตูเท่านั้น</div></div>
-    <button class="btn-scan-big" onclick="openQR()">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/><rect x="3" y="16" width="5" height="5" rx="1"/><path d="M21 16h-3v3M21 21h-3M16 16v5"/></svg>
-      สแกน QR
-    </button>
+    <button class="btn-scan-big" onclick="openQR()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/><rect x="3" y="16" width="5" height="5" rx="1"/><path d="M21 16h-3v3M21 21h-3M16 16v5"/></svg>สแกน QR</button>
   </div>
   <div class="door-list" id="doorList"></div>
 </div>
@@ -441,6 +470,10 @@ let selZone='', selDoor=null, answers={}, totalItems=0, submitted=false;
 let shiftSubmissions=[], currentShift=null, unsubSubs=null;
 let qrStream=null, qrActive=false, qrAnim=null, bdDetector=null;
 
+// ── PHOTO STATE ──
+// photosByKey: { "sec_idx": [{dataUrl, fileName},...] }
+let photosByKey = {};
+
 // ── HELPERS ──
 let toastT;
 function toast(m,t){const e=document.getElementById('toast');e.textContent=m;e.className='toast show '+(t||'info');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('show'),2800);}
@@ -503,6 +536,95 @@ window.showAlert=function(title,msg,detail,type='warn'){
 };
 window.closeAlert=()=>document.getElementById('alertModal').classList.remove('open');
 
+// ── PHOTO VIEWER ──
+window.openPhotoViewer=function(src,title){
+  document.getElementById('pvImg').src=src;
+  document.getElementById('pvTitle').textContent=title||'รูปภาพ';
+  document.getElementById('photoViewer').classList.add('open');
+};
+window.closePhotoViewer=()=>document.getElementById('photoViewer').classList.remove('open');
+
+// ── PHOTO COMPRESS ──
+function compressImage(file, maxW=1024, quality=0.75){
+  return new Promise((resolve)=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const img=new Image();
+      img.onload=()=>{
+        let w=img.width,h=img.height;
+        if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
+        const canvas=document.createElement('canvas');
+        canvas.width=w;canvas.height=h;
+        canvas.getContext('2d').drawImage(img,0,0,w,h);
+        resolve(canvas.toDataURL('image/jpeg',quality));
+      };
+      img.src=e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// ── PHOTO MANAGEMENT ──
+let currentPhotoKey=null;
+
+window.openPhotoInput=function(key,useCamera){
+  currentPhotoKey=key;
+  const inp=document.getElementById('photoInput');
+  inp.removeAttribute('capture');
+  if(useCamera)inp.setAttribute('capture','environment');
+  inp.value='';
+  inp.click();
+};
+
+document.getElementById('photoInput').addEventListener('change',async function(){
+  if(!currentPhotoKey||!this.files.length)return;
+  const key=currentPhotoKey;
+  if(!photosByKey[key])photosByKey[key]=[];
+  const MAX_PHOTOS=3;
+  const remaining=MAX_PHOTOS-photosByKey[key].length;
+  if(remaining<=0){toast('แนบรูปได้สูงสุด '+MAX_PHOTOS+' รูปต่อข้อ','err');return;}
+  const files=Array.from(this.files).slice(0,remaining);
+  showLoad('กำลังประมวลผลรูป...');
+  for(const file of files){
+    try{
+      const compressed=await compressImage(file);
+      photosByKey[key].push({dataUrl:compressed,name:file.name});
+    }catch(e){console.warn('compress error',e);}
+  }
+  hideLoad();
+  renderPhotoZone(key);
+  toast('แนบรูปแล้ว '+photosByKey[key].length+' รูป','ok');
+});
+
+function renderPhotoZone(key){
+  const zone=document.getElementById('photozone-'+key);
+  if(!zone)return;
+  const photos=photosByKey[key]||[];
+  const btn1=zone.querySelector('.btn-photo-cam');
+  const btn2=zone.querySelector('.btn-photo-gal');
+  const previewArea=zone.querySelector('.photo-previews');
+  const countBadge=zone.querySelector('.photo-count-badge');
+  if(countBadge)countBadge.textContent=photos.length>0?photos.length+' รูป':'';
+  if(btn1)btn1.classList.toggle('has-photo',photos.length>0);
+  if(btn2)btn2.classList.toggle('has-photo',photos.length>0);
+  if(previewArea){
+    previewArea.innerHTML=photos.map((p,i)=>
+      `<div class="photo-thumb" onclick="openPhotoViewer('${p.dataUrl}','รูปข้อ ${key}')">
+        <img src="${p.dataUrl}" alt="รูปที่ ${i+1}">
+        <div class="photo-del" onclick="event.stopPropagation();deletePhoto('${key}',${i})">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </div>
+      </div>`
+    ).join('');
+  }
+}
+
+window.deletePhoto=function(key,idx){
+  if(photosByKey[key])photosByKey[key].splice(idx,1);
+  renderPhotoZone(key);
+  if(!photosByKey[key]||!photosByKey[key].length)delete photosByKey[key];
+};
+
 // ── INIT ──
 async function init(){
   try{
@@ -528,7 +650,6 @@ async function init(){
     shifts=defaultShifts();
   }
   hideLoad();
-
   const params=new URLSearchParams(window.location.search);
   const dc=params.get('door')||params.get('code')||params.get('id');
   if(dc)sessionStorage.setItem('pendingDoor',dc);
@@ -565,7 +686,6 @@ async function loadData(){
   const [ds,cs]=await Promise.all([getDocs(collection(db,'door_doors')),getDocs(collection(db,'door_checklists'))]);
   allDoors=[];ds.forEach(d=>allDoors.push({id:d.id,...d.data()}));
   allDoors.sort((a,b)=>(a.code||'').localeCompare(b.code||''));
-  // Filter by user zones
   if(user.zones&&Array.isArray(user.zones)&&user.zones.length>0){
     allDoors=allDoors.filter(d=>user.zones.includes(d.zone));
   }
@@ -581,7 +701,6 @@ function afterLogin(){
   ['zoneUserLbl'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=user.displayName||user.username;});
   ['shiftChipZ','shiftChipD'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=currentShift?currentShift.name:'—';});
   renderStepbar(1,'stepbarZ');renderStepbar(2,'stepbarD');renderStepbar(3,'stepbarC');
-
   if(!currentShift){showLock();return;}
   startSubsListener();
   goPage('p-zone');
@@ -599,7 +718,7 @@ function showLock(){
 
 window.doLogout=function(){
   if(unsubSubs){unsubSubs();unsubSubs=null;}
-  stopQR();user=null;selZone='';selDoor=null;shiftSubmissions=[];
+  stopQR();user=null;selZone='';selDoor=null;shiftSubmissions=[];photosByKey={};
   document.getElementById('uIn').value='';document.getElementById('pIn').value='';
   document.getElementById('errMsg').textContent='';
   goPage('p-login');
@@ -627,7 +746,7 @@ function isDoorDone(code){return shiftSubmissions.find(s=>s.doorCode===code);}
 function renderZoneGrid(){
   const zones=[...new Set(allDoors.map(d=>d.zone))].sort();
   const grid=document.getElementById('zoneGrid');
-  if(!zones.length){grid.innerHTML='<div style="color:var(--dim);text-align:center;padding:24px;font-size:13px;font-weight:600">ไม่พบพื้นที่ที่ได้รับสิทธิ์<br>กรุณาติดต่อ Admin</div>';return;}
+  if(!zones.length){grid.innerHTML='<div style="color:var(--dim);text-align:center;padding:24px;font-size:13px;font-weight:600">ไม่พบพื้นที่ที่ได้รับสิทธิ์</div>';return;}
   grid.innerHTML=zones.map(z=>{
     const doors=allDoors.filter(d=>d.zone===z);
     const done=doors.filter(d=>isDoorDone(d.code)).length;
@@ -670,11 +789,12 @@ function renderDoorList(){
     const sub=isDoorDone(d.code);
     const inspected=!!sub;
     const [bc,bt]=inspected&&resMap[sub.overall]?resMap[sub.overall]:['drs-none','ยังไม่ตรวจ'];
-    return `<div class="door-row${inspected?' inspected':' locked'}" onclick="${inspected?`showDoneAlert('${d.code}','${sub.overall||''}','${sub.inspectorName||''}','${sub.shift||''}')`:''}" style="${!inspected?'cursor:default':''}">
+    const hasPhotos=sub&&sub.photoCount&&sub.photoCount>0;
+    return `<div class="door-row${inspected?' inspected':' locked'}" onclick="${inspected?`showDoneAlert('${d.code}','${sub.overall||''}','${sub.inspectorName||''}','${sub.shift||''}',${sub.photoCount||0})`:''}" style="${!inspected?'cursor:default':''}">
       <div class="door-row-left">
         <div class="dr-code">${d.code}</div>
         <div class="dr-name">${d.name}</div>
-        <div class="dr-meta">${d.location||d.zone}${d.type?' · '+d.type:''}</div>
+        <div class="dr-meta">${d.location||d.zone}${d.type?' · '+d.type:''}${hasPhotos?' · 📷'+sub.photoCount:''}${sub&&sub.failItems?' · ชำรุด '+sub.failItems+' จุด':''}</div>
       </div>
       <div class="dr-status ${bc}">${bt}</div>
       ${!inspected?`<div class="lock-overlay"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;right:12px;top:50%;transform:translateY(-50%)"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>`:''}
@@ -682,12 +802,13 @@ function renderDoorList(){
   }).join('');
 }
 
-window.showDoneAlert=function(code,overall,inspector,shift){
+window.showDoneAlert=function(code,overall,inspector,shift,photoCount){
   const resMap={ok:'ผ่าน',fail:'ไม่ผ่าน',cond:'มีเงื่อนไข'};
+  const photoStr=photoCount>0?'\nรูปภาพ: '+photoCount+' รูป':'';
   showAlert(
     'ตรวจสอบแล้ว',
     `ประตู ${code} ได้รับการตรวจสอบในกะนี้แล้ว`,
-    `ผู้ตรวจ: ${inspector||'—'}\nกะ: ${shift||'—'}\nผล: ${resMap[overall]||overall||'—'}`,
+    `ผู้ตรวจ: ${inspector||'—'}\nกะ: ${shift||'—'}\nผล: ${resMap[overall]||overall||'—'}${photoStr}`,
     'ok'
   );
 };
@@ -708,15 +829,12 @@ function startQRStream(){
   if(typeof BarcodeDetector!=='undefined'){
     try{bdDetector=new BarcodeDetector({formats:['qr_code']});}catch(e){bdDetector=null;}
   }else bdDetector=null;
-
   navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false})
     .then(stream=>{
       qrStream=stream;
       const v=document.getElementById('qrVideo');
       v.srcObject=stream;
-      v.onloadedmetadata=()=>{
-        v.play().then(()=>waitVid(v,0)).catch(e=>setQRStatus('เปิดกล้องไม่สำเร็จ',false));
-      };
+      v.onloadedmetadata=()=>{v.play().then(()=>waitVid(v,0)).catch(e=>setQRStatus('เปิดกล้องไม่สำเร็จ',false));};
     }).catch(err=>{
       const m=String(err.message||err);
       setQRStatus(m.includes('NotAllowed')||m.includes('Permission')?'ไม่ได้รับอนุญาตกล้อง':'เปิดกล้องไม่สำเร็จ',false);
@@ -775,7 +893,7 @@ function setQRStatus(t,a){
   if(dot)dot.style.background=a?'var(--teal)':'var(--red)';
 }
 
-// ── QR RESULT HANDLER ──
+// ── QR RESULT ──
 window.handleQRResult=function(raw){
   let code=String(raw||'').trim();
   if(/^https?:\/\//i.test(code)){
@@ -783,14 +901,11 @@ window.handleQRResult=function(raw){
   }
   code=code.trim();
   if(!code){toast('ไม่พบรหัสประตูใน QR นี้','err');return;}
-
   const door=allDoors.find(d=>d.code.toUpperCase()===code.toUpperCase());
   if(!door){
     showAlert('ไม่พบประตู','ไม่พบประตูรหัส "'+code+'" ในพื้นที่ที่ได้รับสิทธิ์','ตรวจสอบว่า QR ถูกต้อง และคุณมีสิทธิ์ตรวจโซนนี้','err');
     return;
   }
-
-  // Auto set zone
   if(selZone!==door.zone){
     selZone=door.zone;
     document.getElementById('doorPageTitle').textContent=door.zone;
@@ -798,23 +913,14 @@ window.handleQRResult=function(raw){
     renderZoneStats(door.zone);
     renderDoorList();
   }
-
-  // Check if already done
   const sub=isDoorDone(door.code);
   if(sub){
     const resMap={ok:'ผ่าน',fail:'ไม่ผ่าน',cond:'มีเงื่อนไข'};
     const ts=sub.timestamp?(sub.timestamp.toDate?sub.timestamp.toDate():new Date(sub.timestamp)):null;
     const timeStr=ts?ts.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}):'—';
-    showAlert(
-      'ประตูนี้ตรวจแล้ว',
-      `${door.code} — ${door.name}`,
-      `ผู้ตรวจ: ${sub.inspectorName||'—'}\nเวลา: ${timeStr}\nผล: ${resMap[sub.overall]||sub.overall||'—'}`,
-      'warn'
-    );
+    showAlert('ประตูนี้ตรวจแล้ว',`${door.code} — ${door.name}`,`ผู้ตรวจ: ${sub.inspectorName||'—'}\nเวลา: ${timeStr}\nผล: ${resMap[sub.overall]||sub.overall||'—'}`,'warn');
     return;
   }
-
-  // Load checklist
   selDoor=door;
   document.getElementById('dibCode').textContent=door.code;
   document.getElementById('dibName').textContent=door.name;
@@ -836,7 +942,7 @@ function defaultChecklists(){
 }
 
 function buildChecklist(){
-  answers={};totalItems=0;submitted=false;
+  answers={};totalItems=0;submitted=false;photosByKey={};
   checklists.forEach(s=>{if(s.items)s.items.forEach(()=>totalItems++);});
   document.getElementById('sbTotal').textContent=totalItems;
   document.getElementById('sbDone').textContent='0';
@@ -872,6 +978,24 @@ function buildChecklist(){
           </div>
           <div class="defect-zone" id="dz-${key}">
             <textarea class="note-area" id="note-${key}" placeholder="อธิบายปัญหาที่พบ..." rows="2" oninput="if(answers['${key}'])answers['${key}'].note=this.value"></textarea>
+            <div class="photo-section" id="photozone-${key}">
+              <div class="photo-label">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(239,68,68,.8)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                แนบรูปภาพความเสียหาย
+                <span class="photo-count-badge"></span>
+              </div>
+              <div class="photo-btns">
+                <button class="btn-photo btn-photo-cam" onclick="openPhotoInput('${key}',true)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                  ถ่ายรูป
+                </button>
+                <button class="btn-photo btn-photo-gal" onclick="openPhotoInput('${key}',false)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  เลือกรูป
+                </button>
+              </div>
+              <div class="photo-previews"></div>
+            </div>
           </div>
         </div>`;
       }).join('')}
@@ -889,6 +1013,8 @@ window.pick=function(btn,val){
   document.getElementById('ci-'+key).classList.add('answered');
   const dz=document.getElementById('dz-'+key);
   if(dz)dz.classList[val==='fail'?'add':'remove']('open');
+  // clear photos if switched to ok
+  if(val==='ok'&&photosByKey[key]){delete photosByKey[key];renderPhotoZone(key);}
   updateProg();
 };
 
@@ -915,23 +1041,39 @@ window.doSubmit=async function(){
   const overall=fail>0?'fail':ok===totalItems?'ok':'cond';
   const sh=getShift();
 
+  // collect photos for fail items only
+  const allPhotos={}; // key → [{dataUrl}]
+  const failKeys=Object.keys(answers).filter(k=>answers[k].val==='fail');
+  let totalPhotoCount=0;
+  failKeys.forEach(k=>{
+    if(photosByKey[k]&&photosByKey[k].length>0){
+      allPhotos[k]=photosByKey[k].map(p=>p.dataUrl);
+      totalPhotoCount+=photosByKey[k].length;
+    }
+  });
+
   try{
+    showLoad('กำลังบันทึก'+( totalPhotoCount>0?' ('+totalPhotoCount+' รูป)':'')+'...');
     await addDoc(collection(db,'door_submissions'),{
       doorId:selDoor.id,doorCode:selDoor.code,doorName:selDoor.name,
       zone:selDoor.zone,inspectorId:user.id,
       inspectorName:user.displayName||user.username,
       shift:sh?sh.name:'ไม่ระบุ',overall,answers:as,
+      photos:allPhotos,
+      photoCount:totalPhotoCount,
       totalItems,answeredItems:totalItems,okItems:ok,failItems:fail,
       timestamp:serverTimestamp()
     });
+    hideLoad();
     document.getElementById('resultBanner').classList.add('show');
-    document.querySelectorAll('.rb,.note-area').forEach(el=>{el.style.pointerEvents='none';el.style.opacity='.45';});
-    toast('บันทึกเรียบร้อย — '+selDoor.code,'ok');
+    document.querySelectorAll('.rb,.note-area,.btn-photo').forEach(el=>{el.style.pointerEvents='none';el.style.opacity='.45';});
+    toast('บันทึกเรียบร้อย'+(totalPhotoCount>0?' ('+totalPhotoCount+' รูป)':'')+' — '+selDoor.code,'ok');
     renderDoorList();
     if(selZone)renderZoneStats(selZone);
     renderZoneGrid();
     setTimeout(()=>goPage('p-doors'),1800);
   }catch(e){
+    hideLoad();
     submitted=false;btn.disabled=false;btn.textContent='ส่งผลการตรวจสอบ';
     toast('บันทึกไม่สำเร็จ: '+e.message,'err');
   }
@@ -941,12 +1083,8 @@ window.addEventListener('beforeunload',()=>stopQR());
 init();
 </script>
 
-<!-- QR non-module guard -->
 <script>
-// ensure jsQR global accessible from module
-window.addEventListener('load',function(){
-  if(typeof jsQR!=='undefined')window.jsQR=jsQR;
-});
+window.addEventListener('load',function(){if(typeof jsQR!=='undefined')window.jsQR=jsQR;});
 </script>
 </body>
 </html>
