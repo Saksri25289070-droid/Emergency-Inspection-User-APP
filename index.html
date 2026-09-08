@@ -28,27 +28,23 @@ body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--fg);-webk
 input,select,textarea,button{font-family:inherit;font-size:16px;-webkit-appearance:none}
 button{cursor:pointer;border:none;background:none;color:inherit}
 
-/* PAGES */
 .page{display:none;position:fixed;inset:0;flex-direction:column;background:var(--bg);overflow:hidden}
 .page.active{display:flex}
 .pscroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain}
 .pscroll::-webkit-scrollbar{display:none}
 
-/* LOADING */
 .loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;backdrop-filter:blur(6px)}
 .loading-overlay.hide{display:none}
 .spinner{width:38px;height:38px;border:3px solid rgba(255,255,255,.08);border-top-color:var(--teal);border-radius:50%;animation:spin .75s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .load-txt{font-size:13px;font-weight:700;color:var(--muted)}
 
-/* TOAST */
 .toast{position:fixed;bottom:calc(24px + var(--safe-bottom));left:50%;transform:translateX(-50%) translateY(12px);background:var(--bg-card);border:1px solid var(--border-hi);border-radius:12px;padding:10px 18px;font-size:13px;font-weight:700;color:var(--fg);display:flex;align-items:center;gap:8px;opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);pointer-events:none;z-index:9998;white-space:nowrap;max-width:88vw;box-shadow:0 8px 32px rgba(0,0,0,.7)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.ok{border-left:3px solid var(--green)}
 .toast.err{border-left:3px solid var(--red)}
 .toast.info{border-left:3px solid var(--blue-light)}
 
-/* TOPBAR */
 .topbar{display:flex;align-items:center;gap:10px;padding:calc(12px + var(--safe-top)) 16px 12px;background:var(--bg-card);border-bottom:1px solid var(--border);flex-shrink:0;position:relative}
 .topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--grad)}
 .tb-logo{width:32px;height:32px;border-radius:9px;background:var(--grad-d);display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -62,7 +58,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .tb-logout{height:32px;padding:0 12px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.18);border-radius:8px;color:var(--red);font-size:11px;font-weight:700}
 .tb-avatar{width:32px;height:32px;border-radius:8px;background:var(--grad-d);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0}
 
-/* STEP BAR */
 .stepbar{display:flex;align-items:center;padding:12px 16px;background:var(--bg-card);border-bottom:1px solid var(--border);flex-shrink:0;gap:0}
 .step-item{display:flex;align-items:center;gap:6px;flex:1}
 .step-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;transition:all .25s}
@@ -76,7 +71,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .step-line{flex:1;height:2px;background:var(--border-hi);margin:0 6px;border-radius:2px;transition:background .3s}
 .step-line.done{background:var(--green)}
 
-/* LOGIN PAGE */
 #p-login{justify-content:flex-start;overflow-y:auto}
 .login-outer{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(48px + var(--safe-top)) 24px calc(40px + var(--safe-bottom))}
 .login-card{width:100%;max-width:400px}
@@ -98,7 +92,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .btn-login:disabled{opacity:.35;pointer-events:none}
 .err-msg{font-size:11px;color:var(--red);text-align:center;margin-top:10px;min-height:16px;font-weight:600}
 
-/* LOCK PAGE */
 .lock-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;gap:16px}
 .lock-icon{width:72px;height:72px;border-radius:20px;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.18);display:flex;align-items:center;justify-content:center}
 .lock-title{font-size:22px;font-weight:800;letter-spacing:-.5px}
@@ -119,7 +112,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .admin-role-t{font-size:11px;color:var(--dim)}
 .admin-ext{font-size:12px;font-weight:700;color:var(--blue-light);margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.05)}
 
-/* ZONE SELECT */
 .page-pad{padding:16px;display:flex;flex-direction:column;gap:12px}
 .sec-eyebrow{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dim);display:flex;align-items:center;gap:7px;margin-bottom:2px}
 .zone-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
@@ -135,7 +127,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .zc-fill{height:100%;background:var(--grad);border-radius:2px;transition:width .5s}
 .zc-done-badge{position:absolute;top:10px;right:10px;width:18px;height:18px;border-radius:50%;background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.3);display:flex;align-items:center;justify-content:center}
 
-/* DOOR LIST */
 .hdr-back{width:44px;height:44px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .hdr-back:active{background:rgba(255,255,255,.1)}
 .zone-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);flex-shrink:0}
@@ -164,7 +155,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .drs-none{background:rgba(255,255,255,.04);color:var(--dim);border:1px solid var(--border)}
 .lock-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.0)}
 
-/* QR MODAL */
 .qr-modal{display:none;position:fixed;inset:0;z-index:500;background:#000;flex-direction:column}
 .qr-modal.open{display:flex}
 .qr-mhdr{display:flex;align-items:center;justify-content:space-between;padding:calc(14px + var(--safe-top)) 16px 12px;background:rgba(0,0,0,.95);flex-shrink:0;border-bottom:1px solid var(--border)}
@@ -189,7 +179,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .qr-flash{position:absolute;inset:0;background:rgba(74,222,128,.22);opacity:0;pointer-events:none;transition:opacity .15s}
 .qr-flash.on{opacity:1}
 
-/* CHECKLIST PAGE */
 .ctx-strip{padding:10px 16px;background:rgba(33,104,253,.06);border-bottom:1px solid rgba(33,104,253,.14);display:flex;align-items:center;gap:6px;flex-shrink:0}
 .ctx-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue-light)}
 .ctx-val{font-size:13px;font-weight:700}
@@ -218,12 +207,37 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .rb:active{transform:scale(.92)}
 .rb.ok.sel{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.35);color:var(--green)}
 .rb.fail.sel{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.35);color:var(--red)}
-.rb.na.sel{background:rgba(107,114,128,.12);border-color:rgba(107,114,128,.35);color:var(--muted)}
-.defect-zone{display:none;padding:0 14px 13px}
+
+/* DEFECT ZONE — note + photo */
+.defect-zone{display:none;padding:0 14px 14px}
 .defect-zone.open{display:block}
-.note-area{width:100%;background:rgba(0,0,0,.3);border:1.5px solid rgba(239,68,68,.2);border-radius:9px;padding:11px 13px;color:var(--fg);font-size:16px;resize:none;outline:none;min-height:68px;line-height:1.55;margin-top:8px}
+.defect-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:8px;margin-top:4px;display:flex;align-items:center;gap:5px}
+.note-area{width:100%;background:rgba(0,0,0,.3);border:1.5px solid rgba(239,68,68,.2);border-radius:9px;padding:11px 13px;color:var(--fg);font-size:16px;resize:none;outline:none;min-height:68px;line-height:1.55}
 .note-area:focus{border-color:rgba(239,68,68,.45)}
 .note-area::placeholder{color:#555}
+
+/* PHOTO SECTION */
+.photo-section{margin-top:10px}
+.photo-section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.photo-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);display:flex;align-items:center;gap:5px}
+.photo-count{font-size:10px;font-weight:700;color:var(--dim)}
+.photo-count.has{color:var(--teal)}
+.photo-btns{display:flex;gap:8px;margin-bottom:10px}
+.btn-photo{flex:1;height:40px;border-radius:9px;border:1.5px dashed rgba(239,68,68,.3);background:rgba(239,68,68,.04);color:#FCA5A5;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s}
+.btn-photo:active{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.5);transform:scale(.97)}
+.btn-photo:disabled{opacity:.3;pointer-events:none}
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.photo-thumb{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;background:var(--bg-card);border:1px solid var(--border)}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-thumb-del{position:absolute;top:4px;right:4px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.75);border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.photo-thumb-del:active{background:rgba(239,68,68,.6)}
+
+/* LIGHTBOX */
+.lightbox{display:none;position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,.95);align-items:center;justify-content:center;flex-direction:column}
+.lightbox.open{display:flex}
+.lightbox-img{max-width:92vw;max-height:80vh;border-radius:10px;object-fit:contain}
+.lightbox-close{position:absolute;top:calc(16px + var(--safe-top));right:16px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center}
+.lightbox-cap{margin-top:12px;font-size:12px;color:var(--muted);font-weight:600}
 
 /* SUBMIT AREA */
 .submit-area{flex-shrink:0;padding:14px 16px calc(14px + var(--safe-bottom));background:var(--bg-card);border-top:1px solid var(--border)}
@@ -237,7 +251,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .result-banner{display:none;margin-bottom:10px;padding:12px 14px;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.2);border-radius:11px;font-size:13px;font-weight:700;color:var(--green);text-align:center}
 .result-banner.show{display:block}
 
-/* ALERT MODAL */
 .alert-modal{display:none;position:fixed;inset:0;z-index:9990;background:rgba(0,0,0,.88);align-items:center;justify-content:center;padding:20px}
 .alert-modal.open{display:flex}
 .alert-box{background:var(--bg-card);border:1px solid var(--border-hi);border-radius:20px;padding:28px 24px;width:100%;max-width:340px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.8);animation:popIn .3s cubic-bezier(.34,1.56,.64,1)}
@@ -253,6 +266,9 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .btn-alert.primary{background:var(--grad-d);color:#fff}
 .btn-alert.secondary{background:rgba(255,255,255,.06);border:1px solid var(--border-hi);color:var(--muted);margin-top:8px}
 .btn-alert:active{opacity:.85}
+
+/* hidden file input */
+#photoFileInput{display:none}
 </style>
 </head>
 <body>
@@ -284,6 +300,15 @@ button{cursor:pointer;border:none;background:none;color:inherit}
   </div>
 </div>
 
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FAFAFA" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <img class="lightbox-img" id="lightboxImg" src="" alt="">
+  <div class="lightbox-cap" id="lightboxCap"></div>
+</div>
+
 <!-- ALERT MODAL -->
 <div class="alert-modal" id="alertModal">
   <div class="alert-box">
@@ -297,6 +322,9 @@ button{cursor:pointer;border:none;background:none;color:inherit}
     <button class="btn-alert secondary" id="alertSecBtn" style="display:none" onclick="closeAlert()">ยกเลิก</button>
   </div>
 </div>
+
+<!-- Hidden file input for gallery -->
+<input type="file" id="photoFileInput" accept="image/*" multiple>
 
 <!-- PAGE: LOGIN -->
 <div id="p-login" class="page active">
@@ -423,7 +451,7 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, collection, doc, getDoc, getDocs, addDoc, query, where, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, collection, doc, getDoc, getDocs, addDoc, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const FB = {
   apiKey:"AIzaSyAoOTx0rrzqZ-V2t9QE6FhQQl5dcL81GZc",
@@ -435,13 +463,17 @@ const FB = {
 };
 const db = getFirestore(initializeApp(FB));
 
-// ── STATE ──
+const MAX_PHOTOS = 3;
+const PHOTO_MAX_PX = 1024;
+const PHOTO_QUALITY = 0.75;
+
 let user=null, allDoors=[], checklists=[], shifts=[], adminContact={};
 let selZone='', selDoor=null, answers={}, totalItems=0, submitted=false;
 let shiftSubmissions=[], currentShift=null, unsubSubs=null;
 let qrStream=null, qrActive=false, qrAnim=null, bdDetector=null;
+let photoStore={};     // key -> [{dataUrl, caption}]
+let activePhotoKey=''; // which item's photo input is open
 
-// ── HELPERS ──
 let toastT;
 function toast(m,t){const e=document.getElementById('toast');e.textContent=m;e.className='toast show '+(t||'info');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('show'),2800);}
 function setLoad(t){document.getElementById('loadTxt').textContent=t;}
@@ -472,8 +504,7 @@ function defaultShifts(){return[{id:'A',name:'กะ A (เช้า)',startH:6,
 
 function renderStepbar(step,targetId){
   const steps=[{n:1,l:'เลือกพื้นที่'},{n:2,l:'เลือกประตู'},{n:3,l:'ตรวจสอบ'}];
-  const el=document.getElementById(targetId);
-  if(!el)return;
+  const el=document.getElementById(targetId);if(!el)return;
   let h='';
   steps.forEach((s,i)=>{
     const state=s.n<step?'done':s.n===step?'active':'idle';
@@ -484,7 +515,6 @@ function renderStepbar(step,targetId){
   el.innerHTML=h;
 }
 
-// ── ALERT ──
 window.showAlert=function(title,msg,detail,type='warn'){
   document.getElementById('alertTitle').textContent=title;
   document.getElementById('alertMsg').textContent=msg;
@@ -502,6 +532,101 @@ window.showAlert=function(title,msg,detail,type='warn'){
   document.getElementById('alertModal').classList.add('open');
 };
 window.closeAlert=()=>document.getElementById('alertModal').classList.remove('open');
+
+// ── LIGHTBOX ──
+window.openLightbox=function(src,cap){
+  document.getElementById('lightboxImg').src=src;
+  document.getElementById('lightboxCap').textContent=cap||'';
+  document.getElementById('lightbox').classList.add('open');
+};
+window.closeLightbox=function(){document.getElementById('lightbox').classList.remove('open');};
+
+// ── PHOTO HELPERS ──
+function compressImage(file){
+  return new Promise(resolve=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const img=new Image();
+      img.onload=()=>{
+        let w=img.width,h=img.height;
+        if(w>PHOTO_MAX_PX||h>PHOTO_MAX_PX){
+          if(w>h){h=Math.round(h*PHOTO_MAX_PX/w);w=PHOTO_MAX_PX;}
+          else{w=Math.round(w*PHOTO_MAX_PX/h);h=PHOTO_MAX_PX;}
+        }
+        const c=document.createElement('canvas');c.width=w;c.height=h;
+        c.getContext('2d').drawImage(img,0,0,w,h);
+        resolve(c.toDataURL('image/jpeg',PHOTO_QUALITY));
+      };
+      img.src=e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function renderPhotoGrid(key){
+  const grid=document.getElementById('pg-'+key);
+  const countEl=document.getElementById('pc-'+key);
+  const btnCam=document.getElementById('pbcam-'+key);
+  const btnGal=document.getElementById('pbgal-'+key);
+  if(!grid)return;
+  const photos=photoStore[key]||[];
+  const atMax=photos.length>=MAX_PHOTOS;
+  if(countEl){countEl.textContent=photos.length+'/'+MAX_PHOTOS+' รูป';countEl.className='photo-count'+(photos.length>0?' has':'');}
+  if(btnCam)btnCam.disabled=submitted||atMax;
+  if(btnGal)btnGal.disabled=submitted||atMax;
+  grid.innerHTML=photos.map((p,i)=>`
+    <div class="photo-thumb" onclick="openLightbox('${p.dataUrl}','รูปชำรุด ${i+1} — '+document.getElementById('ci-${key}')?.querySelector('.cl-item-q')?.textContent||'')">
+      <img src="${p.dataUrl}" alt="รูปชำรุด ${i+1}">
+      ${!submitted?`<div class="photo-thumb-del" onclick="event.stopPropagation();deletePhoto('${key}',${i})"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#FAFAFA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>`:''}
+    </div>`).join('');
+}
+
+window.deletePhoto=function(key,idx){
+  if(!photoStore[key])return;
+  photoStore[key].splice(idx,1);
+  renderPhotoGrid(key);
+  toast('ลบรูปแล้ว','info');
+};
+
+window.openCameraPhoto=function(key){
+  if(submitted)return;
+  activePhotoKey=key;
+  const inp=document.getElementById('photoFileInput');
+  inp.removeAttribute('multiple');
+  inp.setAttribute('capture','environment');
+  inp.accept='image/*';
+  inp.value='';
+  inp.click();
+};
+
+window.openGalleryPhoto=function(key){
+  if(submitted)return;
+  activePhotoKey=key;
+  const inp=document.getElementById('photoFileInput');
+  inp.removeAttribute('capture');
+  inp.setAttribute('multiple','');
+  inp.accept='image/*';
+  inp.value='';
+  inp.click();
+};
+
+document.getElementById('photoFileInput').addEventListener('change',async function(){
+  const key=activePhotoKey;if(!key)return;
+  if(!photoStore[key])photoStore[key]=[];
+  const files=Array.from(this.files||[]);
+  const slots=MAX_PHOTOS-(photoStore[key].length);
+  if(slots<=0){toast('ถ่ายรูปได้สูงสุด '+MAX_PHOTOS+' รูปต่อข้อ','err');return;}
+  const take=files.slice(0,slots);
+  showLoad('กำลังประมวลผลรูปภาพ...');
+  for(const f of take){
+    try{const d=await compressImage(f);photoStore[key].push({dataUrl:d});}
+    catch(e){toast('รูปภาพผิดพลาด','err');}
+  }
+  hideLoad();
+  renderPhotoGrid(key);
+  toast('เพิ่มรูป '+take.length+' รูปแล้ว','ok');
+  if(files.length>slots)toast('เกินขีดจำกัด '+MAX_PHOTOS+' รูป ใช้ '+take.length+' รูปแรก','info');
+});
 
 // ── INIT ──
 async function init(){
@@ -528,20 +653,17 @@ async function init(){
     shifts=defaultShifts();
   }
   hideLoad();
-
   const params=new URLSearchParams(window.location.search);
   const dc=params.get('door')||params.get('code')||params.get('id');
   if(dc)sessionStorage.setItem('pendingDoor',dc);
 }
 
-// ── LOGIN ──
 document.getElementById('uIn').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('pIn').focus();});
 document.getElementById('pIn').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 
 window.doLogin=async function(){
   const u=document.getElementById('uIn').value.trim(),p=document.getElementById('pIn').value;
-  const err=document.getElementById('errMsg');
-  err.textContent='';
+  const err=document.getElementById('errMsg');err.textContent='';
   if(!u||!p){err.textContent='กรุณากรอก Username และรหัสผ่าน';return;}
   const btn=document.getElementById('loginBtn');
   btn.disabled=true;btn.textContent='กำลังตรวจสอบ...';
@@ -551,9 +673,7 @@ window.doLogin=async function(){
     let found=null;
     snap.forEach(d=>{const ud=d.data();if(ud.username===u&&ud.password===p&&ud.active!==false)found={id:d.id,...ud};});
     if(!found){err.textContent='Username หรือ Password ไม่ถูกต้อง';hideLoad();btn.disabled=false;btn.textContent='เข้าสู่ระบบ';return;}
-    user=found;
-    await loadData();
-    afterLogin();
+    user=found;await loadData();afterLogin();
     toast('ยินดีต้อนรับ '+(user.displayName||user.username),'ok');
     const pd=sessionStorage.getItem('pendingDoor');
     if(pd){sessionStorage.removeItem('pendingDoor');setTimeout(()=>handleQRResult(pd),600);}
@@ -565,7 +685,6 @@ async function loadData(){
   const [ds,cs]=await Promise.all([getDocs(collection(db,'door_doors')),getDocs(collection(db,'door_checklists'))]);
   allDoors=[];ds.forEach(d=>allDoors.push({id:d.id,...d.data()}));
   allDoors.sort((a,b)=>(a.code||'').localeCompare(b.code||''));
-  // Filter by user zones
   if(user.zones&&Array.isArray(user.zones)&&user.zones.length>0){
     allDoors=allDoors.filter(d=>user.zones.includes(d.zone));
   }
@@ -581,11 +700,8 @@ function afterLogin(){
   ['zoneUserLbl'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=user.displayName||user.username;});
   ['shiftChipZ','shiftChipD'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=currentShift?currentShift.name:'—';});
   renderStepbar(1,'stepbarZ');renderStepbar(2,'stepbarD');renderStepbar(3,'stepbarC');
-
   if(!currentShift){showLock();return;}
-  startSubsListener();
-  goPage('p-zone');
-  hideLoad();
+  startSubsListener();goPage('p-zone');hideLoad();
 }
 
 function showLock(){
@@ -599,13 +715,11 @@ function showLock(){
 
 window.doLogout=function(){
   if(unsubSubs){unsubSubs();unsubSubs=null;}
-  stopQR();user=null;selZone='';selDoor=null;shiftSubmissions=[];
+  stopQR();user=null;selZone='';selDoor=null;shiftSubmissions=[];photoStore={};
   document.getElementById('uIn').value='';document.getElementById('pIn').value='';
-  document.getElementById('errMsg').textContent='';
-  goPage('p-login');
+  document.getElementById('errMsg').textContent='';goPage('p-login');
 };
 
-// ── SUBMISSIONS LISTENER ──
 function startSubsListener(){
   if(unsubSubs){unsubSubs();unsubSubs=null;}
   unsubSubs=onSnapshot(collection(db,'door_submissions'),snap=>{
@@ -616,14 +730,12 @@ function startSubsListener(){
       const ts=s.timestamp?(s.timestamp.toDate?s.timestamp.toDate():new Date(s.timestamp)):null;
       if(ts&&ts>=start&&s.shift===(currentShift?currentShift.name:''))shiftSubmissions.push({id:d.id,...s});
     });
-    renderZoneGrid();
-    if(selZone)renderDoorList();
+    renderZoneGrid();if(selZone)renderDoorList();
   });
 }
 
 function isDoorDone(code){return shiftSubmissions.find(s=>s.doorCode===code);}
 
-// ── ZONE GRID ──
 function renderZoneGrid(){
   const zones=[...new Set(allDoors.map(d=>d.zone))].sort();
   const grid=document.getElementById('zoneGrid');
@@ -635,8 +747,7 @@ function renderZoneGrid(){
     const allDone=done===doors.length&&doors.length>0;
     return `<button class="zone-card${allDone?' all-done':''}" onclick="selectZone('${z.replace(/'/g,"\\'")}')">
       ${allDone?`<div class="zc-done-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#4ADE80" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>`:''}
-      <div class="zc-name">${z}</div>
-      <div class="zc-count">${done}/${doors.length} ตรวจแล้ว</div>
+      <div class="zc-name">${z}</div><div class="zc-count">${done}/${doors.length} ตรวจแล้ว</div>
       <div class="zc-bar"><div class="zc-fill" style="width:${pct}%"></div></div>
     </button>`;
   }).join('');
@@ -647,15 +758,12 @@ window.selectZone=function(z){
   document.getElementById('doorPageTitle').textContent=z;
   document.getElementById('doorPageSub').textContent='สแกน QR เพื่อตรวจสอบ';
   document.getElementById('ctxZone').textContent=z;
-  renderDoorList();
-  renderZoneStats(z);
-  goPage('p-doors');
+  renderDoorList();renderZoneStats(z);goPage('p-doors');
 };
 
 function renderZoneStats(z){
   const doors=allDoors.filter(d=>d.zone===z);
   const done=doors.filter(d=>isDoorDone(d.code)).length;
-  const fail=shiftSubmissions.filter(s=>s.zone===z&&s.overall==='fail').length;
   document.getElementById('zoneStatRow').innerHTML=
     `<div class="zone-stat-cell"><div class="zs-num" style="background:var(--grad-d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${doors.length}</div><div class="zs-lbl">ทั้งหมด</div></div>
      <div class="zone-stat-cell"><div class="zs-num" style="color:var(--green)">${done}</div><div class="zs-lbl">ตรวจแล้ว</div></div>
@@ -667,8 +775,7 @@ function renderDoorList(){
   const list=document.getElementById('doorList');
   const resMap={ok:['drs-ok','ผ่าน'],fail:['drs-fail','ไม่ผ่าน'],cond:['drs-cond','เงื่อนไข']};
   list.innerHTML=doors.map(d=>{
-    const sub=isDoorDone(d.code);
-    const inspected=!!sub;
+    const sub=isDoorDone(d.code);const inspected=!!sub;
     const [bc,bt]=inspected&&resMap[sub.overall]?resMap[sub.overall]:['drs-none','ยังไม่ตรวจ'];
     return `<div class="door-row${inspected?' inspected':' locked'}" onclick="${inspected?`showDoneAlert('${d.code}','${sub.overall||''}','${sub.inspectorName||''}','${sub.shift||''}')`:''}" style="${!inspected?'cursor:default':''}">
       <div class="door-row-left">
@@ -684,149 +791,89 @@ function renderDoorList(){
 
 window.showDoneAlert=function(code,overall,inspector,shift){
   const resMap={ok:'ผ่าน',fail:'ไม่ผ่าน',cond:'มีเงื่อนไข'};
-  showAlert(
-    'ตรวจสอบแล้ว',
-    `ประตู ${code} ได้รับการตรวจสอบในกะนี้แล้ว`,
-    `ผู้ตรวจ: ${inspector||'—'}\nกะ: ${shift||'—'}\nผล: ${resMap[overall]||overall||'—'}`,
-    'ok'
-  );
+  showAlert('ตรวจสอบแล้ว',`ประตู ${code} ได้รับการตรวจสอบในกะนี้แล้ว`,`ผู้ตรวจ: ${inspector||'—'}\nกะ: ${shift||'—'}\nผล: ${resMap[overall]||overall||'—'}`,'ok');
 };
 
-// ── QR ──
-window.openQR=function(){
-  document.getElementById('qrModal').classList.add('open');
-  setQRStatus('กำลังเปิดกล้อง...',true);
-  startQRStream();
-};
+window.openQR=function(){document.getElementById('qrModal').classList.add('open');setQRStatus('กำลังเปิดกล้อง...',true);startQRStream();};
 window.closeQR=function(){stopQR();document.getElementById('qrModal').classList.remove('open');};
 
 function startQRStream(){
   stopQR();
-  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
-    setQRStatus('Browser ไม่รองรับกล้อง',false);toast('ไม่รองรับกล้อง','err');return;
-  }
-  if(typeof BarcodeDetector!=='undefined'){
-    try{bdDetector=new BarcodeDetector({formats:['qr_code']});}catch(e){bdDetector=null;}
-  }else bdDetector=null;
-
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){setQRStatus('Browser ไม่รองรับกล้อง',false);toast('ไม่รองรับกล้อง','err');return;}
+  if(typeof BarcodeDetector!=='undefined'){try{bdDetector=new BarcodeDetector({formats:['qr_code']});}catch(e){bdDetector=null;}}else bdDetector=null;
   navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false})
     .then(stream=>{
-      qrStream=stream;
-      const v=document.getElementById('qrVideo');
-      v.srcObject=stream;
-      v.onloadedmetadata=()=>{
-        v.play().then(()=>waitVid(v,0)).catch(e=>setQRStatus('เปิดกล้องไม่สำเร็จ',false));
-      };
+      qrStream=stream;const v=document.getElementById('qrVideo');v.srcObject=stream;
+      v.onloadedmetadata=()=>{v.play().then(()=>waitVid(v,0)).catch(()=>setQRStatus('เปิดกล้องไม่สำเร็จ',false));};
     }).catch(err=>{
       const m=String(err.message||err);
       setQRStatus(m.includes('NotAllowed')||m.includes('Permission')?'ไม่ได้รับอนุญาตกล้อง':'เปิดกล้องไม่สำเร็จ',false);
       toast('ไม่สามารถเปิดกล้องได้','err');
     });
 }
-
 function waitVid(v,n){
   if(n>50){setQRStatus('กล้องโหลดช้า',false);return;}
   if(v.readyState>=2&&v.videoWidth>0){qrActive=true;setQRStatus('พร้อมสแกน — จ่ออยู่กับ QR Code',true);qrScanLoop();}
   else setTimeout(()=>waitVid(v,n+1),150);
 }
-
 function qrScanLoop(){
   if(!qrActive)return;
-  const v=document.getElementById('qrVideo'),c=document.getElementById('qrCanvas');
-  if(!v||!c)return;
+  const v=document.getElementById('qrVideo'),c=document.getElementById('qrCanvas');if(!v||!c)return;
   if(v.readyState>=2&&v.videoWidth>0){
     c.width=v.videoWidth;c.height=v.videoHeight;
-    const ctx=c.getContext('2d',{willReadFrequently:true});
-    ctx.drawImage(v,0,0,c.width,c.height);
-    if(bdDetector){
-      bdDetector.detect(c).then(bs=>{
-        if(bs&&bs.length>0){onQRFound(bs[0].rawValue);}else tryJsQR(ctx,c.width,c.height);
-      }).catch(()=>tryJsQR(ctx,c.width,c.height));
-    }else tryJsQR(ctx,c.width,c.height);
+    const ctx=c.getContext('2d',{willReadFrequently:true});ctx.drawImage(v,0,0,c.width,c.height);
+    if(bdDetector){bdDetector.detect(c).then(bs=>{if(bs&&bs.length>0)onQRFound(bs[0].rawValue);else tryJsQR(ctx,c.width,c.height);}).catch(()=>tryJsQR(ctx,c.width,c.height));}
+    else tryJsQR(ctx,c.width,c.height);
   }else{qrAnim=requestAnimationFrame(qrScanLoop);}
 }
-
 function tryJsQR(ctx,w,h){
-  if(window.jsQR){
-    try{const id=ctx.getImageData(0,0,w,h),code=window.jsQR(id.data,w,h,{inversionAttempts:'attemptBoth'});if(code&&code.data){onQRFound(code.data);return;}}catch(e){}
-  }
+  if(window.jsQR){try{const id=ctx.getImageData(0,0,w,h),code=window.jsQR(id.data,w,h,{inversionAttempts:'attemptBoth'});if(code&&code.data){onQRFound(code.data);return;}}catch(e){}}
   if(qrActive)qrAnim=requestAnimationFrame(qrScanLoop);
 }
-
 function onQRFound(text){
-  qrActive=false;
-  const flash=document.getElementById('qrFlash');
+  qrActive=false;const flash=document.getElementById('qrFlash');
   flash.classList.add('on');setTimeout(()=>flash.classList.remove('on'),300);
-  setQRStatus('พบ QR Code!',true);
-  setTimeout(()=>{closeQR();handleQRResult(text);},350);
+  setQRStatus('พบ QR Code!',true);setTimeout(()=>{closeQR();handleQRResult(text);},350);
 }
-
 function stopQR(){
-  qrActive=false;
-  if(qrAnim){cancelAnimationFrame(qrAnim);qrAnim=null;}
-  const v=document.getElementById('qrVideo');
-  if(v){try{v.pause();}catch(e){}try{v.srcObject=null;}catch(e){}}
+  qrActive=false;if(qrAnim){cancelAnimationFrame(qrAnim);qrAnim=null;}
+  const v=document.getElementById('qrVideo');if(v){try{v.pause();}catch(e){}try{v.srcObject=null;}catch(e){}}
   if(qrStream){qrStream.getTracks().forEach(t=>{try{t.stop();}catch(e){}});qrStream=null;}
 }
-
 function setQRStatus(t,a){
   document.getElementById('qrStatusTxt').textContent=t;
-  const dot=document.querySelector('.qr-sdot');
-  if(dot)dot.style.background=a?'var(--teal)':'var(--red)';
+  const dot=document.querySelector('.qr-sdot');if(dot)dot.style.background=a?'var(--teal)':'var(--red)';
 }
 
-// ── QR RESULT HANDLER ──
 window.handleQRResult=function(raw){
   let code=String(raw||'').trim();
-  if(/^https?:\/\//i.test(code)){
-    try{const u=new URL(code);code=u.searchParams.get('door')||u.searchParams.get('code')||u.searchParams.get('id')||code;}catch(e){}
-  }
-  code=code.trim();
-  if(!code){toast('ไม่พบรหัสประตูใน QR นี้','err');return;}
-
+  if(/^https?:\/\//i.test(code)){try{const u=new URL(code);code=u.searchParams.get('door')||u.searchParams.get('code')||u.searchParams.get('id')||code;}catch(e){}}
+  code=code.trim();if(!code){toast('ไม่พบรหัสประตูใน QR นี้','err');return;}
   const door=allDoors.find(d=>d.code.toUpperCase()===code.toUpperCase());
-  if(!door){
-    showAlert('ไม่พบประตู','ไม่พบประตูรหัส "'+code+'" ในพื้นที่ที่ได้รับสิทธิ์','ตรวจสอบว่า QR ถูกต้อง และคุณมีสิทธิ์ตรวจโซนนี้','err');
-    return;
-  }
-
-  // Auto set zone
+  if(!door){showAlert('ไม่พบประตู','ไม่พบประตูรหัส "'+code+'" ในพื้นที่ที่ได้รับสิทธิ์','ตรวจสอบว่า QR ถูกต้อง และคุณมีสิทธิ์ตรวจโซนนี้','err');return;}
   if(selZone!==door.zone){
     selZone=door.zone;
     document.getElementById('doorPageTitle').textContent=door.zone;
     document.getElementById('ctxZone').textContent=door.zone;
-    renderZoneStats(door.zone);
-    renderDoorList();
+    renderZoneStats(door.zone);renderDoorList();
   }
-
-  // Check if already done
   const sub=isDoorDone(door.code);
   if(sub){
     const resMap={ok:'ผ่าน',fail:'ไม่ผ่าน',cond:'มีเงื่อนไข'};
     const ts=sub.timestamp?(sub.timestamp.toDate?sub.timestamp.toDate():new Date(sub.timestamp)):null;
     const timeStr=ts?ts.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}):'—';
-    showAlert(
-      'ประตูนี้ตรวจแล้ว',
-      `${door.code} — ${door.name}`,
-      `ผู้ตรวจ: ${sub.inspectorName||'—'}\nเวลา: ${timeStr}\nผล: ${resMap[sub.overall]||sub.overall||'—'}`,
-      'warn'
-    );
+    showAlert('ประตูนี้ตรวจแล้ว',`${door.code} — ${door.name}`,`ผู้ตรวจ: ${sub.inspectorName||'—'}\nเวลา: ${timeStr}\nผล: ${resMap[sub.overall]||sub.overall||'—'}`,'warn');
     return;
   }
-
-  // Load checklist
   selDoor=door;
   document.getElementById('dibCode').textContent=door.code;
   document.getElementById('dibName').textContent=door.name;
   document.getElementById('dibMeta').textContent=(door.location||door.zone)+' · '+(door.type||'Fire Exit Door');
   document.getElementById('checkTitle').textContent=door.code;
   document.getElementById('checkSub').textContent=door.name;
-  buildChecklist();
-  goPage('p-check');
-  toast('สแกนสำเร็จ: '+door.code,'ok');
+  buildChecklist();goPage('p-check');toast('สแกนสำเร็จ: '+door.code,'ok');
 };
 
-// ── CHECKLIST ──
 function defaultChecklists(){
   return[
     {id:'ext',name:'สภาพภายนอก',icon:'shield',order:1,items:['บานประตูไม่มีรอยบุบหรือเสียหาย','วงกบประตูและซีลยางสภาพสมบูรณ์','ป้ายทางออกฉุกเฉินชัดเจนและมองเห็นได้','พื้นที่หน้าประตูไม่มีสิ่งกีดขวาง']},
@@ -836,7 +883,7 @@ function defaultChecklists(){
 }
 
 function buildChecklist(){
-  answers={};totalItems=0;submitted=false;
+  answers={};photoStore={};totalItems=0;submitted=false;
   checklists.forEach(s=>{if(s.items)s.items.forEach(()=>totalItems++);});
   document.getElementById('sbTotal').textContent=totalItems;
   document.getElementById('sbDone').textContent='0';
@@ -871,7 +918,31 @@ function buildChecklist(){
             </div>
           </div>
           <div class="defect-zone" id="dz-${key}">
-            <textarea class="note-area" id="note-${key}" placeholder="อธิบายปัญหาที่พบ..." rows="2" oninput="if(answers['${key}'])answers['${key}'].note=this.value"></textarea>
+            <div class="defect-label">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              รายละเอียดความเสียหาย
+            </div>
+            <textarea class="note-area" id="note-${key}" placeholder="อธิบายปัญหาที่พบ เช่น บานพับหลวม, ซีลยางแตก..." rows="2" oninput="if(answers['${key}'])answers['${key}'].note=this.value"></textarea>
+            <div class="photo-section">
+              <div class="photo-section-hdr">
+                <div class="photo-lbl">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#737373" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                  แนบรูปความเสียหาย
+                </div>
+                <span class="photo-count" id="pc-${key}">0/3 รูป</span>
+              </div>
+              <div class="photo-btns">
+                <button class="btn-photo" id="pbcam-${key}" onclick="openCameraPhoto('${key}')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                  ถ่ายรูป
+                </button>
+                <button class="btn-photo" id="pbgal-${key}" onclick="openGalleryPhoto('${key}')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  เลือกจากคลัง
+                </button>
+              </div>
+              <div class="photo-grid" id="pg-${key}"></div>
+            </div>
           </div>
         </div>`;
       }).join('')}
@@ -882,13 +953,17 @@ function buildChecklist(){
 window.pick=function(btn,val){
   if(submitted)return;
   const key=btn.dataset.key;
-  btn.closest('.rb-grp').querySelectorAll('.rb').forEach(b=>{b.classList.remove('sel');});
+  btn.closest('.rb-grp').querySelectorAll('.rb').forEach(b=>b.classList.remove('sel'));
   btn.classList.add('sel');
   if(!answers[key])answers[key]={val:null,note:''};
   answers[key].val=val;
   document.getElementById('ci-'+key).classList.add('answered');
   const dz=document.getElementById('dz-'+key);
-  if(dz)dz.classList[val==='fail'?'add':'remove']('open');
+  if(dz){
+    const wasOpen=dz.classList.contains('open');
+    dz.classList[val==='fail'?'add':'remove']('open');
+    if(val!=='fail'&&wasOpen){delete photoStore[key];renderPhotoGrid(key);}
+  }
   updateProg();
 };
 
@@ -902,18 +977,25 @@ function updateProg(){
   document.getElementById('btnSubmit').disabled=done<totalItems;
 }
 
-// ── SUBMIT ──
 window.doSubmit=async function(){
   if(submitted||!selDoor||!user)return;
   submitted=true;
   const btn=document.getElementById('btnSubmit');
   btn.disabled=true;btn.textContent='กำลังบันทึก...';
 
-  const as={};Object.keys(answers).forEach(k=>{as[k]={val:answers[k].val,note:answers[k].note||''};});
+  const as={};
+  Object.keys(answers).forEach(k=>{
+    as[k]={
+      val:answers[k].val,
+      note:answers[k].note||'',
+      photos:(photoStore[k]||[]).map(p=>p.dataUrl)
+    };
+  });
   const ok=Object.values(answers).filter(a=>a.val==='ok').length;
   const fail=Object.values(answers).filter(a=>a.val==='fail').length;
   const overall=fail>0?'fail':ok===totalItems?'ok':'cond';
   const sh=getShift();
+  const allPhotos=Object.values(photoStore).flat().map(p=>p.dataUrl);
 
   try{
     await addDoc(collection(db,'door_submissions'),{
@@ -922,14 +1004,13 @@ window.doSubmit=async function(){
       inspectorName:user.displayName||user.username,
       shift:sh?sh.name:'ไม่ระบุ',overall,answers:as,
       totalItems,answeredItems:totalItems,okItems:ok,failItems:fail,
+      photos:allPhotos,
       timestamp:serverTimestamp()
     });
     document.getElementById('resultBanner').classList.add('show');
-    document.querySelectorAll('.rb,.note-area').forEach(el=>{el.style.pointerEvents='none';el.style.opacity='.45';});
+    document.querySelectorAll('.rb,.note-area,.btn-photo').forEach(el=>{el.style.pointerEvents='none';el.style.opacity='.45';});
     toast('บันทึกเรียบร้อย — '+selDoor.code,'ok');
-    renderDoorList();
-    if(selZone)renderZoneStats(selZone);
-    renderZoneGrid();
+    renderDoorList();if(selZone)renderZoneStats(selZone);renderZoneGrid();
     setTimeout(()=>goPage('p-doors'),1800);
   }catch(e){
     submitted=false;btn.disabled=false;btn.textContent='ส่งผลการตรวจสอบ';
@@ -940,13 +1021,8 @@ window.doSubmit=async function(){
 window.addEventListener('beforeunload',()=>stopQR());
 init();
 </script>
-
-<!-- QR non-module guard -->
 <script>
-// ensure jsQR global accessible from module
-window.addEventListener('load',function(){
-  if(typeof jsQR!=='undefined')window.jsQR=jsQR;
-});
+window.addEventListener('load',function(){if(typeof jsQR!=='undefined')window.jsQR=jsQR;});
 </script>
 </body>
 </html>
