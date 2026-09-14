@@ -55,21 +55,18 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .pscroll::-webkit-scrollbar{width:3px}
 .pscroll::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:2px}
 
-/* LOADING */
-.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.95);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;backdrop-filter:blur(8px)}
-.loading-overlay.hide{display:none}
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.95);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;backdrop-filter:blur(8px);transition:opacity .35s ease;pointer-events:all}
+.loading-overlay.hide{opacity:0;pointer-events:none}
 .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .75s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .load-txt{font-size:13px;font-weight:700;color:var(--muted)}
 
-/* TOAST */
 .toast{position:fixed;bottom:calc(24px + var(--safe-bottom));left:50%;transform:translateX(-50%) translateY(20px);background:var(--fg);border-radius:12px;padding:11px 18px;font-size:13px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px;opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);pointer-events:none;z-index:9998;white-space:nowrap;max-width:88vw;box-shadow:var(--shadow-lg)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.ok{background:#16A34A}
 .toast.err{background:#DC2626}
 .toast.info{background:var(--blue)}
 
-/* TOPBAR */
 .topbar{display:flex;align-items:center;gap:8px;padding:calc(10px + var(--safe-top)) 14px 10px;background:#fff;border-bottom:1px solid var(--border);flex-shrink:0;box-shadow:var(--shadow-sm);position:relative}
 .topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--grad)}
 .tb-left{display:flex;align-items:center;gap:8px;flex-shrink:0}
@@ -92,7 +89,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .ld{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(22,163,74,.4)}70%{opacity:.7;box-shadow:0 0 0 5px rgba(22,163,74,0)}}
 
-/* NOTIFICATION PANEL */
 .notif-panel{position:fixed;top:64px;right:8px;width:300px;max-width:calc(100vw - 16px);background:#fff;border:1px solid var(--border);border-radius:16px;z-index:600;overflow:hidden;box-shadow:var(--shadow-lg);transform:translateY(-8px) scale(.96);opacity:0;pointer-events:none;transition:transform .25s cubic-bezier(.16,1,.3,1),opacity .22s}
 .notif-panel.show{transform:none;opacity:1;pointer-events:all}
 .notif-phdr{padding:12px 14px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
@@ -109,7 +105,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .notif-ntime{font-size:9px;color:var(--dim);margin-top:2px;font-weight:600}
 .notif-empty{padding:22px 14px;text-align:center;font-size:11px;color:var(--dim);font-weight:600}
 
-/* LOGOUT MODAL */
 .logout-modal{display:none;position:fixed;inset:0;z-index:9980;background:rgba(15,23,42,.6);align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
 .logout-modal.open{display:flex;animation:alertBgIn .2s ease}
 @keyframes alertBgIn{from{opacity:0}to{opacity:1}}
@@ -124,7 +119,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .btn-logout-confirm{flex:1;padding:12px;border-radius:10px;border:none;background:var(--red);font-size:13px;font-weight:800;color:#fff;cursor:pointer;transition:all .18s}
 .btn-logout-confirm:hover{background:#B91C1C;transform:translateY(-1px);box-shadow:0 4px 14px rgba(220,38,38,.35)}
 
-/* STEPBAR */
 .stepbar{display:flex;align-items:center;padding:10px 16px;background:#fff;border-bottom:1px solid var(--border);flex-shrink:0;box-shadow:var(--shadow-sm)}
 .step-item{display:flex;align-items:center;gap:6px;flex:1}
 .step-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;transition:all .35s cubic-bezier(.34,1.56,.64,1)}
@@ -139,7 +133,23 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .step-line{flex:1;height:2px;background:var(--border);margin:0 6px;border-radius:2px;transition:background .4s}
 .step-line.done{background:var(--green)}
 
-/* LOGIN */
+/* ── CYCLE BANNER ── */
+.cycle-banner{margin:10px 14px 0;background:linear-gradient(135deg,rgba(33,104,253,.06),rgba(13,148,136,.03));border:1.5px solid var(--blue-border);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow-sm);flex-shrink:0}
+.cycle-icon{width:34px;height:34px;border-radius:9px;background:var(--blue-bg);border:1.5px solid var(--blue-border);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cycle-info{flex:1;min-width:0}
+.cycle-title{font-size:11px;font-weight:800;color:var(--fg);margin-bottom:1px}
+.cycle-sub{font-size:10px;color:var(--muted)}
+.cycle-badge{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:3px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.cycle-badge.fresh{background:var(--green-bg);border:1px solid var(--green-border);color:var(--green)}
+.cycle-badge.warn{background:var(--yellow-bg);border:1px solid var(--yellow-border);color:var(--yellow)}
+.cycle-badge.old{background:var(--red-bg);border:1px solid var(--red-border);color:var(--red)}
+
+/* ── STALENESS INDICATORS on door rows ── */
+.dr-age{font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;display:inline-block;margin-top:3px}
+.dr-age.fresh{background:var(--green-bg);border:1px solid var(--green-border);color:var(--green)}
+.dr-age.warn{background:var(--yellow-bg);border:1px solid var(--yellow-border);color:var(--yellow)}
+.dr-age.old{background:var(--red-bg);border:1px solid var(--red-border);color:var(--red)}
+
 #p-login{background:linear-gradient(135deg,#EFF4F8 0%,#E0EEFF 50%,#E8F8F5 100%);justify-content:center;overflow-y:auto}
 .login-outer{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(48px + var(--safe-top)) 24px calc(40px + var(--safe-bottom));min-height:100%}
 .login-card{width:100%;max-width:400px;animation:loginCardIn .6s cubic-bezier(.34,1.4,.64,1)}
@@ -166,7 +176,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .btn-login:disabled{opacity:.4;pointer-events:none;box-shadow:none}
 .err-msg{font-size:11px;color:var(--red);text-align:center;margin-top:10px;min-height:16px;font-weight:600}
 
-/* LOCK */
 .lock-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;gap:16px;background:var(--bg)}
 .lock-icon{width:72px;height:72px;border-radius:20px;background:var(--yellow-bg);border:2px solid var(--yellow-border);display:flex;align-items:center;justify-content:center}
 .lock-title{font-size:22px;font-weight:800;letter-spacing:-.5px;color:var(--fg)}
@@ -186,7 +195,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .admin-role-t{font-size:11px;color:var(--dim)}
 .admin-ext{font-size:12px;font-weight:700;color:var(--blue);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
 
-/* ZONE PAGE */
 .page-pad{padding:16px;display:flex;flex-direction:column;gap:12px}
 .sec-eyebrow{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dim);display:flex;align-items:center;gap:7px;margin-bottom:2px}
 .zone-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
@@ -203,7 +211,11 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .zc-fill{height:100%;background:var(--grad);border-radius:2px;transition:width .6s cubic-bezier(.4,0,.2,1)}
 .zc-done-badge{position:absolute;top:10px;right:10px;width:20px;height:20px;border-radius:50%;background:var(--green-bg);border:1.5px solid var(--green-border);display:flex;align-items:center;justify-content:center}
 
-/* DOOR LIST */
+/* ── CYCLE SUMMARY on Zone Card ── */
+.zc-cycle{font-size:9px;font-weight:700;margin-top:4px;color:var(--dim)}
+.zc-cycle.warn{color:var(--yellow)}
+.zc-cycle.old{color:var(--red)}
+
 .zone-stat-row{display:grid;grid-template-columns:repeat(3,1fr);background:#fff;border-bottom:1px solid var(--border);flex-shrink:0;box-shadow:var(--shadow-sm)}
 .zone-stat-cell{padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:2px;border-right:1px solid var(--border)}
 .zone-stat-cell:last-child{border-right:none}
@@ -219,6 +231,8 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .door-list{display:flex;flex-direction:column;gap:6px;padding:12px 14px}
 .door-row{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;border:1.5px solid var(--border);background:#fff;position:relative;overflow:hidden;transition:all .2s;box-shadow:var(--shadow-sm)}
 .door-row.inspected{background:rgba(22,163,74,.03);border-color:var(--green-border)}
+.door-row.inspected.warn-age{background:rgba(217,119,6,.03);border-color:var(--yellow-border)}
+.door-row.inspected.old-age{background:rgba(220,38,38,.03);border-color:var(--red-border)}
 .door-row.inspected:hover{transform:translateX(3px);box-shadow:var(--shadow-md)}
 .door-row.locked{opacity:.6}
 .door-row-left{flex:1;min-width:0}
@@ -232,7 +246,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .drs-cond{background:var(--yellow-bg);color:var(--yellow);border:1px solid var(--yellow-border)}
 .drs-none{background:var(--bg);color:var(--dim);border:1px solid var(--border)}
 
-/* QR MODAL */
 .qr-modal{display:none;position:fixed;inset:0;z-index:500;background:#000;flex-direction:column}
 .qr-modal.open{display:flex;animation:qrModalIn .3s ease}
 @keyframes qrModalIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:none}}
@@ -259,7 +272,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .qr-flash{position:absolute;inset:0;background:rgba(58,228,201,.2);opacity:0;pointer-events:none;transition:opacity .15s}
 .qr-flash.on{opacity:1}
 
-/* CHECKLIST PAGE */
 .ctx-strip{padding:10px 16px;background:linear-gradient(135deg,rgba(33,104,253,.06),rgba(13,148,136,.03));border-bottom:1px solid var(--blue-border);display:flex;align-items:center;gap:6px;flex-shrink:0}
 .ctx-lbl{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue)}
 .ctx-val{font-size:13px;font-weight:800;color:var(--fg)}
@@ -325,7 +337,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .lightbox-close{position:absolute;top:calc(16px + var(--safe-top));right:16px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center}
 .lightbox-cap{margin-top:12px;font-size:12px;color:rgba(255,255,255,.7);font-weight:600}
 
-/* SUBMIT AREA */
 .submit-area{flex-shrink:0;padding:14px 14px calc(14px + var(--safe-bottom));background:#fff;border-top:1.5px solid var(--border);box-shadow:0 -4px 16px rgba(15,23,42,.06);position:relative}
 .submit-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--dim);margin-bottom:7px;font-weight:600}
 .submit-meta strong{color:var(--fg)}
@@ -351,7 +362,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
 .voice-waves span:nth-child(5){height:8px;animation-delay:.05s}
 @keyframes voiceWave{0%,100%{transform:scaleY(.4)}50%{transform:scaleY(1)}}
 
-/* ALERT MODAL */
 .alert-modal{display:none;position:fixed;inset:0;z-index:9990;background:rgba(15,23,42,.6);align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
 .alert-modal.open{display:flex;animation:alertBgIn .2s ease}
 .alert-box{background:#fff;border:1.5px solid var(--border);border-radius:20px;padding:28px 24px;width:100%;max-width:340px;text-align:center;box-shadow:var(--shadow-lg);animation:popIn .35s cubic-bezier(.34,1.56,.64,1)}
@@ -379,7 +389,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
   <div class="load-txt" id="loadTxt">กำลังเชื่อมต่อระบบ...</div>
 </div>
 
-<!-- QR MODAL -->
 <div class="qr-modal" id="qrModal">
   <div class="qr-mhdr">
     <span class="qr-mtitle">สแกน QR Code ประตู</span>
@@ -401,7 +410,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
   </div>
 </div>
 
-<!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <button class="lightbox-close" onclick="closeLightbox()">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -410,7 +418,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
   <div class="lightbox-cap" id="lightboxCap"></div>
 </div>
 
-<!-- ALERT MODAL -->
 <div class="alert-modal" id="alertModal">
   <div class="alert-box">
     <div class="alert-icon warn" id="alertIcon">
@@ -424,7 +431,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
   </div>
 </div>
 
-<!-- LOGOUT CONFIRM -->
 <div class="logout-modal" id="logoutModal">
   <div class="logout-box">
     <div class="logout-icon">
@@ -439,7 +445,6 @@ button{cursor:pointer;border:none;background:none;color:inherit}
   </div>
 </div>
 
-<!-- NOTIFICATION PANEL -->
 <div class="notif-panel" id="notifPanel">
   <div class="notif-phdr">
     <span class="notif-ptitle">การแจ้งเตือน</span>
@@ -505,6 +510,7 @@ button{cursor:pointer;border:none;background:none;color:inherit}
   <div class="stepbar" id="stepbarZ"></div>
   <div class="pscroll">
     <div class="page-pad">
+      <div id="cycleBannerZ"></div>
       <div class="sec-eyebrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>เลือกพื้นที่ตรวจสอบ</div>
       <div class="zone-grid" id="zoneGrid"></div>
     </div>
@@ -593,13 +599,26 @@ const db=getFirestore(initializeApp(FB));
 const MAX_PHOTOS=3,PHOTO_MAX_PX=1024,PHOTO_QUALITY=0.75;
 let user=null,allDoors=[],checklists=[],shifts=[],adminContact={};
 let selZone='',selDoor=null,answers={},totalItems=0,submitted=false;
-let shiftSubmissions=[],currentShift=null,unsubSubs=null,unsubNotif=null;
+let shiftSubmissions=[],currentShift=null,unsubSubs=null,unsubNotif=null,unsubCycle=null;
 let qrStream=null,qrActive=false,qrAnim=null,bdDetector=null;
 let photoStore={},activePhotoKey='';
 let notifications=[],unreadNotifCount=0;
 
+/* ══════════════════════════════════════════════
+   INSPECTION CYCLE STATE
+   cycleStart : Date — วันที่เริ่ม cycle ปัจจุบัน
+   cycleAutoDay: number — reset ทุก N วัน (0 = ไม่ auto)
+   STALE_WARN  : วัน — เริ่มแสดงสีเหลือง
+   STALE_OLD   : วัน — เริ่มแสดงสีแดง
+══════════════════════════════════════════════ */
+let cycleStart=null;
+let cycleAutoDay=30;
+const STALE_WARN=7;
+const STALE_OLD=14;
+
 const DAYS_TH=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
 const MONTHS_TH=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+
 function updateClock(){
   const n=new Date();
   const ts=`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`;
@@ -608,6 +627,70 @@ function updateClock(){
   ['tbDateLock','tbDateZone','tbDateDoor','tbDateCheck'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=ds;});
 }
 updateClock();setInterval(updateClock,1000);
+
+/* ══ STALENESS HELPERS ══ */
+function daysSince(date){
+  if(!date)return 9999;
+  return Math.floor((Date.now()-date.getTime())/(1000*60*60*24));
+}
+function ageLabel(date){
+  if(!date)return null;
+  const d=daysSince(date);
+  if(d===0)return{text:'ตรวจวันนี้',cls:'fresh'};
+  if(d===1)return{text:'เมื่อวาน',cls:'fresh'};
+  if(d<STALE_WARN)return{text:`${d} วันที่แล้ว`,cls:'fresh'};
+  if(d<STALE_OLD)return{text:`${d} วันที่แล้ว`,cls:'warn'};
+  return{text:`${d} วันที่แล้ว`,cls:'old'};
+}
+function ageCls(date){
+  if(!date)return '';
+  const d=daysSince(date);
+  if(d<STALE_WARN)return 'fresh';
+  if(d<STALE_OLD)return 'warn';
+  return 'old';
+}
+
+/* ══ CYCLE BANNER ══ */
+function renderCycleBanner(){
+  const el=document.getElementById('cycleBannerZ');
+  if(!el)return;
+  if(!cycleStart){el.innerHTML='';return;}
+  const dayIn=daysSince(cycleStart);
+  const remaining=cycleAutoDay>0?Math.max(0,cycleAutoDay-dayIn):-1;
+  let badgeCls='fresh',badgeTxt='กำลังตรวจสอบ';
+  if(cycleAutoDay>0&&remaining<=3){badgeCls='warn';badgeTxt=`Reset ใน ${remaining} วัน`;}
+  const startStr=`${cycleStart.getDate()} ${MONTHS_TH[cycleStart.getMonth()]} ${cycleStart.getFullYear()+543}`;
+  const autoTxt=cycleAutoDay>0?`Auto reset ทุก ${cycleAutoDay} วัน · Reset ครั้งถัดไปใน ${remaining} วัน`:'Auto reset: ปิด (Manual เท่านั้น)';
+  el.innerHTML=`<div class="cycle-banner">
+    <div class="cycle-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2168FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></div>
+    <div class="cycle-info">
+      <div class="cycle-title">รอบการตรวจสอบ — เริ่ม ${startStr}</div>
+      <div class="cycle-sub">${autoTxt}</div>
+    </div>
+    <span class="cycle-badge ${badgeCls}">${badgeTxt}</span>
+  </div>`;
+}
+
+/* ══ CYCLE LISTENER — ฟัง Firestore doc door_settings/cycle ══ */
+function startCycleListener(){
+  if(unsubCycle){unsubCycle();unsubCycle=null;}
+  unsubCycle=onSnapshot(doc(db,'door_settings','cycle'),snap=>{
+    if(snap.exists()){
+      const d=snap.data();
+      const raw=d.cycleStart;
+      cycleStart=raw?(raw.toDate?raw.toDate():new Date(raw)):null;
+      cycleAutoDay=typeof d.autoResetDays==='number'?d.autoResetDays:30;
+      /* Auto reset check: ถ้าเกิน cycleAutoDay วัน cycleStart จะถูก Admin update ผ่าน dashboard */
+    }else{
+      /* ไม่มี doc → ใช้ default: cycle เริ่มตั้งแต่ epoch (แสดง submission ทั้งหมด) */
+      cycleStart=new Date(0);
+      cycleAutoDay=30;
+    }
+    renderCycleBanner();
+    renderZoneGrid();
+    if(selZone)renderDoorList();
+  });
+}
 
 function addNotification(text,type='upd'){
   const n=new Date();
@@ -681,78 +764,42 @@ function launchConfetti(){
 
 let toastT;
 function toast(m,t){const e=document.getElementById('toast');e.textContent=m;e.className='toast show '+(t||'info');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('show'),2800);}
-function setLoad(t){document.getElementById('loadTxt').textContent=t;}
-function showLoad(t){if(t)setLoad(t);document.getElementById('loadingOverlay').classList.remove('hide');}
-function hideLoad(){document.getElementById('loadingOverlay').classList.add('hide');}
-function goPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));const pg=document.getElementById(id);if(pg)pg.classList.add('active');if(id==='p-check')document.getElementById('checkScroll').scrollTop=0;}
-function getShift(){const h=new Date().getHours();for(const s of shifts){if(s.startH<s.endH){if(h>=s.startH&&h<s.endH)return s;}else{if(h>=s.startH||h<s.endH)return s;}}return null;}
-function shiftStart(s){const now=new Date(),d=new Date(now);d.setHours(s.startH,0,0,0);if(s.startH>s.endH&&now.getHours()<s.endH)d.setDate(d.getDate()-1);return d;}
-function defaultShifts(){return[{id:'A',name:'กะ A (เช้า)',startH:6,endH:14},{id:'B',name:'กะ B (บ่าย)',startH:14,endH:22},{id:'C',name:'กะ C (ดึก)',startH:22,endH:6}];}
 
-function renderStepbar(step,targetId){
-  const steps=[{n:1,l:'เลือกพื้นที่'},{n:2,l:'เลือกประตู'},{n:3,l:'ตรวจสอบ'}];
-  const el=document.getElementById(targetId);if(!el)return;let h='';
-  steps.forEach((s,i)=>{
-    const state=s.n<step?'done':s.n===step?'active':'idle';
-    const num=state==='done'?'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':s.n;
-    h+=`<div class="step-item"><div class="step-num ${state}">${num}</div><div class="step-label ${state}">${s.l}</div></div>`;
-    if(i<steps.length-1)h+=`<div class="step-line${step>s.n?' done':''}"></div>`;
-  });el.innerHTML=h;
-}
-
-window.showAlert=function(title,msg,detail,type='warn'){
-  document.getElementById('alertTitle').textContent=title;
-  document.getElementById('alertMsg').textContent=msg;
-  const det=document.getElementById('alertDetail');
-  if(detail){det.style.display='';det.innerHTML=detail.replace(/\n/g,'<br>');}else det.style.display='none';
-  const ico=document.getElementById('alertIcon');
-  const imap={warn:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',err:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',ok:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'};
-  ico.className='alert-icon '+type;ico.innerHTML=imap[type]||imap.warn;
-  document.getElementById('alertSecBtn').style.display='none';
-  document.getElementById('alertModal').classList.add('open');
-};
-window.closeAlert=()=>document.getElementById('alertModal').classList.remove('open');
-window.openLightbox=function(src,cap){document.getElementById('lightboxImg').src=src;document.getElementById('lightboxCap').textContent=cap||'';document.getElementById('lightbox').classList.add('open');};
-window.closeLightbox=function(){document.getElementById('lightbox').classList.remove('open');};
-
-function compressImage(file){return new Promise(resolve=>{const reader=new FileReader();reader.onload=e=>{const img=new Image();img.onload=()=>{let w=img.width,h=img.height;if(w>PHOTO_MAX_PX||h>PHOTO_MAX_PX){if(w>h){h=Math.round(h*PHOTO_MAX_PX/w);w=PHOTO_MAX_PX;}else{w=Math.round(w*PHOTO_MAX_PX/h);h=PHOTO_MAX_PX;}}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);resolve(c.toDataURL('image/jpeg',PHOTO_QUALITY));};img.src=e.target.result;};reader.readAsDataURL(file);});}
-function renderPhotoGrid(key){
-  const grid=document.getElementById('pg-'+key),countEl=document.getElementById('pc-'+key);
-  const btnCam=document.getElementById('pbcam-'+key),btnGal=document.getElementById('pbgal-'+key);
-  if(!grid)return;
-  const photos=photoStore[key]||[],atMax=photos.length>=MAX_PHOTOS;
-  if(countEl){countEl.textContent=photos.length+'/'+MAX_PHOTOS+' รูป';countEl.className='photo-count'+(photos.length>0?' has':'');}
-  if(btnCam)btnCam.disabled=submitted||atMax;if(btnGal)btnGal.disabled=submitted||atMax;
-  grid.innerHTML=photos.map((p,i)=>`<div class="photo-thumb" onclick="openLightbox('${p.dataUrl}','รูปชำรุด ${i+1}')"><img src="${p.dataUrl}" alt="รูป ${i+1}">${!submitted?`<div class="photo-thumb-del" onclick="event.stopPropagation();deletePhoto('${key}',${i})"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>`:''}</div>`).join('');
-}
-window.deletePhoto=function(key,idx){if(!photoStore[key])return;photoStore[key].splice(idx,1);renderPhotoGrid(key);toast('ลบรูปแล้ว','info');};
-window.openCameraPhoto=function(key){if(submitted)return;activePhotoKey=key;const inp=document.getElementById('photoFileInput');inp.removeAttribute('multiple');inp.setAttribute('capture','environment');inp.accept='image/*';inp.value='';inp.click();};
-window.openGalleryPhoto=function(key){if(submitted)return;activePhotoKey=key;const inp=document.getElementById('photoFileInput');inp.removeAttribute('capture');inp.setAttribute('multiple','');inp.accept='image/*';inp.value='';inp.click();};
-document.getElementById('photoFileInput').addEventListener('change',async function(){
-  const key=activePhotoKey;if(!key)return;if(!photoStore[key])photoStore[key]=[];
-  const files=Array.from(this.files||[]);const slots=MAX_PHOTOS-(photoStore[key].length);
-  if(slots<=0){toast('ถ่ายรูปได้สูงสุด '+MAX_PHOTOS+' รูปต่อข้อ','err');return;}
-  const take=files.slice(0,slots);showLoad('กำลังประมวลผลรูปภาพ...');
-  for(const f of take){try{const d=await compressImage(f);photoStore[key].push({dataUrl:d});}catch(e){toast('รูปภาพผิดพลาด','err');}}
-  hideLoad();renderPhotoGrid(key);toast('เพิ่มรูป '+take.length+' รูปแล้ว','ok');
-});
+function setLoad(t){const el=document.getElementById('loadTxt');if(el)el.textContent=t;}
+function showLoad(t){if(t)setLoad(t);const el=document.getElementById('loadingOverlay');if(el){el.classList.remove('hide');el.style.display='';}}
+function hideLoad(){const el=document.getElementById('loadingOverlay');if(!el)return;el.classList.add('hide');setTimeout(()=>{if(el.classList.contains('hide'))el.style.display='none';},400);}
 
 async function init(){
+  const fallbackTimer=setTimeout(()=>{
+    const pill=document.getElementById('connPill');
+    if(pill){pill.className='conn-pill err';pill.innerHTML='เชื่อมต่อช้า — ลองได้เลย';}
+    const btn=document.getElementById('loginBtn');if(btn)btn.disabled=false;
+    hideLoad();
+  },5000);
   try{
     const snap=await getDoc(doc(db,'door_settings','config'));
-    document.getElementById('connPill').className='conn-pill ok';
-    document.getElementById('connPill').innerHTML='<div class="ld"></div>เชื่อมต่อสำเร็จ';
-    document.getElementById('loginBtn').disabled=false;
+    clearTimeout(fallbackTimer);
+    const pill=document.getElementById('connPill');
+    if(pill){pill.className='conn-pill ok';pill.innerHTML='<div class="ld"></div>เชื่อมต่อสำเร็จ';}
+    const btn=document.getElementById('loginBtn');if(btn)btn.disabled=false;
     if(snap.exists()){
-      const d=snap.data();shifts=d.shifts||defaultShifts();
-      if(d.adminContact){document.getElementById('adminNm').textContent=d.adminContact.name||'Admin';document.getElementById('adminRl').textContent=d.adminContact.role||'Security Supervisor';document.getElementById('adminCt').textContent=d.adminContact.contact||'—';document.getElementById('adminAv').textContent=(d.adminContact.name||'A').charAt(0).toUpperCase();}
-    }else shifts=defaultShifts();
+      const d=snap.data();
+      shifts=d.shifts||defaultShifts();
+      if(d.adminContact){
+        const nm=document.getElementById('adminNm'),rl=document.getElementById('adminRl'),ct=document.getElementById('adminCt'),av=document.getElementById('adminAv');
+        if(nm)nm.textContent=d.adminContact.name||'Admin';
+        if(rl)rl.textContent=d.adminContact.role||'Security Supervisor';
+        if(ct)ct.textContent=d.adminContact.contact||'—';
+        if(av)av.textContent=(d.adminContact.name||'A').charAt(0).toUpperCase();
+      }
+    }else{shifts=defaultShifts();}
   }catch(e){
-    document.getElementById('connPill').className='conn-pill err';
-    document.getElementById('connPill').innerHTML='เชื่อมต่อไม่ได้ — ลองใหม่';
-    document.getElementById('loginBtn').disabled=false;shifts=defaultShifts();
-  }
-  hideLoad();
+    clearTimeout(fallbackTimer);
+    const pill=document.getElementById('connPill');
+    if(pill){pill.className='conn-pill err';pill.innerHTML='เชื่อมต่อไม่ได้ — ลองใหม่';}
+    const btn=document.getElementById('loginBtn');if(btn)btn.disabled=false;
+    shifts=defaultShifts();
+  }finally{hideLoad();}
   const p=new URLSearchParams(window.location.search);
   const dc=p.get('door')||p.get('code')||p.get('id');
   if(dc)sessionStorage.setItem('pendingDoor',dc);
@@ -797,6 +844,7 @@ function afterLogin(){
   ['shiftChipZ','shiftChipD'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=currentShift?currentShift.name:'—';});
   renderStepbar(1,'stepbarZ');renderStepbar(2,'stepbarD');renderStepbar(3,'stepbarC');
   startNotifListener();
+  startCycleListener();
   if(!currentShift){showLock();return;}
   startSubsListener();goPage('p-zone');hideLoad();
 }
@@ -809,9 +857,11 @@ function showLock(){
 function doLogout(){
   if(unsubSubs){unsubSubs();unsubSubs=null;}
   if(unsubNotif){unsubNotif();unsubNotif=null;}
+  if(unsubCycle){unsubCycle();unsubCycle=null;}
   stopQR();synth.cancel();
   user=null;selZone='';selDoor=null;shiftSubmissions=[];photoStore={};
-  notifications=[];unreadNotifCount=0;updateNotifDots();
+  notifications=[];unreadNotifCount=0;cycleStart=null;
+  updateNotifDots();
   document.getElementById('uIn').value='';document.getElementById('pIn').value='';
   document.getElementById('errMsg').textContent='';
   document.getElementById('notifPanel').classList.remove('show');
@@ -819,21 +869,33 @@ function doLogout(){
 }
 window.doLogout=doLogout;
 
+/* ══════════════════════════════════════════════
+   SUBMISSIONS LISTENER — แก้ไขหลัก
+   เอา shift-based filter ออก
+   แสดง latest submission ต่อประตูทั้งหมด
+   โดย filter เฉพาะ ts >= cycleStart เท่านั้น
+══════════════════════════════════════════════ */
 function startSubsListener(){
   if(unsubSubs){unsubSubs();unsubSubs=null;}
   unsubSubs=onSnapshot(collection(db,'door_submissions'),snap=>{
-    const start=getShift()?shiftStart(getShift()):new Date();
-    const shiftName=currentShift?currentShift.name:'';
     const raw=[];
     snap.forEach(d=>{
       const s=d.data();
       const ts=s.timestamp?(s.timestamp.toDate?s.timestamp.toDate():new Date(s.timestamp)):null;
-      if(ts&&ts>=start&&s.shift===shiftName)raw.push({id:d.id,...s,_ts:ts});
+      if(!ts)return;
+      /* กรองเฉพาะ submission ที่อยู่ใน cycle ปัจจุบัน */
+      const cutoff=cycleStart||new Date(0);
+      if(ts>=cutoff)raw.push({id:d.id,...s,_ts:ts});
     });
+    /* เก็บเฉพาะ latest submission ต่อ doorCode */
     const latestMap={};
-    raw.forEach(s=>{const code=s.doorCode;if(!code)return;if(!latestMap[code]||s._ts>latestMap[code]._ts)latestMap[code]=s;});
+    raw.forEach(s=>{
+      const code=s.doorCode;if(!code)return;
+      if(!latestMap[code]||s._ts>latestMap[code]._ts)latestMap[code]=s;
+    });
     shiftSubmissions=Object.values(latestMap);
-    renderZoneGrid();if(selZone)renderDoorList();
+    renderZoneGrid();
+    if(selZone)renderDoorList();
   });
 }
 
@@ -845,13 +907,23 @@ function renderZoneGrid(){
   if(!zones.length){grid.innerHTML='<div style="color:var(--muted);text-align:center;padding:24px;font-size:13px;font-weight:600;grid-column:1/-1">ไม่พบพื้นที่<br>กรุณาติดต่อ Admin</div>';return;}
   grid.innerHTML=zones.map(z=>{
     const doors=allDoors.filter(d=>d.zone===z);
-    const done=doors.filter(d=>isDoorDone(d.code)).length;
+    const doneDoors=doors.filter(d=>isDoorDone(d.code));
+    const done=doneDoors.length;
     const pct=doors.length>0?Math.round(done/doors.length*100):0;
     const allDone=done===doors.length&&doors.length>0;
+    /* คำนวณ staleness ของ zone (ใช้ oldest inspection ใน zone) */
+    let zoneCycleHtml='';
+    if(done>0){
+      const dates=doneDoors.map(d=>{const s=isDoorDone(d.code);return s?s._ts:null;}).filter(Boolean);
+      const oldest=dates.reduce((a,b)=>a<b?a:b,dates[0]);
+      const ag=ageLabel(oldest);
+      if(ag&&ag.cls!=='fresh')zoneCycleHtml=`<div class="zc-cycle ${ag.cls}">ตรวจครั้งล่าสุด: ${ag.text}</div>`;
+    }
     return `<button class="zone-card${allDone?' all-done':''}" onclick="selectZone('${z.replace(/'/g,"\\'")}')">
       ${allDone?`<div class="zc-done-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>`:''}
       <div class="zc-name">${z}</div>
       <div class="zc-count">${done}/${doors.length} ตรวจแล้ว · ${pct}%</div>
+      ${zoneCycleHtml}
       <div class="zc-bar"><div class="zc-fill" style="width:${pct}%"></div></div>
     </button>`;
   }).join('');
@@ -876,6 +948,7 @@ function renderZoneStats(z){
     `<div class="zone-stat-cell"><div class="zs-num" style="color:var(--yellow)">${pending}</div><div class="zs-lbl">ค้างตรวจ</div></div>`;
 }
 
+/* ══ renderDoorList — เพิ่ม staleness badge ══ */
 function renderDoorList(){
   const doors=allDoors.filter(d=>d.zone===selZone);
   const list=document.getElementById('doorList');
@@ -885,12 +958,26 @@ function renderDoorList(){
     const [bc,bt]=inspected&&resMap[sub.overall]?resMap[sub.overall]:['drs-none','ยังไม่ตรวจ'];
     const isSelf=sub&&sub.inspectorId===user.id;
     const inspectorHint=inspected&&!isSelf?`<div class="dr-inspector">ตรวจโดย: ${sub.inspectorName||'—'}</div>`:'';
-    return `<div class="door-row${inspected?' inspected':' locked'}" onclick="${inspected?`showDoneAlert('${d.code}','${sub.overall||''}','${sub.inspectorName||''}','${sub.shift||''}')`:''}" style="${!inspected?'cursor:default':'cursor:pointer'}">
+    /* staleness badge */
+    let ageBadge='';
+    if(inspected&&sub._ts){
+      const ag=ageLabel(sub._ts);
+      if(ag)ageBadge=`<div class="dr-age ${ag.cls}">${ag.text}</div>`;
+    }
+    /* row class based on age */
+    let rowExtraCls='';
+    if(inspected&&sub._ts){
+      const ac=ageCls(sub._ts);
+      if(ac==='warn')rowExtraCls=' warn-age';
+      else if(ac==='old')rowExtraCls=' old-age';
+    }
+    return `<div class="door-row${inspected?' inspected'+rowExtraCls:' locked'}" onclick="${inspected?`showDoneAlert('${d.code}','${sub.overall||''}','${sub.inspectorName||''}','${sub.shift||''}','${sub._ts?sub._ts.toISOString():''}')`:''}" style="${!inspected?'cursor:default':'cursor:pointer'}">
       <div class="door-row-left">
         <div class="dr-code">${d.code}</div>
         <div class="dr-name">${d.name}</div>
         <div class="dr-meta">${d.location||d.zone}${d.type?' · '+d.type:''}</div>
         ${inspectorHint}
+        ${ageBadge}
       </div>
       <div class="dr-status ${bc}">${bt}</div>
       ${!inspected?`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`:''}
@@ -899,10 +986,12 @@ function renderDoorList(){
   renderZoneStats(selZone);
 }
 
-window.showDoneAlert=function(code,overall,inspector,shift){
+window.showDoneAlert=function(code,overall,inspector,shift,isoTs){
   const resMap={ok:'ผ่าน',fail:'ไม่ผ่าน',cond:'มีเงื่อนไข'};
+  let timeStr='—';
+  if(isoTs){try{const d=new Date(isoTs);timeStr=`${d.getDate()} ${MONTHS_TH[d.getMonth()]} ${d.getFullYear()+543} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} น.`;}catch(e){}}
   speak('ประตู '+code+' ตรวจสอบแล้ว');
-  showAlert('ตรวจสอบแล้ว',`ประตู ${code} ได้รับการตรวจสอบในกะนี้แล้ว`,`ผู้ตรวจ: ${inspector||'—'}\nกะ: ${shift||'—'}\nผล: ${resMap[overall]||overall||'—'}`,'ok');
+  showAlert('ตรวจสอบแล้ว',`ประตู ${code} ได้รับการตรวจสอบในรอบนี้แล้ว`,`ผู้ตรวจ: ${inspector||'—'}\nกะ: ${shift||'—'}\nเวลา: ${timeStr}\nผล: ${resMap[overall]||overall||'—'}`,'ok');
 };
 
 window.openQR=function(){document.getElementById('qrModal').classList.add('open');setQRStatus('กำลังเปิดกล้อง...',true);startQRStream();speak('เปิดกล้องสแกน QR Code');};
@@ -933,10 +1022,12 @@ window.handleQRResult=function(raw){
   const sub=isDoorDone(door.code);
   if(sub){
     const resMap={ok:'ผ่าน',fail:'ไม่ผ่าน',cond:'มีเงื่อนไข'};
-    const ts=sub.timestamp?(sub.timestamp.toDate?sub.timestamp.toDate():new Date(sub.timestamp)):null;
-    const timeStr=ts?ts.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}):'—';
-    speak('ประตู '+door.code+' ตรวจสอบแล้วในกะนี้');
-    showAlert('ประตูนี้ตรวจแล้ว',`${door.code} — ${door.name}`,`ผู้ตรวจ: ${sub.inspectorName||'—'}\nเวลา: ${timeStr}\nผล: ${resMap[sub.overall]||sub.overall||'—'}`,'warn');
+    let timeStr='—';
+    if(sub._ts){try{const d=sub._ts;timeStr=`${d.getDate()} ${MONTHS_TH[d.getMonth()]} ${d.getFullYear()+543} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} น.`;}catch(e){}}
+    const ag=ageLabel(sub._ts);
+    const ageInfo=ag?`\nตรวจเมื่อ: ${ag.text}`:'';
+    speak('ประตู '+door.code+' ตรวจสอบแล้วในรอบนี้');
+    showAlert('ประตูนี้ตรวจแล้วในรอบนี้',`${door.code} — ${door.name}`,`ผู้ตรวจ: ${sub.inspectorName||'—'}\nเวลา: ${timeStr}${ageInfo}\nผล: ${resMap[sub.overall]||sub.overall||'—'}`,'warn');
     return;
   }
   selDoor=door;
@@ -1039,6 +1130,60 @@ window.doSubmit=async function(){
     toast('บันทึกไม่สำเร็จ: '+e.message,'err');
   }
 };
+
+function renderStepbar(step,targetId){
+  const steps=[{n:1,l:'เลือกพื้นที่'},{n:2,l:'เลือกประตู'},{n:3,l:'ตรวจสอบ'}];
+  const el=document.getElementById(targetId);if(!el)return;let h='';
+  steps.forEach((s,i)=>{
+    const state=s.n<step?'done':s.n===step?'active':'idle';
+    const num=state==='done'?'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':s.n;
+    h+=`<div class="step-item"><div class="step-num ${state}">${num}</div><div class="step-label ${state}">${s.l}</div></div>`;
+    if(i<steps.length-1)h+=`<div class="step-line${step>s.n?' done':''}"></div>`;
+  });el.innerHTML=h;
+}
+
+window.showAlert=function(title,msg,detail,type='warn'){
+  document.getElementById('alertTitle').textContent=title;
+  document.getElementById('alertMsg').textContent=msg;
+  const det=document.getElementById('alertDetail');
+  if(detail){det.style.display='';det.innerHTML=detail.replace(/\n/g,'<br>');}else det.style.display='none';
+  const ico=document.getElementById('alertIcon');
+  const imap={warn:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',err:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',ok:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'};
+  ico.className='alert-icon '+type;ico.innerHTML=imap[type]||imap.warn;
+  document.getElementById('alertSecBtn').style.display='none';
+  document.getElementById('alertModal').classList.add('open');
+};
+window.closeAlert=()=>document.getElementById('alertModal').classList.remove('open');
+window.openLightbox=function(src,cap){document.getElementById('lightboxImg').src=src;document.getElementById('lightboxCap').textContent=cap||'';document.getElementById('lightbox').classList.add('open');};
+window.closeLightbox=function(){document.getElementById('lightbox').classList.remove('open');};
+
+function compressImage(file){return new Promise(resolve=>{const reader=new FileReader();reader.onload=e=>{const img=new Image();img.onload=()=>{let w=img.width,h=img.height;if(w>PHOTO_MAX_PX||h>PHOTO_MAX_PX){if(w>h){h=Math.round(h*PHOTO_MAX_PX/w);w=PHOTO_MAX_PX;}else{w=Math.round(w*PHOTO_MAX_PX/h);h=PHOTO_MAX_PX;}}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);resolve(c.toDataURL('image/jpeg',PHOTO_QUALITY));};img.src=e.target.result;};reader.readAsDataURL(file);});}
+function renderPhotoGrid(key){
+  const grid=document.getElementById('pg-'+key),countEl=document.getElementById('pc-'+key);
+  const btnCam=document.getElementById('pbcam-'+key),btnGal=document.getElementById('pbgal-'+key);
+  if(!grid)return;
+  const photos=photoStore[key]||[],atMax=photos.length>=MAX_PHOTOS;
+  if(countEl){countEl.textContent=photos.length+'/'+MAX_PHOTOS+' รูป';countEl.className='photo-count'+(photos.length>0?' has':'');}
+  if(btnCam)btnCam.disabled=submitted||atMax;if(btnGal)btnGal.disabled=submitted||atMax;
+  grid.innerHTML=photos.map((p,i)=>`<div class="photo-thumb" onclick="openLightbox('${p.dataUrl}','รูปชำรุด ${i+1}')"><img src="${p.dataUrl}" alt="รูป ${i+1}">${!submitted?`<div class="photo-thumb-del" onclick="event.stopPropagation();deletePhoto('${key}',${i})"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>`:''}</div>`).join('');
+}
+window.deletePhoto=function(key,idx){if(!photoStore[key])return;photoStore[key].splice(idx,1);renderPhotoGrid(key);toast('ลบรูปแล้ว','info');};
+window.openCameraPhoto=function(key){if(submitted)return;activePhotoKey=key;const inp=document.getElementById('photoFileInput');inp.removeAttribute('multiple');inp.setAttribute('capture','environment');inp.accept='image/*';inp.value='';inp.click();};
+window.openGalleryPhoto=function(key){if(submitted)return;activePhotoKey=key;const inp=document.getElementById('photoFileInput');inp.removeAttribute('capture');inp.setAttribute('multiple','');inp.accept='image/*';inp.value='';inp.click();};
+document.getElementById('photoFileInput').addEventListener('change',async function(){
+  const key=activePhotoKey;if(!key)return;if(!photoStore[key])photoStore[key]=[];
+  const files=Array.from(this.files||[]);const slots=MAX_PHOTOS-(photoStore[key].length);
+  if(slots<=0){toast('ถ่ายรูปได้สูงสุด '+MAX_PHOTOS+' รูปต่อข้อ','err');return;}
+  const take=files.slice(0,slots);showLoad('กำลังประมวลผลรูปภาพ...');
+  for(const f of take){try{const d=await compressImage(f);photoStore[key].push({dataUrl:d});}catch(e){toast('รูปภาพผิดพลาด','err');}}
+  hideLoad();renderPhotoGrid(key);toast('เพิ่มรูป '+take.length+' รูปแล้ว','ok');
+});
+
+function getShift(){const h=new Date().getHours();for(const s of shifts){if(s.startH<s.endH){if(h>=s.startH&&h<s.endH)return s;}else{if(h>=s.startH||h<s.endH)return s;}}return null;}
+function shiftStart(s){const now=new Date(),d=new Date(now);d.setHours(s.startH,0,0,0);if(s.startH>s.endH&&now.getHours()<s.endH)d.setDate(d.getDate()-1);return d;}
+function defaultShifts(){return[{id:'A',name:'กะ A (เช้า)',startH:6,endH:14},{id:'B',name:'กะ B (บ่าย)',startH:14,endH:22},{id:'C',name:'กะ C (ดึก)',startH:22,endH:6}];}
+
+function goPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));const pg=document.getElementById(id);if(pg)pg.classList.add('active');if(id==='p-check')document.getElementById('checkScroll').scrollTop=0;}
 
 window.addEventListener('beforeunload',()=>{stopQR();synth.cancel();});
 init();
